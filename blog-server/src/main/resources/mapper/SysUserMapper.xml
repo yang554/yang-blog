@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.SysUserMapper">
+    <resultMap id="userMap" type="com.yang.blog.entity.SysUserEntity">
+        <id column="uid" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="nickname" property="nickname"/>
+        <result column="avatar" property="avatar"/>
+        <result column="email" property="email"/>
+        <result column="phone" property="phone"/>
+        <result column="address" property="address"/>
+        <result column="description" property="description"/>
+        <result column="salt" property="salt"/>
+        <result column="createTime" property="createTime"/>
+        <result column="updateTime" property="updateTime"/>
+        <result column="note" property="note"/>
+        <result column="etx01" property="etx01"/>
+        <result column="etx02" property="etx02"/>
+        <!--角色信息-->
+        <collection property="roles" javaType="list" ofType="com.yang.blog.entity.SysRoleEntity">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+        </collection>
+    </resultMap>
+
+    <select id="findAll" resultMap="userMap">
+        SELECT u.id uid,u.username,u.password,u.nickname,
+        u.avatar,u.email,u.phone,u.address,u.description,u.salt,
+        u.create_time,u.update_time,u.note,u.etx01,u.etx02,r.id rid,r.name rname
+        FROM sys_user u
+        LEFT JOIN sys_user_role ur on u.id = ur.userid
+        LEFT JOIN sys_role r on ur.roleid = r.id
+    </select>
+
+    <select id="selectRolesByUsername" parameterType="string" resultMap="userMap">
+        SELECT
+          u.id uid,u.username,u.password,u.nickname,
+          u.avatar,u.email,u.phone,u.address,u.description,u.salt,
+          u.create_time,u.update_time,u.note,u.etx01,u.etx02,r.id rid,r.name rname
+        FROM sys_user u
+        LEFT JOIN sys_user_role ur on u.id = ur.userid
+        LEFT JOIN sys_role r on ur.roleid = r.id
+        WHERE u.username = #{username}
+    </select>
+    
+    <insert id="register" useGeneratedKeys="true" keyProperty="id" parameterType="com.yang.blog.entity.SysUserEntity">
+      INSERT INTO sys_user (username,password,salt)
+      VALUES(#{username,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},#{salt,jdbcType=VARCHAR})
+    </insert>
+</mapper>
