@@ -76,6 +76,8 @@ public class CustomRealm extends AuthorizingRealm {
                     new MyByteSource(tUser.getSalt()),
                     this.getName());
             return simpleAuthenticationInfo;
+        }else{
+            System.out.println("================");
         }
         return null;
     }

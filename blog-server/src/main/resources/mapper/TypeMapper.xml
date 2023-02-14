@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.TypeMapper">
+    <resultMap id="typeMap" type="com.yang.blog.entity.TypeEntity">
+        <id column="tid" property="id"/>
+        <result column="name" property="name"/>
+        <result column="note" property="note"/>
+    </resultMap>
+
+    <select id="getTypeAll" resultMap="typeMap">
+        SELECT t.id tid,t.name,t.note FROM t_type t ORDER BY tid DESC
+    </select>
+
+    <select id="getTypeByName" resultMap="typeMap" parameterType="string">
+        SELECT t.id tid,t.name,t.note FROM t_type t WHERE `name` LIKE CONCAT('%',#{name},'%') ORDER BY tid DESC
+    </select>
+
+    <insert id="addType" parameterType="com.yang.blog.entity.TypeEntity">
+        INSERT INTO t_type (id,`name`) VALUES(#{id,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="updTypeById" parameterType="com.yang.blog.entity.TypeEntity">
+        UPDATE t_type SET `name`=#{name,jdbcType=VARCHAR},note=#{note,jdbcType=VARCHAR}
+        WHERE id=#{id,jdbcType=VARCHAR}
+    </update>
+
+    <delete id="delTypeById" parameterType="String">
+        DELETE FROM t_type WHERE id=#{id,jdbcType=VARCHAR}
+    </delete>
+</mapper>
