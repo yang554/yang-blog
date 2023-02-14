@@ -1,6 +1,7 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
   // transpileDependencies: true
+  // IntOnSave:true,
   devServer: {  //配置开发环境
     host: 'localhost',
     open: true,
@@ -11,10 +12,10 @@ module.exports = defineConfig({
         ws: false,
         changOrigin: true,      //允许跨域
         pathRewrite: {
-          '^/api': ''             //请求的时候使用这个api就可以
+          '^/api': '/'             
         }
       }
     }
   }
-  
+
 })
