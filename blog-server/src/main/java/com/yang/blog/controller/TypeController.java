@@ -39,7 +39,6 @@ public class TypeController {
 
     @PostMapping("/updTypeById")
     private RespBean updTypeById(@RequestBody TypeEntity entity){
-
         return typeService.updTypeById(entity);
     }
 

@@ -19,7 +19,6 @@ public class TypeServiceImpl implements TypeService {
     @Override
     public RespBean getTypeAll() {
         List<TypeEntity> typeEntities = typeMapper.getTypeAll();
-        System.out.println(typeEntities);
         return RespBean.ok("ok",typeEntities);
     }
 
