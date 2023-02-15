@@ -52,7 +52,7 @@
         <div class="breadcrumb">
           <el-breadcrumb separator="/" v-if="this.$router.currentRoute.path != '/home/blog'">
             <el-breadcrumb-item :to="{ path: '/home/blog' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>{{ this.$router.currentRoute.name }}</el-breadcrumb-item>
+            <el-breadcrumb-item>{{ this.$router.currentRoute.meta.title }}</el-breadcrumb-item>
           </el-breadcrumb>
         </div>
 

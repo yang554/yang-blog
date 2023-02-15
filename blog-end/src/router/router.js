@@ -14,6 +14,7 @@ import DashBoardView from '@/views/index/DashBoardView.vue'
 //博客管理
 import WriteView from '@/views/blogs/WriteView.vue'
 import SortView from '@/views/blogs/SortView.vue'
+import TagView from '@/views/blogs/TagView.vue'
 
 //静态路由
 export const constantRoutes = [
@@ -56,8 +57,8 @@ export const constantRoutes = [
       { path: "/home/blog/write", name: "WriteView",meta: {title:'写博客'}, component: () => import('@/views/blogs/WriteView.vue'), myIcon: "el-icon-edit" },
       { path: '/home/editblog/:id', name: '编辑博客',meta: {title:'编辑博客'}, component: WriteView, props: true, hidden: true },
       { path: '/home/allblog', name: '文章管理',meta: {title:'文章管理'}, component: WriteView, myIcon: "el-icon-notebook-1" },
-      { path: '/home/categoryblog', name: 'SortView',meta: {title:'分类专栏'}, component: SortView, myIcon: "el-icon-document" },
-      { path: '/home/tagblog', name: '标签管理',meta: {title:'首页'}, component: WriteView, myIcon: "el-icon-collection-tag" },
+      { path: '/home/sortblog', name: 'SortView',meta: {title:'分类专栏'}, component: SortView, myIcon: "el-icon-document" },
+      { path: '/home/tagblog', name: 'TagView',meta: {title:'云标签管理'}, component: TagView, myIcon: "el-icon-collection-tag" },
       { path: '/home/commentblog', name: '评论管理',meta: {title:'首页'}, component: WriteView, myIcon: "el-icon-tickets" },
     ]
   },{
