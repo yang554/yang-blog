@@ -3,7 +3,7 @@
         <!--搜索-->
         <el-row style="margin-top: 10px;margin-bottom: 10px;">
             <el-col :span="8">
-                <el-input placeholder="输入Type名称" v-model="tNameInput"></el-input>
+                <el-input placeholder="输入需要搜素\新增的分类名称" v-model="tNameInput"></el-input>
             </el-col>
             <el-col :span="1">
                 <el-button type="success" @click="searchByName">
@@ -66,9 +66,9 @@
             </el-table-column>
         </el-table>
         <div class="block">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pagination.totalPage"
-                :page-sizes="[5, 10, 15, 20]" :page-size="pagination.currentPage" layout="total, sizes, prev, pager, next, jumper"
-                :total="pagination.list.length">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper"
+                :total="pagination.total">
             </el-pagination>
         </div>
     </div>
@@ -82,9 +82,7 @@ export default {
     components: {},
     data() {
         return {
-            // iskey: Math.random(),
             tNameInput: "",
-            tableData: [],
             updateTypeDialogFormVisible: false, //编辑type对话框是否显示
             typeData: {
                 id: "",
@@ -96,43 +94,41 @@ export default {
                 listLoading: true,
                 totalPage: 1, // 统共页数，默认为1
                 currentPage: 1, //当前页数 ，默认为1
-                pageSize: 5, // 每页显示数量
+                pageSize: 10, // 每页显示数量
                 currentPageData: [], //当前页显示内容
-                headPage: 1
+                total: 1
             }
         }
     },
     methods: {
-        getCurrentPageData() {
-            let begin = (this.pagination.currentPage - 1) * this.pagination.pageSize;
-            let end = this.pagination.currentPage * this.pagination.pageSize;
+        getCurrentPageData(currentPage, pageSize) {
+            let begin = (currentPage - 1) * pageSize;
+            let end = currentPage * pageSize;
             this.pagination.currentPageData = this.pagination.list.slice(
                 begin,
                 end
             );
         },
         handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
+            this.pagination.pageSize = val
+            this.getCurrentPageData(this.pagination.currentPage, this.pagination.pageSize);
+
         },
         handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
+            this.pagination.currentPage = val
+            this.getCurrentPageData(this.pagination.currentPage, this.pagination.pageSize);
         },
         //获取所有分类
         getTypeAll() {
             _typeAll().then(res => {
-                // console.log(res);
                 if (res.data.status === 200) {
-                    // this.iskey = Math.random();
-                    console.log(res.data.obj);
                     this.pagination.list = res.data.obj
                     this.pagination.listLoading = false
+                    this.pagination.total = this.pagination.list.length
 
                     this.pagination.totalPage = Math.ceil(this.pagination.list.length / this.pagination.pageSize);
                     this.pagination.totalPage = this.pagination.totalPage == 0 ? 1 : this.pagination.totalPage;
-                    this.getCurrentPageData();
-
-                    this.tableData.splice(0);
-                    this.tableData.push(...res.data.obj)
+                    this.getCurrentPageData(this.pagination.currentPage, this.pagination.pageSize);
                 }
             })
         },
@@ -143,9 +139,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                //网络请求
                 _delTypeById(row.id).then(res => {
-                    console.log(res);
                     if (res.status === 200) {
                         this.$message({
                             type: 'success',
@@ -185,10 +179,14 @@ export default {
                 this.$message.error("请输入分类名称")
             } else {
                 _typeByName(this.tNameInput).then(res => {
-                    // console.log(res);
                     if (res.data.status === 200) {
-                        this.tableData.splice(0);
-                        this.tableData.push(...res.data.obj)
+                        this.pagination.list = res.data.obj
+                        this.pagination.listLoading = false
+                        this.pagination.total = this.pagination.list.length
+
+                        this.pagination.totalPage = Math.ceil(this.pagination.list.length / this.pagination.pageSize);
+                        this.pagination.totalPage = this.pagination.totalPage == 0 ? 1 : this.pagination.totalPage;
+                        this.getCurrentPageData(this.pagination.currentPage, this.pagination.pageSize);
                     } else {
                         this.$message.warning(res.data.obj);
                     }
@@ -200,7 +198,7 @@ export default {
             if (this.tNameInput == '') {
                 this.$message.error("请输入分类名")
             } else {
-                let isExist = this.tableData.some((item) => {
+                let isExist = this.pagination.list.some((item) => {
                     return item.name.toLowerCase() === this.tNameInput.toLowerCase()
                 });
                 if (isExist) {
@@ -210,10 +208,10 @@ export default {
                         "tName": this.tNameInput
                     };
                     _addType(postData).then(res => {
-                        console.log(res);
                         if (res.data.status === 200) {
                             this.$message.success("分类创建成功");
                             this.getTypeAll();
+                            this.tNameInput = '';
                         } else {
                             this.$message.error(res.data.msg);
                         }
