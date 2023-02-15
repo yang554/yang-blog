@@ -163,7 +163,6 @@ export default {
         //确认修改
         handleDialogForm() {
             _updTypeById(this.typeData).then(res => {
-                console.log(res);
                 if (res.data.status === 200) {
                     this.$message.success("修改成功");
                     this.updateTypeDialogFormVisible = false;

@@ -7,38 +7,38 @@
                 </el-input>
             </el-col>
             <el-col :span="1">
-                <el-button type="primary" @click="searchByInput">
+                <el-button type="primary" @click="searchByName">
                     <i class="el-icon-search"></i>
                     搜索
                 </el-button>
             </el-col>
             <el-col :span="1" :offset="1">
-                <el-button type="warning" @click="handleAddNewTag">
+                <el-button type="success" @click="addTagBtn">
                     <i class="el-icon-plus"></i>
-                    增加
+                    添加
                 </el-button>
             </el-col>
         </el-row>
 
         <!--修改分类的对话框-->
         <el-dialog title="编辑Tag信息" :visible.sync="updateTagDialogFormVisible">
-            <div class="updateType" v-if="currentEditTag != null">
+            <div class="updateType" v-if="editTag != null">
                 编码：
                 <br />
                 <br />
-                <el-input v-model="currentEditTag.id" disabled></el-input>
+                <el-input v-model="editTag.id" disabled></el-input>
                 <br />
                 <br />
-                Tag名：
+                标签名：
                 <br />
                 <br />
-                <el-input v-model="currentEditTag.name"></el-input>
+                <el-input v-model="editTag.name"></el-input>
                 <br />
                 <br />
                 选择tag颜色：
                 <br />
                 <br />
-                <el-select v-model="currentEditTag.color" placeholder="请选择Tag颜色">
+                <el-select v-model="editTag.color" placeholder="请选择标签颜色">
                     <el-option v-for="item in selectTagOptions" :key="item.value" :label="item.label"
                         :value="item.value">
                         <el-button size="mini" :type="item.value" circle></el-button>
@@ -52,7 +52,8 @@
             </div>
         </el-dialog>
 
-        <el-table :data="tableData" border style="width: 100%">
+        <el-table v-loading="pagination.listLoading" :data="pagination.currentPageData" height="700" stripe
+            style="width: 100%">
             <el-table-column label="编码">
                 <template slot-scope="scope">
                     <span style="margin-left: 10px">{{ scope.row.id }}</span>
@@ -65,32 +66,45 @@
             </el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑
+                    <el-button type="warning" @click="handleEdit(scope.$index, scope.row)">编辑
                     </el-button>
-                    <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除
+                    <el-button type="danger" @click="handleDelete(scope.$index, scope.row)">删除
                     </el-button>
                 </template>
             </el-table-column>
         </el-table>
+        <div class="block">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper"
+                :total="pagination.total">
+            </el-pagination>
+        </div>
     </div>
 </template>
 
 <script>
+import { _getTagAll, _getTagByName, _addTag, _updTagById, _delTagById } from "@/api/api.js"
 export default {
-    name: "TagBlog",
+    name: "TagView",
     components: {},
     data() {
         return {
             inputTagName: "",
-            tableData: [],
-
-            updateTagDialogFormVisible: false,		//编辑type对话框是否显示
-            currentEditTag: {
+            updateTagDialogFormVisible: false,  //编辑type对话框是否显示
+            editTag: {
                 id: "",
                 name: "",
                 color: "",
-            },		//当前编辑的tag
-
+            },
+            pagination: {
+                list: null,
+                listLoading: true,
+                totalPage: 1, // 统共页数，默认为1
+                currentPage: 1, //当前页数 ，默认为1
+                pageSize: 10, // 每页显示数量
+                currentPageData: [], //当前页显示内容
+                total: 1    //总数量
+            },
             selectTagOptions: [
                 {
                     value: '',
@@ -120,30 +134,50 @@ export default {
         }
     },
     methods: {
-        //网络请求---获取所有分类
-        _getAllTag() {
-            this.$request("/tag/all").then(res => {
-                console.log(res);
+        //分页
+        getCurrentPageData(currentPage, pageSize) {
+            let begin = (currentPage - 1) * pageSize;
+            let end = currentPage * pageSize;
+            this.pagination.currentPageData = this.pagination.list.slice(
+                begin,
+                end
+            );
+        },
+        handleSizeChange(val) {
+            this.pagination.pageSize = val
+            this.getCurrentPageData(this.pagination.currentPage, this.pagination.pageSize);
+
+        },
+        handleCurrentChange(val) {
+            this.pagination.currentPage = val
+            this.getCurrentPageData(this.pagination.currentPage, this.pagination.pageSize);
+        },
+        //获取所有分类
+        getTagALl() {
+            _getTagAll().then(res => {
                 if (res.data.status === 200) {
-                    //每次请求时清空tableData数据
-                    this.tableData.splice(0);
-                    this.tableData.push(...res.data.obj)
+                    this.pagination.list = res.data.obj
+                    this.pagination.listLoading = false
+                    this.pagination.total = this.pagination.list.length
+
+                    this.pagination.totalPage = Math.ceil(this.pagination.list.length / this.pagination.pageSize);
+                    this.pagination.totalPage = this.pagination.totalPage == 0 ? 1 : this.pagination.totalPage;
+                    this.getCurrentPageData(this.pagination.currentPage, this.pagination.pageSize);
                 }
             })
         },
 
-        //表格操作-删除分类
+        //表格操作-删除标签
         handleDelete(index, row) {
             this.$confirm('此操作将永久删除该标签, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                //网络请求
-                this.$deleteRequest("/tag/delete?tid=" + row.id).then(res => {
-                    console.log(res);
+                _delTagById(row.id).then(res => {
                     if (res.data.status === 200) {
                         this.$message.success('删除成功!');
+                        this.getTagALl();
                     } else {
                         this.$message.error(res.data.msg);
                     }
@@ -156,33 +190,35 @@ export default {
         //表格操作-编辑
         handleEdit(index, row) {
             this.updateTagDialogFormVisible = true;
-            this.currentEditTag = row;
+            this.editTag = row;
         },
         //确认修改
         handleConfirmUpdate() {
-            console.log(this.currentEditTag);
-            this.$postRequest("/tag/update", this.currentEditTag).then(res => {
-                console.log(res);
+            _updTagById(this.editTag).then(res => {
                 if (res.data.status === 200) {
                     this.$message.success(res.data.msg);
                     this.updateTagDialogFormVisible = false;
-                    //window.location.reload();				//强制刷新页面（相当于浏览器的刷新按钮）
+                    this.getTagALl();
                 } else {
                     this.$message.error(res.data.msg);
                 }
             })
         },
 
-        /*点击搜索--根据tag.name模糊搜索*/
-        searchByInput() {
+        //模糊搜索
+        searchByName() {
             if (this.inputTagName == '') {
-                this.$message.error("请输入tag名")
+                this.$message.error("请输入标签名称")
             } else {
-                this.$getRequest("/tag/findByName/like?name=" + this.inputTagName).then(res => {
-                    console.log(res);
+                _getTagByName(this.inputTagName).then(res => {
                     if (res.data.status === 200) {
-                        this.tableData.splice(0);
-                        this.tableData.push(...res.data.obj);
+                        this.pagination.list = res.data.obj
+                        this.pagination.listLoading = false
+                        this.pagination.total = this.pagination.list.length
+
+                        this.pagination.totalPage = Math.ceil(this.pagination.list.length / this.pagination.pageSize);
+                        this.pagination.totalPage = this.pagination.totalPage == 0 ? 1 : this.pagination.totalPage;
+                        this.getCurrentPageData(this.pagination.currentPage, this.pagination.pageSize);
                     } else {
                         this.$message.error(res.data.msg);
                     }
@@ -190,25 +226,25 @@ export default {
             }
 
         },
-        //新增tag
-        handleAddNewTag() {
+        //添加标签
+        addTagBtn() {
             if (this.inputTagName == '') {
-                this.$message.error("请输入tag名")
+                this.$message.error("请输入标签名称")
             } else {
-                let isExist = this.tableData.some((item) => {
+                let isExist = this.pagination.list.some((item) => {
                     return item.name.toLowerCase() === this.inputTagName.toLowerCase()
                 });
                 if (isExist) {
-                    this.$message.error("tag已存在")
+                    this.$message.error("标签已存在")
                 } else {
                     let postData = {
-                        "tagName": this.inputTagName
+                        "tName": this.inputTagName
                     };
-                    this.$postRequest("/tag/save/", postData).then(res => {
-                        // console.log(res);
+                    _addTag(postData).then(res => {
                         if (res.data.status === 200) {
-                            this.$message.success("Tag创建成功");
-                            window.location.reload();
+                            this.$message.success("标签创建成功");
+                            this.getTagALl();
+                            this.inputTagName = '';
                         } else {
                             this.$message.error(res.data.msg);
                         }
@@ -219,7 +255,7 @@ export default {
         }
     },
     created() {
-        this._getAllTag();
+        this.getTagALl();
     }
 }
 </script>

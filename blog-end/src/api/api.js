@@ -24,3 +24,19 @@ export const _updTypeById = (data) => {
 export const _delTypeById = (data) => {
     return deleteRequest("/type/delTypeById?id=" + data);
 }
+//云标签管理
+export const _getTagAll = () => {
+    return getRequest("/tag/all");
+}
+export const _getTagByName = (data) => {
+    return getRequest("/tag/getTagByName/" + data);
+}
+export const _addTag = (data) => {
+    return postRequest("/tag/addTag", data);
+}
+export const _updTagById = (data) => {
+    return postRequest("/tag/updTagById", data);
+}
+export const _delTagById = (data) => {
+    return deleteRequest("/tag/delTagById?id=" + data);
+}
