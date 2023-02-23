@@ -1,17 +1,15 @@
 <template>
-  <div class="admin-home-view">
-    <div class="header-container">
+  <el-container class="admin-home-view">
+    <el-header class="header-container">
       <div class="logo">
         <!-- <img src='@/assets/images/logo.png' alt='' width='50px' height='50px'> -->
       </div>
-
       <div class="title">后台管理系统</div>
-
       <div class="right">
         <div>
           <el-dropdown class="userinfo-dropdown" @command="handleCommand">
             <span class="el-dropdown-link">
-              <span>{{ this.$store.state.username }}</span>
+              <span>{{ this.$store.state.login_user.username }}</span>
               <img style="width: 55px; height: 55px;border-radius:50%;border: 1px solid #ddd;" alt="">
             </span>
             <el-dropdown-menu slot="dropdown">
@@ -22,12 +20,12 @@
           </el-dropdown>
         </div>
       </div>
-    </div>
+    </el-header>
 
-    <div class="main">
-      <div class="main-aside">
-        <el-menu class="home-aside" :default-active="sidebarActiveIndex" style="height: 100%" router
-          background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
+    <el-container class="main">
+      <el-aside class="main-aside">
+        <el-menu class="home-aside" :default-active="sidebarActiveIndex" router background-color="#545c64"
+          text-color="#fff" active-text-color="#ffd04b">
 
           <el-menu-item index="/admin/dashboard">
             <i class="el-icon-menu"></i>
@@ -45,9 +43,9 @@
             </el-menu-item>
           </el-submenu>
         </el-menu>
-      </div>
+      </el-aside>
 
-      <div class="main-container">
+      <el-main class="main-container">
         <!-- 面包屑 -->
         <div class="breadcrumb">
           <el-breadcrumb separator="/" v-if="this.$router.currentRoute.path != '/home/blog'">
@@ -57,18 +55,20 @@
         </div>
 
         <!--主要内容-->
-        <router-view class="main-content" />
-      </div>
-    </div>
-  </div>
+        <div class="main-content" :style="{'max-height': this.timeLineHeight + 'px' }"><router-view /></div>
+      </el-main>
+    </el-container>
+  </el-container>
 </template>
 
 <script>
+
 export default {
   name: "HomeView",
-  // components: {},
+  components: {},
   data() {
     return {
+      timeLineHeight: "",
       sidebarActiveIndex: "/admin/dashboard"
     };
   },
@@ -85,6 +85,7 @@ export default {
   },
   methods: {
     handleCommand(command) {
+      console.log(this.$store.state)
     }
   },
   created() {
@@ -95,70 +96,89 @@ export default {
     $route(route) {
       this.sidebarActiveIndex = route.path;
     }
-  }
+  },
+  mounted() {
+    this.timeLineHeight = document.documentElement.clientHeight - 60;
+    window.onresize = () => {
+      this.timeLineHeight = document.documentElement.clientHeight - 60;
+    };
+  },
 };
 </script>
 
 <style lang="less" scoped>
 .admin-home-view {
+  //主
   background-color: rgb(239, 241, 244);
-}
+  position: relative;
+  // z-index: 999;
+  overflow: hidden;
 
-.header-container {
-  width: 100%;
-  height: 60px;
-  line-height: 60px;
-  font-size: 24px;
-  font-weight: bold;
-  display: flex;
-  box-shadow: 0 2px 3px #ddd;
-  background-color: #545c64;
-  color: white;
+  .header-container {
+    //头部
+    position: fixed;
+    z-index: 99;
+    width: 100%;
+    height: 60px;
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    box-shadow: 0 1px 1px #ddd;
+    background-color: #545c64;
+    color: white;
 
-  .logo {
-    margin-left: 15px;
+    .logo {
+      margin-left: 15px;
+    }
+
+    .title {
+      flex: 1;
+      margin-left: 30px;
+      line-height: 60px;
+      font-size: 26px;
+    }
+
+    .right {
+      display: flex;
+
+      div {
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+    }
   }
 
-  .title {
-    flex: 1;
-    margin-left: 30px;
-    line-height: 60px;
-    font-size: 26px;
-  }
-
-  .right {
+  .main {
+    //主体
+    width: 100%;
+    overflow: hidden;
     display: flex;
 
-    div {
-      margin-left: 10px;
-      margin-right: 10px;
+    .main-aside {
+      overflow: hidden;
+      display: flex;
+      height: 100vh;
+      //菜单
+      .home-aside {
+        width: 280px;
+        margin-top: 60px;
+        background-color: rgb(84, 92, 100);
+      }
     }
-  }
-}
 
-.main {
-  width: 100%;
-  min-height: 100%;
-  display: flex;
+    .main-container {
+      //内容
+      margin: 70px 0 0 10px;
+      overflow-y: hidden;
+      // overflow-y:scroll;
+      height: calc(100vh - 70px);
 
-  .main-aside {
-    width: 200px;
-    height: calc(100vh - 60px);
-    background-color: rgb(84, 92, 100);
-
-    .home-aside {
-      width: 100%;
-      // min-height: 100vh;
-    }
-  }
-
-  .main-container {
-    flex: 1;
-    margin: 20px 0 0 10px;
-
-    .main-content {
-      padding: 20px;
-      // height: calc(100vh - 180px);
+      .main-content {
+        flex: 1;
+        padding: 10px;
+        overflow-y:scroll;
+        height: calc(100vh - 150px);
+      }
     }
   }
 }

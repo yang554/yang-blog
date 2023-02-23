@@ -19,8 +19,8 @@ public class TTagController {
         return tagService.getTagAll();
     }
 
-    @GetMapping("/getTagByName/{name}")
-    private RespBean getTagByName(@PathVariable("name") String name){
+    @GetMapping("/getTagByName")
+    private RespBean getTagByName(@RequestParam String name){
         return tagService.getTagByName(name);
     }
     @PostMapping("/addTag")

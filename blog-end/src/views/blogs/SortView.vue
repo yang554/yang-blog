@@ -177,7 +177,8 @@ export default {
             if (this.tNameInput == '') {
                 this.$message.error("请输入分类名称")
             } else {
-                _typeByName(this.tNameInput).then(res => {
+                let tmp = decodeURI(this.tNameInput);
+                _typeByName(tmp).then(res => {
                     if (res.data.status === 200) {
                         this.pagination.list = res.data.obj
                         this.pagination.listLoading = false
@@ -226,5 +227,7 @@ export default {
 </script>
 
 <style>
-
+    .block{
+        margin-top: 20px;
+    }
 </style>

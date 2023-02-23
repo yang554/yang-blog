@@ -1,32 +1,32 @@
-.my-left{
+.my-left {
 	float: left;
 }
 
-.my-right{
+.my-right {
 	float: right;
 }
 
-.my-center{
+.my-center {
 	text-align: center;
 	line-height: 100%;
 }
 
-.my-marginLeft10{
+.my-marginLeft10 {
 	margin-left: 10px;
 }
 
-.my-marginTop10{
+.my-marginTop10 {
 	margin-top: 10px;
 }
 
-.my-title{
+.my-title {
 	font-size: 26px;
 	font-weight: 500;
 	font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
 	font-palette: light;
 }
 
-.my-border-padding{
+.my-border-padding {
 	margin-top: 10px;
 	margin-bottom: 10px;
 	border: 1px solid #ddd;
@@ -34,32 +34,39 @@
 	padding: 10px;
 }
 
-.my-padding{
+.my-padding {
 	padding: 5px;
 }
 
-.my-hover1:hover{
+.my-hover1:hover {
 	border-bottom: 2px solid #E93C3F;
 	color: #E93C3F;
 }
 
-.my-flex{
+.my-flex {
 	display: flex;
 	justify-content: space-around;
 }
-.my-flex-span1{
+
+.my-flex-span1 {
 	flex: 1;
 }
 
-.my-font{
+.my-font {
 	font-size: 16px;
 	color: white;
 	text-decoration: underline;
 }
 
-.my-border{
+.my-border {
 	border: 2px solid #ddd;
 }
-.my-border:hover{
+
+.my-border:hover {
 	border: 2px solid #E93C3F;
+}
+
+::-webkit-scrollbar {
+	/*隐藏滚轮*/
+	display: none;
 }

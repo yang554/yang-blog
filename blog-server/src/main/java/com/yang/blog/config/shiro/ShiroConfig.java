@@ -22,7 +22,7 @@ import java.util.Map;
 @Configuration
 public class ShiroConfig {
     //创建shiroFilter负责拦截所有请求
-    @Bean(name = "shiroFilter")
+    @Bean(name = "shiroFilterFactoryBean")
     public ShiroFilterFactoryBean shiroFilter() {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         //给filter设置安全管理器
@@ -36,7 +36,12 @@ public class ShiroConfig {
         map.put("/classpath/**", "anon");      //测试专用
         map.put("/user/**", "anon"); //anon 设置为公共资源  放行资源放在下面
         map.put("/file/**", "anon"); //anon 设置为公共资源  放行资源放在下面
-        map.put("/**", "authc");//authc 请求这个资源需要认证和授权
+        // 放行swagger2相关访问
+        map.put("/swagger-ui.html", "anon");
+        map.put("/webjars/springfox-swagger-ui/**", "anon");
+        map.put("/swagger-resources/**", "anon");
+        map.put("/v2/api-docs", "anon");
+//        map.put("/**", "authc");//authc 请求这个资源需要认证和授权
         //默认认证界面路径---当认证不通过时跳转
         shiroFilterFactoryBean.setLoginUrl("/user/login");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(map);

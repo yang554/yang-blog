@@ -22,12 +22,12 @@ public class TypeController {
         return typeService.getTypeAll();
     }
 
-    @GetMapping("/getTypeByName/{name}")
+    @GetMapping("/getTypeByName")
     @ApiOperation("通过name查询分类")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "name",value = "分类name"),
     })
-    private RespBean getTypeByName(@PathVariable("name") String name){
+    private RespBean getTypeByName(@RequestParam String name){
         return typeService.getTypeByName(name);
     }
 
