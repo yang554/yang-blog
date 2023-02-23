@@ -2,6 +2,7 @@ const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
   // transpileDependencies: true
   // IntOnSave:true,
+  publicPath:"/",
   devServer: {  //配置开发环境
     host: 'localhost',
     open: true,

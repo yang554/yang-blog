@@ -261,5 +261,7 @@ export default {
 </script>
 
 <style>
-
+.block {
+    margin-top: 20px;
+}
 </style>

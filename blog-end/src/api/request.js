@@ -4,19 +4,17 @@ import Qs from 'qs'
 
 export function request(config) {
 	const instance1 = axios.create({
-		// baseURL: 'http://10.224.4.16:8000/api',
 		baseURL: '/api',
 		timeout: 3000,
 	})
 	//请求拦截和响应拦截
 	instance1.interceptors.request.use(config => {
-		console.log(config);
 		return config;
 	}, err => {
 		console.log(err);
 	})
 	instance1.interceptors.response.use(res => {
-		console.log(res.data);
+		res.headers['Content-Type'] ='application/json;charset=UTF-8';
 		return res;
 	},error => {
 		if(error.response.status == 504 || error.response.status == 404){
@@ -36,7 +34,6 @@ export function request(config) {
 		}
 		return;
 	})
-	//axios.create的返回值是一个promise对象！
 	return instance1(config);
 }
 

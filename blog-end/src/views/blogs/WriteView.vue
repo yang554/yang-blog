@@ -10,40 +10,47 @@
             </el-form-item>
 
             <el-form-item label="首页图片">
-                <el-input v-model="editForm.first_picture"></el-input>
+                <el-upload ref="upload" :on-success="handleFileSuccess" accept=".jpg,.png,.bmp,.jpeg,.gif"
+                    action="/api/file/upload" list-type="picture-card" :auto-upload="true" :on-change="handleChange"
+                    :limit='1' :on-remove="handleRemove">
+                    <i class="el-icon-plus"></i>
+                </el-upload>
+                <el-dialog :visible.sync="dialogVisible">
+                    <img width="100%" :src="dialogImageUrl" alt="">
+                </el-dialog>
             </el-form-item>
 
             <el-form-item label="文章标签">
-                <el-select v-model="editForm.tags" multiple placeholder="请选择Tag标签">
+                <el-select :multiple-limit="3" v-model="editForm.blogTags" multiple placeholder="请选择Tag标签">
                     <el-option v-for="(item, index) in tagList" :key="index" :label="item.name" :value="item.id">
                     </el-option>
                 </el-select>
             </el-form-item>
 
             <el-form-item label="分类专栏">
-                <el-select v-model="editForm.type" placeholder="请选择文章分类Category">
+                <el-select v-model="editForm.typeid" placeholder="请选择文章分类Category">
                     <el-option v-for="(item, index) in typeList" :key="index" :label="item.name" :value="item.id">
                     </el-option>
                 </el-select>
             </el-form-item>
 
             <el-form-item label="文章类型">
-                <el-radio-group v-model="editForm.flag">
+                <el-radio-group v-model="editForm.isoriginal">
                     <el-radio :label="0">转载</el-radio>
                     <el-radio :label="1">原创</el-radio>
                 </el-radio-group>
             </el-form-item>
 
             <el-form-item label="发布形式">
-                <el-radio-group v-model="editForm.published">
+                <el-radio-group v-model="editForm.ispublic">
                     <el-radio :label="0">私密</el-radio>
                     <el-radio :label="1">公开</el-radio>
                 </el-radio-group>
             </el-form-item>
 
             <el-form-item>
-                <el-switch style="display: block" v-model="editForm.share_statement" active-color="#13ce66"
-                    inactive-color="#ff4949" active-text="文章发布" inactive-text="暂存草稿">
+                <el-switch style="display: block" v-model="editForm.issue" active-color="#13ce66" inactive-color="#ff4949"
+                    active-text="文章发布" inactive-text="暂存草稿">
                 </el-switch>
             </el-form-item>
 
@@ -58,26 +65,33 @@
                 <el-button type="primary" @click="submitBlogForm">提交</el-button>
             </el-form-item>
         </el-form>
-    </div>
+</div>
 </template>
 
 <script>
+import { _getTagAll, _typeAll, _addBlog } from "@/api/api.js"
+import src from '@/assets/images/logo.png'
+import { Image } from "element-ui"
 
 export default {
-    name: "write-blog",
+    name: "WriteView",
     components: {},
     data() {
         return {
+            dialogImageUrl: '',
+            dialogVisible: false,
+            disabled: false,
             editForm: {
                 title: "",
                 description: "",
-                first_picture: "",
+                cover: "",
                 content: "",
-                type: "",			//类型
-                flag: 1,		//原创
-                published: 1,			//公开
-                share_statement: true,		//文章是否完成
-                tags: [],				//选中的tag列表
+                typeid: "",			//类型
+                isoriginal: 1,		//原创
+                ispublic: 1,			//公开
+                issue: true,		//文章是否完成
+                blogTags: [],				//选中的tag列表
+                userid: this.$store.state.login_user.id
             },
             rules1: {
                 title: [
@@ -99,11 +113,9 @@ export default {
         //初始化
         init() {
             /*初始化mavon-editor*/
-            this.$refs.md.value = "";
-
+            // this.$refs.md.value = "";
             /*获取所有tags*/
-            this.$getRequest("/tag/all").then(res => {
-                console.log(res);
+            _getTagAll().then(res => {
                 if (res.data.status === 200) {
                     //每次请求时清空tableData数据
                     this.tagList.splice(0);
@@ -112,8 +124,7 @@ export default {
             })
 
             /*获取所有type*/
-            this.$request("/type/all").then(res => {
-                console.log(res);
+            _typeAll().then(res => {
                 if (res.data.status === 200) {
                     //每次请求时清空tableData数据
                     this.typeList.splice(0);
@@ -121,15 +132,37 @@ export default {
                 }
             })
         },
+        handleFileSuccess(response, file, fileList) {
+            this.$message.success("封面上传成功");
+            if (response.status == 200) {
+                console.log(response);
+                this.editForm.cover = response.obj
+            }
+        },
+        handleChange(file, fileList) {
+            if (fileList.length > 0) {// 当上传图片成功时，即隐藏上传按钮
+                this.$refs.upload.$children[1].$el.style.display = "none" //= ('display', 'none');
+            }
+
+        },
+        handleRemove(file, fileList) {
+            this.fileList = []
+            if (fileList.length == 0) {
+                this.$refs.upload.$children[1].$el.style.display = "inline-block";// = ('display', 'inline-block');
+            }
+        },
+        handlePictureCardPreview(file) {
+            this.dialogImageUrl = file.url;
+            this.dialogVisible = true;
+        },
         //提交博客
         submitBlogForm() {
-            console.log(this.editForm);
             this.$refs.editForm.validate((valid) => {
                 if (valid) {
-                    this.$postRequest("/blog/save", this.editForm).then(res => {
+                    _addBlog(this.editForm).then(res => {
                         if (res.data.status === 200) {
                             this.$notify.success(res.data.msg);
-                            this.$router.push('/admin/allblog')
+                            this.$router.push('/home/allblog')
                         }
                     })
                 } else {
@@ -145,13 +178,14 @@ export default {
 
         /*mavon-editor图片上传*/
         handleMavonEditorImgAdd(pos, $file) {
-            // console.log(pos);
-            // console.log($file);
+            console.log(pos);
+            console.log($file);
             // 1、将图片上传到服务器.
             var formdata = new FormData();
             formdata.append('file', $file);
+            console.log(formdata);
             this.$request({
-                url: '/file/aliyun/oss',
+                url: '/file/upload',
                 method: 'post',
                 data: formdata,
                 headers: { 'Content-Type': 'multipart/form-data' },
@@ -179,7 +213,16 @@ export default {
 </script>
 
 <style scoped>
+.el-upload-list el-upload-list--picture-card {
+    display: "none";
+}
+
 .write-blog-view {
     width: 98%;
+}
+
+.block {
+    height: 80px;
+    width: 80px;
 }
 </style>
