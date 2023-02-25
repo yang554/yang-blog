@@ -26,6 +26,10 @@
         <result column="isdel" property="isdel"/>
         <result column="note" property="note"/>
         <result column="data" property="data"/>
+
+        <result column="uName" property="uName"/>
+        <result column="uNickname" property="uNickname"/>
+        <result column="tName" property="tName"/>
     </resultMap>
 
     <select id="getBlogByPage" resultType="map" parameterType="com.yang.blog.entity.TBlogEntity">
@@ -48,15 +52,20 @@
         b.`createtime`,
         b.`updtime`,
         u.`id` AS uid,
-        u.`username`,
-        u.`nickname`,
+        u.`username` AS uName,
+        u.`nickname` AS uNickname,
         u.`avatar`,
         u.`email`,
-        u.`description`
+        u.`description`,
+        t.id,
+        t.`name`AS tName,
+        t.note
         FROM
         t_blog b
         LEFT JOIN sys_user u
         ON b.`userid` = u.`id`
+        LEFT JOIN t_type t
+        ON t.id = b.typeid
         <where>
             <if test="ispublic != null">
                 and b.`ispublic` = #{ispublic,jdbcType=VARCHAR}

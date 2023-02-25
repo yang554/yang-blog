@@ -15,7 +15,7 @@ import java.util.Map;
 public interface TBlogMapper {
 
     //查询
-    List<Map<String,String>> getBlogByPage(@Param(value = "ispublic") Boolean ispublic,
+    List<Map<String,Object>> getBlogByPage(@Param(value = "ispublic") Boolean ispublic,
                                            @Param(value = "isoriginal") String isoriginal,
                                            @Param(value = "issue") Boolean issue,
                                            @Param(value = "isdel") Boolean isdel);
