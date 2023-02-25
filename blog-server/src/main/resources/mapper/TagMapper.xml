@@ -14,6 +14,13 @@
         SELECT t.id tid,t.name,t.color FROM t_tag t ORDER BY tid DESC
     </select>
 
+    <select id="getTagById" resultMap="map">
+        SELECT t.id tid,t.name,t.color FROM t_tag t WHERE t.id IN
+        <foreach collection="array" index="index" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </select>
+
     <select id="getTagByName" resultMap="map" parameterType="string">
         SELECT t.id tid,t.name,t.color FROM t_tag t WHERE `name` LIKE CONCAT('%',#{name},'%') ORDER BY tid DESC
     </select>

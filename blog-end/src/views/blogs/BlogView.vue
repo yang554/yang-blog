@@ -20,47 +20,74 @@
         </el-menu>
 
         <el-table v-loading="pagination.loading" :data="pagination.currentTableData" style="width: 100%">
-            <el-table-column label="文章列表" width="1000">
+            <el-table-column label="文章列表" style="width: 100%">
                 <template slot-scope="scope">
                     <el-card class="box-card">
                         <el-row type="flex" :gutter="10">
                             <el-col :span="6">
-                                <el-image style="width: 100%;height: 80px;border: 1px solid #eee;" :src="scope.row.cover"
+                                <el-image style="width: 100%;height: 180px;border: 1px solid #eee;" :src="scope.row.cover"
                                     fit="cover"></el-image>
                             </el-col>
 
                             <el-col :span="18">
-                                <el-row style="font-size: 18px;">
+                                <el-row style="font-size: 22px;margin: 10px">
                                     <!-- 根据issue属性判断文章是否为草稿 -->
                                     <el-button size="mini" v-if="!scope.row.issue" type="warning" icon="el-icon-edit"
                                         circle></el-button>
-                                    {{ scope.row.title }}
+                                    <span style="font-weight: bold;">{{ scope.row.title | ellipsis }}</span>
+                                </el-row>
+                                <el-row style="font-size: 16px;margin: 10px">
+                                    {{ scope.row.description | ellipsisDis }}
                                 </el-row>
 
-                                <div style="margin-top: 15px;" class="my-flex">
-                                    <div style="margin-right: 10px;" v-if="scope.row.isDelete">
-                                        <el-tag size="mini" type="danger">已删除</el-tag>
+                                <div style="margin-top: 15px;margin: 10px;font-size: 10px;">
+                                    <div style="margin-right: 20px;">
+                                        <i style="margin: 5px;" class="iconfont icon-zuozhe">{{ scope.row.uName }} </i>
+                                        <i style="margin: 5px;" class="iconfont icon-shuben1">{{ scope.row.tName }} </i>
+                                        <i style="margin: 5px;" class="iconfont icon-31shijian">{{ scope.row.createtime |
+                                            fortTime(scope.row.createtime) }}</i>
                                     </div>
-                                    <div style="margin-right: 10px;" v-if="!scope.row.issue">
-                                        <el-tag size="mini" type="warning">草稿
-                                        </el-tag>
+                                </div>
+
+                                <div style="margin-top: 15px;margin: 10px">
+                                    <div style="margin-right: 10px;">
+                                        <i style="margin: 5px;" v-if="scope.row.ispublic == '0'"
+                                            class="iconfont icon-suoding"></i>
+                                        <i style="margin: 5px;" v-if="scope.row.ispublic == '1'"
+                                            class="iconfont icon-jiesuo"></i>
+                                        <el-tag style="margin: 5px;" v-if="scope.row.isdel" size="mini"
+                                            type="danger">已删除</el-tag>
+                                        <el-tag style="margin: 5px;" v-if="!scope.row.issue" size="mini"
+                                            type="warning">草稿</el-tag>
+                                        <el-tag style="margin: 5px;" v-if="scope.row.issue" size="mini">{{
+                                            scope.row.isoriginal }}</el-tag>
+
+                                        <i class="iconfont icon-biaoqian" style="margin: 5px;">
+                                            <el-tag style="margin-left: 5px;" v-for="tag in scope.row.blogTags.t"
+                                                size="mini" :type="tag.color">{{ tag.name }}</el-tag>
+                                        </i>
+
+
+                                        <!-- <el-tag :key="tag" v-for="tag in dynamicTags[`tag${tagsIndex}`]" closable
+                                                :disable-transitions="false">
+                                                {{ tag }}
+                                            </el-tag> -->
+
                                     </div>
-                                    <div style="margin-right: 10px;" v-if="scope.row.issue">
-                                        <el-tag size="mini">{{ scope.row.isoriginal }}
-                                        </el-tag>
+                                </div>
+                                <div style="margin-top: 15px;margin: 10px" class="my-flex">
+                                    <div style="margin-right: 20px;"><i style="margin: 5px;"
+                                            class="iconfont icon-yanjing_xianshi"> {{
+                                                scope.row.browsecount }} </i>
                                     </div>
-                                    <div style="margin-right: 20px;" v-if="scope.row.issue">
-                                        <el-tag size="mini" type="info">
-                                            {{ scope.row.ispublic == '0' ? '私密' : '公开' }}
-                                        </el-tag>
+                                    <div style="margin-right: 20px;"><i class="iconfont icon-dianzan_huaban">
+                                            {{ scope.row.likes }} </i>
                                     </div>
-                                    <div style="margin-right: 20px;"><i class="el-icon-view"> {{ scope.row.views }} </i>
+                                    <div style="margin-right: 20px;"><i class="iconfont icon-31shoucang">
+                                            {{ scope.row.collection }} </i>
                                     </div>
-                                    <div style="margin-right: 20px;"><i class="el-icon-chat-square">
-                                            {{ scope.row.commentCount }} </i>
-                                    </div>
-                                    <div class="my-flex-span1" style="margin-right: 20px;"><i class="el-icon-date">
-                                            {{ scope.row.createtime | fortTime(scope.row.createtime) }}</i>
+
+                                    <div class="my-flex-span1" style="margin-right: 20px;">
                                     </div>
 
                                     <div style="margin-right: 20px;">
@@ -140,7 +167,22 @@ export default {
     filters: {
         fortTime(val) {
             return formatDate(val);
+        },
+        ellipsis(value) {
+            if (!value) return '';
+            if (value.length > 30) {
+                return value.slice(0, 30) + '...'
+            }
+            return value
+        },
+        ellipsisDis(value) {
+            if (!value) return '';
+            if (value.length > 100) {
+                return value.slice(0, 100) + '...'
+            }
+            return value
         }
+
     },
     methods: {
         //分页
@@ -148,6 +190,8 @@ export default {
             console.log("实际分页数" + pageSize);
             let begin = (currentPage - 1) * pageSize;
             let end = currentPage * pageSize;
+            console.log("实际开始页：" + begin);
+            console.log("实际结束页：" + end);
             this.pagination.currentTableData = listData.slice(
                 begin,
                 end
@@ -158,19 +202,31 @@ export default {
             //通用路由
             let baseUrl = `/blog/getBlogByPage?1=1`;
             if (this.activeTab === "0") {		//全部
-                baseUrl += "&isdel=0 "
+                baseUrl += "&isdel=0 ";
+                this.pagination.currentPage = 1;
+                this.pagination.pageSize = 5;
             } else if (this.activeTab === "1") {	//原创
-                baseUrl += "&isoriginal=原创&issue=1&isdel=0 "
+                baseUrl += "&isoriginal=原创&issue=1&isdel=0 ";
+                this.pagination.currentPage = 1;
+                this.pagination.pageSize = 5;
             } else if (this.activeTab === "2") {	//转载
-                baseUrl += "&isoriginal=转载&issue=1&isdel=0 "
+                baseUrl += "&isoriginal=转载&issue=1&isdel=0 ";
+                this.pagination.currentPage = 1;
+                this.pagination.pageSize = 5;
             } else if (this.activeTab === "3") {	//草稿
-                baseUrl += "&issue=0&isdel=0 "
+                baseUrl += "&issue=0&isdel=0 ";
+                this.pagination.currentPage = 1;
+                this.pagination.pageSize = 5;
             } else if (this.activeTab === "4") {	//公开
-                baseUrl += "&ispublic=1&issue=1&isdel=0 "
+                baseUrl += "&ispublic=1&issue=1&isdel=0 ";
+                this.pagination.currentPage = 1;
+                this.pagination.pageSize = 5;
             } else if (this.activeTab === "5") {	//私密
                 baseUrl += "&ispublic=0&issue=1&isdel=0 "
             } else if (this.activeTab === "6") {	//回收站
-                baseUrl += "&isdel=1 "
+                baseUrl += "&isdel=1 ";
+                this.pagination.currentPage = 1;
+                this.pagination.pageSize = 5;
             }
             console.log("表头" + this.activeTab);
             console.log("每页条数----：" + this.pagination.pageSize);
@@ -183,6 +239,7 @@ export default {
                     this.pagination.totalPage = Math.ceil(this.pagination.listData.length / this.pagination.pageSize);
                     this.pagination.totalPage = this.pagination.totalPage == 0 ? 1 : this.pagination.totalPage;
 
+                    console.log(res);
 
                     this.getCurrentPageData(this.pagination.listData, this.pagination.currentPage, this.pagination.pageSize);
 
@@ -239,7 +296,7 @@ export default {
         },
         /*分页事件*/
         handleSizeChange(val) {
-            console.log("val========="+val);
+            console.log("val=========" + val);
             this.pagination.pageSize = val;
             console.log("改变每页数：" + this.pagination.pageSize);
             this.getCurrentPageData(this.pagination.listData, this.pagination.currentPage, this.pagination.pageSize)

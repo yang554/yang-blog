@@ -49,9 +49,15 @@ public class TBlogEntity{
     private String note;
     @ApiModelProperty(value = "备用")
     private String data;
+    @ApiModelProperty(value = "用户名称")
+    private String uNmae;
+    @ApiModelProperty(value = "用户昵称")
+    private String uNickname;
+    @ApiModelProperty(value = "博客类型名称")
+    private String tNmae;
     @TableField(exist = false)  //查询时过滤非数据库字段
     @ApiModelProperty(value = "博客标签集合")
-    private List<TBlogTagEntity> blogTags;
+    private List<TTagEntity> blogTags;
 
     public Long getId() {
         return id;
@@ -213,11 +219,11 @@ public class TBlogEntity{
         this.data = data;
     }
 
-    public List<TBlogTagEntity> getBlogTags() {
+    public List<TTagEntity> getBlogTags() {
         return blogTags;
     }
 
-    public void setBlogTags(List<TBlogTagEntity> blogTags) {
+    public void setBlogTags(List<TTagEntity> blogTags) {
         this.blogTags = blogTags;
     }
 }
