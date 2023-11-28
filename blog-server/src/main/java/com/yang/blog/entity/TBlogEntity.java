@@ -50,14 +50,38 @@ public class TBlogEntity{
     @ApiModelProperty(value = "备用")
     private String data;
     @ApiModelProperty(value = "用户名称")
-    private String uNmae;
+    private String uName;
     @ApiModelProperty(value = "用户昵称")
     private String uNickname;
     @ApiModelProperty(value = "博客类型名称")
-    private String tNmae;
+    private String tName;
     @TableField(exist = false)  //查询时过滤非数据库字段
     @ApiModelProperty(value = "博客标签集合")
     private List<TTagEntity> blogTags;
+
+    public String getuName() {
+        return uName;
+    }
+
+    public void setuName(String uName) {
+        this.uName = uName;
+    }
+
+    public String getuNickname() {
+        return uNickname;
+    }
+
+    public void setuNickname(String uNickname) {
+        this.uNickname = uNickname;
+    }
+
+    public String gettName() {
+        return tName;
+    }
+
+    public void settName(String tName) {
+        this.tName = tName;
+    }
 
     public Long getId() {
         return id;

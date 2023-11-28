@@ -65,13 +65,11 @@
                 <el-button type="primary" @click="submitBlogForm">提交</el-button>
             </el-form-item>
         </el-form>
-</div>
+    </div>
 </template>
 
 <script>
-import { _getTagAll, _typeAll, _addBlog } from "@/api/api.js"
-import src from '@/assets/images/logo.png'
-import { Image } from "element-ui"
+import { _getTagAll, _typeAll, _addBlog, _uploadImgs } from "@/api/api.js"
 
 export default {
     name: "WriteView",
@@ -122,7 +120,6 @@ export default {
                     this.tagList.push(...res.data.obj)
                 }
             })
-
             /*获取所有type*/
             _typeAll().then(res => {
                 if (res.data.status === 200) {
@@ -135,12 +132,15 @@ export default {
         handleFileSuccess(response, file, fileList) {
             this.$message.success("封面上传成功");
             if (response.status == 200) {
-                console.log(response);
                 this.editForm.cover = response.obj
             }
         },
         handleChange(file, fileList) {
             if (fileList.length > 0) {// 当上传图片成功时，即隐藏上传按钮
+                console.log(file)
+                // this.editForm.cover = window.webkitURL.createObjectURL(file.raw);
+                // console.log(this.editForm.cover)
+                // console.log(file.url)
                 this.$refs.upload.$children[1].$el.style.display = "none" //= ('display', 'none');
             }
 
@@ -178,19 +178,12 @@ export default {
 
         /*mavon-editor图片上传*/
         handleMavonEditorImgAdd(pos, $file) {
-            console.log(pos);
-            console.log($file);
-            // 1、将图片上传到服务器.
             var formdata = new FormData();
             formdata.append('file', $file);
             console.log(formdata);
-            this.$request({
-                url: '/file/upload',
-                method: 'post',
-                data: formdata,
-                headers: { 'Content-Type': 'multipart/form-data' },
-            }).then((res) => {
-                // 2、将返回的url替换到文本原位置![...](0) -> ![...](url)
+
+            _uploadImgs(formdata).then(res => {
+                //将返回的url替换到文本原位置![...](0) -> ![...](url)
                 console.log(res);
                 if (res.data.status === 200) {
                     this.$message.success("图片上传成功");
@@ -200,8 +193,6 @@ export default {
         },
         /*mavon-editor图片删除*/
         handleMavonEditorImgDel(pos, $file) {
-            console.log(pos);
-            console.log($file);
             delete this.img_file[pos];
         },
 

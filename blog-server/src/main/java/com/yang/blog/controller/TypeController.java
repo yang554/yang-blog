@@ -46,4 +46,9 @@ public class TypeController {
     private RespBean delTypeById(@RequestParam String id){
         return typeService.delTypeById(id);
     }
+
+    @GetMapping("/count/type")
+    private RespBean getUserRoleAll(){
+        return typeService.getCountByType();
+    }
 }

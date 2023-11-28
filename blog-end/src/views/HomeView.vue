@@ -4,7 +4,7 @@
       <div class="logo">
         <!-- <img src='@/assets/images/logo.png' alt='' width='50px' height='50px'> -->
       </div>
-      <div class="title">后台管理系统</div>
+      <div class="title">博客后台管理系统</div>
       <div class="right">
         <div>
           <el-dropdown class="userinfo-dropdown" @command="handleCommand">

@@ -20,4 +20,6 @@ public interface TypeService {
     RespBean delTypeById(String id);
     //批量删除分类
     RespBean delType();
+    //根据类型获取对应的博客数量
+    RespBean getCountByType();
 }

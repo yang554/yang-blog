@@ -34,11 +34,75 @@
 
     <select id="getBlogByPage" resultType="map" parameterType="com.yang.blog.entity.TBlogEntity">
         SELECT
+        b.`id` AS bid,b.`title`,b.`description`,b.`cover`,b.`isoriginal`,
+        b.content,b.`ispublic`,b.`iscomment`,b.`issue`,b.`browsecount`,b.`likes`,
+        b.`collection`,b.`typeid`,b.`userid`,b.`tagjson`,b.`isdel`,b.`createtime`,
+        b.`updtime`,u.`id` AS uid,u.`username` AS uName,u.`nickname` AS uNickname,
+        u.`avatar`,u.`email`,u.`description`,t.id,t.`name`AS tName,t.note
+        FROM
+        t_blog b
+        LEFT JOIN sys_user u
+        ON b.`userid` = u.`id`
+        LEFT JOIN t_type t
+        ON t.id = b.typeid
+        <where>
+            <if test="ispublic != null">
+                and b.`ispublic` = #{ispublic,jdbcType=VARCHAR}
+            </if>
+            <if test="isoriginal != null ">
+                and b.`isoriginal` = #{isoriginal,jdbcType=VARCHAR}
+            </if>
+            <if test="issue != null ">
+                and b.`issue` = #{issue,jdbcType=VARCHAR}
+            </if>
+            <if test="isdel != null ">
+                and b.`isdel` = #{isdel,jdbcType=VARCHAR}
+            </if>
+        </where>
+        ORDER BY b.`createtime` DESC
+    </select>
+
+    <select id="getBlogByPageTitle" resultType="map" parameterType="com.yang.blog.entity.TBlogEntity">
+        SELECT
+        b.`id` AS bid,b.`title`,b.`description`,b.`cover`,b.`isoriginal`,
+        b.content,b.`ispublic`,b.`iscomment`,b.`issue`,b.`browsecount`,b.`likes`,
+        b.`collection`,b.`typeid`,b.`userid`,b.`tagjson`,b.`isdel`,b.`createtime`,
+        b.`updtime`,u.`id` AS uid,u.`username` AS uName,u.`nickname` AS uNickname,
+        u.`avatar`,u.`email`,u.`description`,t.id,t.`name`AS tName,t.note
+        FROM
+        t_blog b
+        LEFT JOIN sys_user u
+        ON b.`userid` = u.`id`
+        LEFT JOIN t_type t
+        ON t.id = b.typeid
+        <where>
+            <if test="ispublic != null">
+                and b.`ispublic` = #{ispublic,jdbcType=VARCHAR}
+            </if>
+            <if test="isoriginal != null ">
+                and b.`isoriginal` = #{isoriginal,jdbcType=VARCHAR}
+            </if>
+            <if test="issue != null ">
+                and b.`issue` = #{issue,jdbcType=VARCHAR}
+            </if>
+            <if test="isdel != null ">
+                and b.`isdel` = #{isdel,jdbcType=VARCHAR}
+            </if>
+            <if test="title != null ">
+                and b.`title` LIKE CONCAT('%',#{title},'%')
+            </if>
+        </where>
+        ORDER BY b.`createtime` DESC
+    </select>
+
+    <select id="getBlogByID" resultType="com.yang.blog.entity.TBlogEntity">
+        SELECT
         b.`id` AS bid,
         b.`title`,
         b.`description`,
         b.`cover`,
         b.`isoriginal`,
+        b.content,
         b.`ispublic`,
         b.`iscomment`,
         b.`issue`,
@@ -66,21 +130,7 @@
         ON b.`userid` = u.`id`
         LEFT JOIN t_type t
         ON t.id = b.typeid
-        <where>
-            <if test="ispublic != null">
-                and b.`ispublic` = #{ispublic,jdbcType=VARCHAR}
-            </if>
-            <if test="isoriginal != null ">
-                and b.`isoriginal` = #{isoriginal,jdbcType=VARCHAR}
-            </if>
-            <if test="issue != null ">
-                and b.`issue` = #{issue,jdbcType=VARCHAR}
-            </if>
-            <if test="isdel != null ">
-                and b.`isdel` = #{isdel,jdbcType=VARCHAR}
-            </if>
-        </where>
-        ORDER BY b.`createtime` DESC
+        WHERE b.id = #{bID}
     </select>
 
     <insert id="addBlog" parameterType="com.yang.blog.entity.TBlogEntity">
@@ -90,4 +140,19 @@
         ,#{issue,jdbcType=VARCHAR},#{typeid,jdbcType=VARCHAR},#{userid,jdbcType=VARCHAR},#{tagjson,jdbcType=VARCHAR}
         ,#{createtime,jdbcType=VARCHAR})
     </insert>
+
+    <update id="saveBlog" parameterType="com.yang.blog.entity.TBlogEntity">
+        UPDATE t_blog SET title = #{title,jdbcType=VARCHAR},description = #{description},content = #{content},cover = #{cover},
+          isoriginal = #{isoriginal},ispublic = #{ispublic},iscomment = #{iscomment},issue = #{issue},typeid = #{typeid},tagjson = #{tagjson},
+          updtime = #{updtime}
+        WHERE id = #{id}
+    </update>
+
+    <update id="delBlogH" >
+        UPDATE t_blog SET isdel = 01 WHERE id = #{bID}
+    </update>
+
+    <delete id="delBlog" >
+        DELETE FROM t_blog WHERE id = #{bID}
+    </delete>
 </mapper>

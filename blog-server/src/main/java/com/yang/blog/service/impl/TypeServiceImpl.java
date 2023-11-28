@@ -9,8 +9,10 @@ import com.yang.blog.utils.CommonDate;
 import com.yang.blog.utils.RespBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TypeServiceImpl implements TypeService {
@@ -82,5 +84,15 @@ public class TypeServiceImpl implements TypeService {
     @Override
     public RespBean delType() {
         return null;
+    }
+
+    @Override
+    public RespBean getCountByType() {
+        List<Map<String, Integer>> ret = typeMapper.getCountByType();
+        if(ObjectUtils.isEmpty(ret)){
+            return RespBean.error("查询失败");
+        }else{
+            return RespBean.ok("ok",ret);
+        }
     }
 }

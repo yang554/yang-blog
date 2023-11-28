@@ -8,7 +8,16 @@ import java.util.HashMap;
 public interface TBlogService {
     //分页查询获取博客
     RespBean getBlogByPage(Boolean ispublic, String isoriginal, Boolean issue, Boolean isdel);
+    //根据博客标题模糊查询
+    RespBean getBlogByPageTitle(Boolean ispublic, String isoriginal, Boolean issue, Boolean isdel,String title);
+    //根据博客ID查询
+    RespBean getBlogByID(String bID);
     //添加博客
     RespBean addBlog(HashMap<String,Object> entity);
-
+    //保存博客
+    RespBean saveBlog(HashMap<String,Object> entity);
+    //删除博客(永久)
+    RespBean delBlog(String bID);
+    //删除博客回收站
+    RespBean delBlogH(String bID);
 }
