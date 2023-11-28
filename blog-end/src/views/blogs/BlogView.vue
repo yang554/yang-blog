@@ -31,9 +31,6 @@
 
                             <el-col :span="18">
                                 <el-row style="font-size: 22px;margin: 10px">
-                                    <!-- 根据issue属性判断文章是否为草稿 -->
-                                    <el-button size="mini" v-if="!scope.row.issue" type="warning" icon="el-icon-edit"
-                                        circle></el-button>
                                     <span style="font-weight: bold;">{{ scope.row.title | ellipsis }}</span>
                                 </el-row>
                                 <el-row style="font-size: 16px;margin: 10px">
@@ -67,12 +64,6 @@
                                                 size="mini" :type="tag.color">{{ tag.name }}</el-tag>
                                         </i>
 
-
-                                        <!-- <el-tag :key="tag" v-for="tag in dynamicTags[`tag${tagsIndex}`]" closable
-                                                :disable-transitions="false">
-                                                {{ tag }}
-                                            </el-tag> -->
-
                                     </div>
                                 </div>
                                 <div style="margin-top: 15px;margin: 10px" class="my-flex">
@@ -92,11 +83,11 @@
 
                                     <div style="margin-right: 20px;">
                                         <el-button v-if="!scope.row.isDelete" type="primary" size="mini"
-                                            @click="$router.push('/admin/editblog/' + scope.row.id)">编辑</el-button>
+                                            @click="$router.push('/home/editblog/' + scope.row.bid)">编辑</el-button>
                                     </div>
                                     <div style="margin-right: 20px;" v-if="!scope.row.isDelete">
-                                        <el-popconfirm @confirm="handleDelete(scope.$index, scope.row.id)"
-                                            confirm-button-text='好的' cancel-button-text='不用了' icon="el-icon-info"
+                                        <el-popconfirm @confirm="handleDelete(scope.$index, scope.row.bid)"
+                                            confirm-button-text='确定' cancel-button-text='取消' icon="el-icon-info"
                                             icon-color="red" title="确定删除博客吗？">
                                             <el-button slot="reference" type="danger" size="mini">删除</el-button>
                                         </el-popconfirm>
@@ -136,12 +127,14 @@
 </template>
 
 <script>
-import { _getBlog } from "@/api/api.js";
-import { formatTime, formatDate } from '@/utils/formatDate'
+import { _getBlog, _delBlog, _delBlogH ,_getBlogByTile} from "@/api/api.js";
+import { formatDate } from '@/utils/formatDate'
 export default {
     name: "BlogView",
     data() {
         return {
+            baseUrl:"",
+            baseLikeUrl:"",
             inputSearchKeyWord: "",
             activeName: "first",   //当前选项卡的label
             tabindex: "0",   //选项卡index
@@ -187,11 +180,8 @@ export default {
     methods: {
         //分页
         getCurrentPageData(listData, currentPage, pageSize) {
-            console.log("实际分页数" + pageSize);
             let begin = (currentPage - 1) * pageSize;
             let end = currentPage * pageSize;
-            console.log("实际开始页：" + begin);
-            console.log("实际结束页：" + end);
             this.pagination.currentTableData = listData.slice(
                 begin,
                 end
@@ -200,46 +190,50 @@ export default {
         //初始化【全部】博客的数据
         initBlogs() {
             //通用路由
-            let baseUrl = `/blog/getBlogByPage?1=1`;
+            this.baseUrl = `/blog/getBlogByPage?1=1`;
+            this.baseLikeUrl = `/blog/getBlogByPageTitle?1=1`;
             if (this.activeTab === "0") {		//全部
-                baseUrl += "&isdel=0 ";
+                this.baseUrl += "&isdel=0 ";
+                this.baseLikeUrl += "&isdel=0 ";
                 this.pagination.currentPage = 1;
                 this.pagination.pageSize = 5;
             } else if (this.activeTab === "1") {	//原创
-                baseUrl += "&isoriginal=原创&issue=1&isdel=0 ";
+                this.baseUrl += "&isoriginal=原创&issue=1&isdel=0 ";
+                this.baseLikeUrl += "&isoriginal=原创&issue=1&isdel=0 ";
                 this.pagination.currentPage = 1;
                 this.pagination.pageSize = 5;
             } else if (this.activeTab === "2") {	//转载
-                baseUrl += "&isoriginal=转载&issue=1&isdel=0 ";
+                this.baseUrl += "&isoriginal=转载&issue=1&isdel=0 ";
+                this.baseLikeUrl += "&isoriginal=转载&issue=1&isdel=0 ";
                 this.pagination.currentPage = 1;
                 this.pagination.pageSize = 5;
             } else if (this.activeTab === "3") {	//草稿
-                baseUrl += "&issue=0&isdel=0 ";
+                this.baseUrl += "&issue=0&isdel=0 ";
+                this.baseLikeUrl += "&issue=0&isdel=0 ";
                 this.pagination.currentPage = 1;
                 this.pagination.pageSize = 5;
             } else if (this.activeTab === "4") {	//公开
-                baseUrl += "&ispublic=1&issue=1&isdel=0 ";
+                this.baseUrl += "&ispublic=1&issue=1&isdel=0 ";
+                this.baseLikeUrl += "&ispublic=1&issue=1&isdel=0 ";
                 this.pagination.currentPage = 1;
                 this.pagination.pageSize = 5;
             } else if (this.activeTab === "5") {	//私密
-                baseUrl += "&ispublic=0&issue=1&isdel=0 "
+                this.baseUrl += "&ispublic=0&issue=1&isdel=0 "
+                this.baseLikeUrl += "&ispublic=0&issue=1&isdel=0 "
             } else if (this.activeTab === "6") {	//回收站
-                baseUrl += "&isdel=1 ";
+                this.baseUrl += "&isdel=1 ";
+                this.baseLikeUrl += "&isdel=1 ";
                 this.pagination.currentPage = 1;
                 this.pagination.pageSize = 5;
             }
-            console.log("表头" + this.activeTab);
-            console.log("每页条数----：" + this.pagination.pageSize);
             //获取所有博客内容
-            _getBlog(baseUrl).then(res => {
+            _getBlog(this.baseUrl).then(res => {
                 if (res.data.status === 200) {
                     this.pagination.totalBlogs = Number(res.data.obj.length);
                     this.pagination.listData = res.data.obj;
                     this.pagination.loading = true;
                     this.pagination.totalPage = Math.ceil(this.pagination.listData.length / this.pagination.pageSize);
                     this.pagination.totalPage = this.pagination.totalPage == 0 ? 1 : this.pagination.totalPage;
-
-                    console.log(res);
 
                     this.getCurrentPageData(this.pagination.listData, this.pagination.currentPage, this.pagination.pageSize);
 
@@ -249,7 +243,6 @@ export default {
                     this.$message.warning(res.data.msg)
                 }
             })
-            console.log("每页条数：" + this.pagination.pageSize);
         },
         //根据标题栏搜索
         searchByTitle() {
@@ -260,30 +253,43 @@ export default {
                 this.hidden_search_comp = true;
             }
             //根据博客标题关键字搜索
-            this.$request("/blog/findByLikeTitle?title=" + this.inputSearchKeyWord).then(res => {
-                console.log(res);
+            console.log(this.baseLikeUrl+"&title="+this.inputSearchKeyWord)
+            _getBlogByTile(this.baseLikeUrl+"&title="+this.inputSearchKeyWord).then(res => {
                 if (res.data.status === 200) {
-                    this.tableData.splice(0);
-                    this.tableData.push(...res.data.obj);
-                    this.totalBlogs = res.data.obj.length;
+                    this.pagination.totalBlogs = Number(res.data.obj.length);
+                    this.pagination.listData = res.data.obj;
+                    this.pagination.loading = true;
+                    this.pagination.totalPage = Math.ceil(this.pagination.listData.length / this.pagination.pageSize);
+                    this.pagination.totalPage = this.pagination.totalPage == 0 ? 1 : this.pagination.totalPage;
+
+                    this.getCurrentPageData(this.pagination.listData, this.pagination.currentPage, this.pagination.pageSize);
+
+                    this.pagination.loading = false;
+                } else {
+                    this.pagination.loading = false;
+                    this.$message.warning(res.data.msg)
                 }
             })
         },
 
         //表格操作-删除
         handleDelete(index, bid) {
-            console.log(index, bid);
-            //网络请求
-            this.$deleteRequest("/blog/delete/?bid=" + bid).then(res => {
-                console.log(res);
-                this.$message.success("删除成功!");
+            if (this.activeTab === '6') {
+                _delBlog(bid).then(res => {
+                    this.$message.success("删除成功!");
+                    this.initBlogs();
 
-                this.tableData.splice(index, 1);
-            })
+                })
+            } else {
+                _delBlogH(bid).then(res => {
+                    this.$message.success("删除成功!");
+                    this.initBlogs();
+
+                })
+            }
         },
         //预览博客内容
         handlePreviewContent(index, row) {
-            // console.log(index);
             this.currentBlog = row;
             this.previewBlogDialogVisible = true;
         },
@@ -291,14 +297,11 @@ export default {
         //nav改变
         handleNavTagSelect(key, keypath) {
             this.activeTab = key;
-            console.log(this.pagination.pageSize + "nav=====");
             this.initBlogs();
         },
         /*分页事件*/
         handleSizeChange(val) {
-            console.log("val=========" + val);
             this.pagination.pageSize = val;
-            console.log("改变每页数：" + this.pagination.pageSize);
             this.getCurrentPageData(this.pagination.listData, this.pagination.currentPage, this.pagination.pageSize)
         },
         handleCurrentChange(val) {

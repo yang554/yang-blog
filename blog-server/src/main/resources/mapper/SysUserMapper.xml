@@ -15,8 +15,8 @@
         <result column="address" property="address"/>
         <result column="description" property="description"/>
         <result column="salt" property="salt"/>
-        <result column="createTime" property="createTime"/>
-        <result column="updateTime" property="updateTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
         <result column="note" property="note"/>
         <result column="etx01" property="etx01"/>
         <result column="etx02" property="etx02"/>
@@ -33,7 +33,7 @@
         u.create_time,u.update_time,u.note,u.etx01,u.etx02,r.id rid,r.name rname
         FROM sys_user u
         LEFT JOIN sys_user_role ur on u.id = ur.userid
-        LEFT JOIN sys_role r on ur.roleid = r.id
+        LEFT JOIN sys_role r on ur.roleid = r.id  ORDER BY update_time DESC
     </select>
 
     <select id="selectRolesByUsername" parameterType="string" resultMap="userMap">
@@ -51,4 +51,26 @@
       INSERT INTO sys_user (username,password,salt)
       VALUES(#{username,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},#{salt,jdbcType=VARCHAR})
     </insert>
+
+    <insert id="addUser" parameterType="com.yang.blog.entity.SysUserEntity">
+        INSERT INTO sys_user (id,username,password,nickname,
+          avatar,email,phone,address,description,salt,
+          create_time,note)
+        VALUES(#{id},#{username},#{password},#{nickname},#{avatar},#{email},#{phone},#{address},#{description},#{salt},#{createTime},#{note})
+    </insert>
+
+    <update id="editUser" parameterType="com.yang.blog.entity.SysUserEntity">
+        UPDATE sys_user SET username = #{username},nickname = #{nickname},email = #{email},
+        phone = #{phone},address = #{address},description = #{description},update_time = #{updateTime}
+        WHERE id=#{id}
+    </update>
+
+    <update id="saveAvatar" >
+        UPDATE sys_user SET avatar=#{avatar} WHERE id=#{id}
+    </update>
+
+    <delete id="delUser">
+        DELETE FROM sys_user WHERE id = #{id}
+    </delete>
+
 </mapper>

@@ -28,13 +28,25 @@ Vue.use(VueParticles);
 import Moment from 'moment'
 Vue.prototype.$moment = Moment;
 
+/*农历转换*/
+import * as nlCalendar from 'chinese-lunar-calendar'
+Vue.prototype.$nlCalendar = nlCalendar;
+
+/*qs*/
+import qs from "qs"
+Vue.prototype.$qs = qs;
+
+/*引入echarts*/
+import * as echarts from 'echarts';
+Vue.prototype.$echarts = echarts;
+
 
 
 // //全局请求
 import { request, postKeyValueRequest, getRequest, postRequest } from "@/api/request.js"
 Vue.prototype.$request = request;
 // Vue.prototype.$postKeyValueRequest = postKeyValueRequest;
-// Vue.prototype.$getRequest = getRequest;
+Vue.prototype.$getRequest = getRequest;
 // Vue.prototype.$postRequest = postRequest;
 
 new Vue({

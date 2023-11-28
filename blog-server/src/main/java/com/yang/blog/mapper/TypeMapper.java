@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @Transactional
@@ -24,4 +25,6 @@ public interface TypeMapper {
     int delTypeById(String id);
     //批量删除分类
     int delTypes();
+    //根据类型获取对应的博客数量
+    List<Map<String,Integer>> getCountByType();
 }

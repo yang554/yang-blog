@@ -1,8 +1,9 @@
 package com.yang.blog.service;
 
+import com.yang.blog.entity.FileEntity;
 import com.yang.blog.utils.RespBean;
 
-public interface FIleService {
+public interface FileService {
 
-    RespBean uploadFile();
+    RespBean uploadFile(FileEntity entity);
 }

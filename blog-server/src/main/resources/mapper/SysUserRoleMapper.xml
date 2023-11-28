@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.SysUserRoleMapper">
+    <resultMap id="userMap" type="com.yang.blog.entity.SysUserRoleEntity">
+        <id column="id" property="id"/>
+        <result column="userid" property="userid"/>
+        <result column="roleid" property="roleid"/>
+    </resultMap>
+    <insert id="add" parameterType="com.yang.blog.entity.SysUserRoleEntity">
+      INSERT INTO sys_user_role (id,userid,roleid)
+      VALUES(#{id},#{userid},#{roleid})
+    </insert>
+
+    <update id="upd" >
+        UPDATE sys_user_role SET roleid=#{roleid} WHERE userid=#{userid}
+    </update>
+
+    <delete id="del">
+        DELETE FROM sys_user_role WHERE id = #{id}
+    </delete>
+
+</mapper>

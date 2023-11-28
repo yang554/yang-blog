@@ -3,6 +3,7 @@ package com.yang.blog.controller;
 import com.wf.captcha.SpecCaptcha;
 import com.wf.captcha.base.Captcha;
 import com.wf.captcha.utils.CaptchaUtil;
+import com.yang.blog.entity.SysRoleEntity;
 import com.yang.blog.entity.SysUserEntity;
 import com.yang.blog.service.SysUserService;
 import com.yang.blog.utils.RespBean;
@@ -37,7 +38,6 @@ public class SysUserController {
     //博主登录
     @PostMapping("/login")
     public RespBean login(@RequestBody HashMap<String,String> params, HttpSession session) {
-//        System.out.println(params);
         //1、用户名密码登录
         String username = params.get("username");
         String password = params.get("password");
@@ -46,8 +46,6 @@ public class SysUserController {
             try {
                 //比较验证码
                 String codes = (String) session.getAttribute("verify_code");
-//                log.info("session中保存的验证码："+codes);
-//                log.info("用户输入的验证码："+verify_code);
                 if (codes.equalsIgnoreCase(verify_code)){
                     //获取主体对象
                     Subject subject = SecurityUtils.getSubject();
@@ -93,6 +91,44 @@ public class SysUserController {
             return RespBean.error("创建失败",e.getMessage());
         }
     }
+    //根据账号查找用户
+    @PostMapping("findUser")
+    public RespBean findUser(@RequestBody HashMap<String,String> params){
+        String username = params.get("username").trim();
+        boolean isTrue = userService.findUser(username);
+        if(isTrue){
+            return RespBean.error("error",isTrue);
+        }else {
+            return RespBean.ok("ok",isTrue);
+        }
+    }
+    //添加用户
+    @PostMapping("/addUser")
+    public RespBean addUser(@RequestBody HashMap<String,String> params){
+        SysUserEntity userEntity = new SysUserEntity();
+        String username = params.get("username").trim();
+        String password = params.get("password").trim();
+        String nickname = params.get("nickname").trim();
+        String avatar = params.get("avatar").trim();
+        String email = params.get("email").trim();
+        String phone = params.get("phone").trim();
+        String address = params.get("address").trim();
+        String description = params.get("description").trim();
+        String role = params.get("role").trim();
+
+        userEntity.setUsername(username);
+        userEntity.setPassword(password);
+        userEntity.setNickname(nickname);
+        userEntity.setAvatar(avatar);
+        userEntity.setEmail(email);
+        userEntity.setPhone(phone);
+        userEntity.setAddress(address);
+        userEntity.setDescription(description);
+        userEntity.setEtx01(role);
+
+
+        return userService.addUser(userEntity);
+    }
     //获取验证码
     @RequestMapping("/getCaptcha")
     public void getCaptchaImg(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException {
@@ -101,9 +137,48 @@ public class SysUserController {
         specCaptcha.setHeight(58);
         specCaptcha.setCharType(Captcha.TYPE_ONLY_NUMBER);
         String text = specCaptcha.text();
-        log.info("getCaptchaImg生成的验证码："+text);
+        log.info(" 4C5V67B8N9M,0-.12+6541："+text);
         session.setAttribute("verify_code",text);
         CaptchaUtil.out(specCaptcha,request,response);
     }
-
+    //获取所有权限
+    @GetMapping("/getRoleAll")
+    public RespBean getRoleAll(){
+        List<SysRoleEntity> roleList = userService.getRoleAll();
+        if(roleList == null){
+            return RespBean.ok("error");
+        }else{
+            return RespBean.ok("ok",roleList);
+        }
+    }
+    //修改用户信息
+    @PostMapping("/editUser")
+    public RespBean editUser(@RequestBody HashMap<String,Object> params){
+        return userService.editUser(params);
+    }
+    //修改头像
+    @PostMapping("/saveAvatar")
+    public RespBean saveAvatar(@RequestParam String avatar,@RequestParam String id){
+        return userService.saveAvatar(avatar,id);
+    }
+    //删除
+    @DeleteMapping("/delUser")
+    public RespBean delUser(@RequestParam("id") String id){
+        return userService.delUser(id);
+    }
+    //根据用户名查询用户信息
+    @GetMapping("/selectUserByName")
+    public RespBean selectUserByName(@RequestParam("name") String name){
+        SysUserEntity user = userService.selectRolesByUsername(name);
+        if(user != null){
+            return RespBean.ok("ok",user);
+        }else {
+            return RespBean.error("error");
+        }
+    }
+    //获取角色对应的用户数量
+    @GetMapping("/count/role")
+    public RespBean getUserRoleAll(){
+        return userService.getUserRoleAll();
+    }
 }

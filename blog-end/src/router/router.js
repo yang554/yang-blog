@@ -56,11 +56,11 @@ export const constantRoutes = [
     },
     children: [
       { path: "/home/blog/write", name: "WriteView",meta: {title:'写博客'}, component: () => import('@/views/blogs/WriteView.vue'), myIcon: "el-icon-edit" },
-      { path: '/home/editblog/:id', name: '编辑博客',meta: {title:'编辑博客'}, component: WriteView, props: true, hidden: true },
+      { path: '/home/editblog/:id', name: 'EditBlog',meta: {title:'编辑博客'}, component: () => import('@/views/blogs/EditBlog.vue'), props: true, hidden: true },
       { path: '/home/allblog', name: 'BlogView',meta: {title:'文章管理'}, component: BlogView, myIcon: "el-icon-notebook-1" },
       { path: '/home/sortblog', name: 'SortView',meta: {title:'分类专栏'}, component: SortView, myIcon: "el-icon-document" },
       { path: '/home/tagblog', name: 'TagView',meta: {title:'云标签管理'}, component: TagView, myIcon: "el-icon-collection-tag" },
-      { path: '/home/commentblog', name: '评论管理',meta: {title:'首页'}, component: WriteView, myIcon: "el-icon-tickets" },
+      { path: '/home/commentblog', name: '评论管理',meta: {title:'评论管理'}, component: () => import('@/views/blogs/RemarkView.vue'), props: true, myIcon: "el-icon-tickets" },
     ]
   },{
     path: '/home/user',
@@ -73,10 +73,23 @@ export const constantRoutes = [
     },
     myIcon: "el-icon-user-solid",
     children: [
-      { path: "/home/user/list", name: "用户列表",meta: {title:'首页'}, component: WriteView, myIcon: "el-icon-user" },
-      { path: "/home/user/collection/:uid", name: "用户收藏",meta: {title:'首页'}, component: WriteView, hidden: true },
-      { path: "/home/user/add", name: "新增用户",meta: {title:'首页'}, component: WriteView, myIcon: "el-icon-plus" },
-      { path: "/home/user/update", name: "编辑用户",meta: {title:'首页'}, component: WriteView, hidden: true },
+      { path: "/home/user/list", name: "UserListView",meta: {title:'用户列表'}, component: () => import('@/views/users/UserListView.vue'), myIcon: "el-icon-user" },
+      { path: "/home/user/collection/:uid", name: "用户收藏",meta: {title:'用户收藏'}, component: WriteView, hidden: true },
+      { path: "/home/user/add", name: "UserAddView",meta: {title:'新增用户'}, component: () => import('@/views/users/UserAddView.vue'), myIcon: "el-icon-plus" },
+      { path: "/home/user/update", name: "EditUser",meta: {title:'编辑用户'}, component: () => import('@/views/users/EditUser.vue'), hidden: true },
+    ]
+  }, {
+    path: '/home/aunt',
+    name: 'AUNT模块',
+    component: HomeView,
+    meta: {title:'aunt管理'},
+    hidden: false,
+    myIcon: "el-icon-s-management",
+    children: [
+      { path: "/home/aunt/AuntDashBoard", name: "AuntDashBoard",meta: {title:'aunt看板'}, component: () => import('@/views/aunt/AuntDashBoard.vue'), myIcon: "el-icon-s-data" },
+      { path: "/home/aunt/AuntAdd", name: "AuntAdd",meta: {title:'新增aunt'}, component: () => import('@/views/aunt/AuntAdd.vue'), myIcon: "el-icon-plus" },
+      { path: "/home/aunt/CreateEven/:data", name: "CreateEven",meta: {title:'创建事件'}, component: () => import('@/views/aunt/CreateEven.vue'), props: true, hidden: true },
+      { path: "/home/aunt/EvenList", name: "EvenList",meta: {title:'事件列表'}, component: () => import('@/views/aunt/EvenList.vue'), myIcon: "el-icon-s-order" },
     ]
   }, {
     path: '/test',
@@ -86,9 +99,6 @@ export const constantRoutes = [
     hidden: false,
     myIcon: "el-icon-setting",
     children: [
-      { path: "/test/vue-aplayer", name: "aplayer播放器",meta: {title:'首页'}, component: WriteView, myIcon: "el-icon-s-data" },
-      { path: "/test/v-emoji-picker", name: "emoji测试",meta: {title:'首页'}, component: WriteView, myIcon: "el-icon-s-data" },
-      { path: "/test/kkfileview", name: "Kkfileview测试",meta: {title:'首页'}, component: WriteView, myIcon: "el-icon-s-data" },
     ]
   }
 ]

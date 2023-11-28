@@ -14,6 +14,11 @@
         SELECT t.id tid,t.name,t.note FROM t_type t ORDER BY tid DESC
     </select>
 
+    <select id="getCountByType" resultType="map">
+        SELECT t.`name` as `name`,count(b.id) as `value` FROM t_type t
+        LEFT JOIN t_blog b on t.id=b.typeid  GROUP BY t.`name`
+    </select>
+
     <select id="getTypeByName" resultMap="typeMap" parameterType="string">
         SELECT t.id tid,t.name,t.note FROM t_type t WHERE `name` LIKE CONCAT('%',#{name},'%') ORDER BY tid DESC
     </select>
