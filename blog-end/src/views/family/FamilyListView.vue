@@ -11,11 +11,6 @@
                     搜索
                 </el-button>
             </el-col>
-            <el-col :span="1" :offset="1">
-                <el-button type="warning" @click="$router.push('/home/user/add')">
-                    <i class="el-icon-plus"></i>增加
-                </el-button>
-            </el-col>
         </el-row>
 
         <el-table v-loading="pagination.loading" border :data="pagination.currentTableData" style="width: 100%">

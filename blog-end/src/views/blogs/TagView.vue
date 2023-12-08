@@ -208,7 +208,7 @@ export default {
         //模糊搜索
         searchByName() {
             if (this.inputTagName == '') {
-                this.$message.error("请输入标签名称")
+                this.getTagALl()
             } else {
                 _getTagByName(this.inputTagName).then(res => {
                     if (res.data.status === 200) {

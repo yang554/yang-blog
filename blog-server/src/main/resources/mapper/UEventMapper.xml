@@ -21,13 +21,14 @@
     </resultMap>
 
     <select id="getEvenByPage" resultType="map" parameterType="com.yang.blog.entity.UEventEntity">
-        SELECT * FROM u_even
+        SELECT e.*,u.username as e_createName FROM u_even e
+        LEFT JOIN sys_user u on e.e_createNameID = u.id
         <where>
-            <if test="id != null">
-                and e_id = #{id,jdbcType=VARCHAR}
+            <if test="type != null">
+                and e_type = #{type,jdbcType=VARCHAR}
             </if>
             <if test="eTitle != null ">
-                and e_title = #{eTitle,jdbcType=VARCHAR}
+                and e_title LIKE CONCAT('%',#{eTitle},'%')
             </if>
             <if test="uName != null ">
                 and e_name = #{uName,jdbcType=VARCHAR}

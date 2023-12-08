@@ -175,7 +175,7 @@ export default {
         /*搜索*/
         searchByName() {
             if (this.tNameInput == '') {
-                this.$message.error("请输入分类名称")
+                this.getTypeAll()
             } else {
                 let tmp = decodeURI(this.tNameInput);
                 _typeByName(tmp).then(res => {

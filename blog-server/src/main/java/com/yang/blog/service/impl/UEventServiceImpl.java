@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -19,9 +20,9 @@ public class UEventServiceImpl implements UEventService {
     private UEventMapper eventMapper;
 
     @Override
-    public Map<String, Object> getEventByPage(String id, String eTitle, String uName, String createName) {
-
-        return null;
+    public RespBean getEventByPage(String type, String eTitle, String uName, String createName) {
+        List<Map<String,Object>> tBlogPage = eventMapper.getEvenByPage(type,eTitle,uName,createName);
+        return RespBean.ok("ok",tBlogPage);
     }
 
     @Override
