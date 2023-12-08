@@ -244,7 +244,6 @@ export default {
       myChartStyle: { float: "left", width: "70%", height: "550px" }, //图表样式
       pickerOptions: { //限制日期控件选择
         disabledDate(time) {
-
           const num = 1000 * 3600 * 24 * 35
           const d = Date.now() - num
           return time.getTime() > Date.now() || time.getTime() < d;
@@ -300,7 +299,7 @@ export default {
             this.xData.push(element.startDate + "~" + element.endDate)
             this.yData.push(element.bloodVolume)
           });
-          this.initEcharts();
+          // this.initEcharts();
 
           this.nextAuntForm.daysUntilNextPeriod = res.data.daysUntilNextPeriod
           this.nextAuntForm.nextPeriodEndDate = res.data.nextPeriodEndDate
@@ -396,8 +395,8 @@ export default {
         this.chkIndex_j = this.curIndex_j
       }
       const day = this.res[this.chkIndex_i][this.chkIndex_j].date
-      const aa = {"name":this.uName,"date":day}
-      this.$router.push("/home/aunt/CreateEven/"+JSON.stringify(aa))
+      const aa = { "name": this.uName, "date": day }
+      this.$router.push("/home/aunt/CreateEven/" + JSON.stringify(aa))
     },
     //日期点击事件
     handleItemClick(item, i, j) {
@@ -543,20 +542,13 @@ export default {
         const myChart = this.$echarts.init(document.getElementById("mychart"));
         myChart.setOption(option);
       }, 1000)
-
-      // const myChart = this.$echarts.init(document.getElementById("mychart"));
-      // myChart.setOption(option);
-      //随着屏幕大小调节图表
-      // window.addEventListener("resize", () => {
-      //   myChart.resize();
-      // });
     },
     // 当前记录时间控件改变事件
     auntDatetChange(val, flag) {
       if (val === '') return
       if (flag === 'st') {
         const sd = Date.parse(val)
-        const lastDate = new Date(this.auntForm.endDate)
+        const lastDate = new Date(this.auntForm.startDate)
         const last = Date.parse(lastDate)
         const num = sd - last
         this.realAuntForm.cycle = Math.floor(num / (1000 * 3600 * 24)) + "天"
@@ -602,6 +594,8 @@ export default {
           this.dialogFormVisible = false
         })
       }
+      this.$store.state.date = new Date().getTime()
+      // this.$router.go(0);
     }
   },
   mounted() {
@@ -609,6 +603,8 @@ export default {
     this.yearOptions = handleCreateDatePicker().years;
 
     if (localStorage.selectedDates) this.selectedDates = JSON.parse(localStorage.selectedDates);
+
+    this.initEcharts();
   },
   created() {
     this.init();

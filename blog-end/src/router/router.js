@@ -28,21 +28,21 @@ export const constantRoutes = [
     path: '/login',
     name: 'LoginView',
     component: LoginView,
-    meta: {title:'首页'},
+    meta: { title: '登录' },
     hidden: true
   }, {
     path: '/register',
     name: 'RegisterView',
     component: RegisterView,
-    title:'注册',
+    title: '注册',
     hidden: true
-  },{
+  }, {
     path: '/admin/dashboard',
     name: 'register',
     component: HomeView,
-    hidden:true,
-    children:[
-      {path:"/",name:"Home",meta: {title:'首页'},component:DashBoardView},
+    hidden: true,
+    children: [
+      { path: "/", name: "Home", meta: { title: '' }, component: DashBoardView },
     ]
   }, {
     path: '/home/blog',
@@ -51,51 +51,65 @@ export const constantRoutes = [
     hidden: false,
     myIcon: "el-icon-s-management",
     meta: {
-      title:'博客管理',
+      title: '博客管理',
       roles: ['admin']
     },
     children: [
-      { path: "/home/blog/write", name: "WriteView",meta: {title:'写博客'}, component: () => import('@/views/blogs/WriteView.vue'), myIcon: "el-icon-edit" },
-      { path: '/home/editblog/:id', name: 'EditBlog',meta: {title:'编辑博客'}, component: () => import('@/views/blogs/EditBlog.vue'), props: true, hidden: true },
-      { path: '/home/allblog', name: 'BlogView',meta: {title:'文章管理'}, component: BlogView, myIcon: "el-icon-notebook-1" },
-      { path: '/home/sortblog', name: 'SortView',meta: {title:'分类专栏'}, component: SortView, myIcon: "el-icon-document" },
-      { path: '/home/tagblog', name: 'TagView',meta: {title:'云标签管理'}, component: TagView, myIcon: "el-icon-collection-tag" },
-      { path: '/home/commentblog', name: '评论管理',meta: {title:'评论管理'}, component: () => import('@/views/blogs/RemarkView.vue'), props: true, myIcon: "el-icon-tickets" },
+      { path: "/home/blog/write", name: "WriteView", meta: { title: '写博客' }, component: () => import('@/views/blogs/WriteView.vue'), myIcon: "el-icon-edit" },
+      { path: '/home/editblog/:id', name: 'EditBlog', meta: { title: '编辑博客' }, component: () => import('@/views/blogs/EditBlog.vue'), props: true, hidden: true },
+      { path: '/home/allblog', name: 'BlogView', meta: { title: '文章管理' }, component: BlogView, myIcon: "el-icon-notebook-1" },
+      { path: '/home/sortblog', name: 'SortView', meta: { title: '分类专栏' }, component: SortView, myIcon: "el-icon-document" },
+      { path: '/home/tagblog', name: 'TagView', meta: { title: '云标签管理' }, component: TagView, myIcon: "el-icon-collection-tag" },
+      { path: '/home/commentblog', name: '评论管理', meta: { title: '评论管理' }, component: () => import('@/views/blogs/RemarkView.vue'), props: true, myIcon: "el-icon-tickets" },
     ]
-  },{
+  }, {
     path: '/home/user',
     name: '用户管理',
     component: HomeView,
     hidden: false,
     meta: {
-      title:'用户管理',
+      title: '用户管理',
       roles: ['admin', 'user_manager']
     },
     myIcon: "el-icon-user-solid",
     children: [
-      { path: "/home/user/list", name: "UserListView",meta: {title:'用户列表'}, component: () => import('@/views/users/UserListView.vue'), myIcon: "el-icon-user" },
-      { path: "/home/user/collection/:uid", name: "用户收藏",meta: {title:'用户收藏'}, component: WriteView, hidden: true },
-      { path: "/home/user/add", name: "UserAddView",meta: {title:'新增用户'}, component: () => import('@/views/users/UserAddView.vue'), myIcon: "el-icon-plus" },
-      { path: "/home/user/update", name: "EditUser",meta: {title:'编辑用户'}, component: () => import('@/views/users/EditUser.vue'), hidden: true },
+      { path: "/home/user/list", name: "UserListView", meta: { title: '用户列表' }, component: () => import('@/views/users/UserListView.vue'), myIcon: "el-icon-user" },
+      { path: "/home/user/collection/:uid", name: "用户收藏", meta: { title: '用户收藏' }, component: WriteView, hidden: true },
+      { path: "/home/user/add", name: "UserAddView", meta: { title: '新增用户' }, component: () => import('@/views/users/UserAddView.vue'), myIcon: "el-icon-plus" },
+      { path: "/home/user/update", name: "EditUser", meta: { title: '编辑用户' }, component: () => import('@/views/users/EditUser.vue'), hidden: true },
     ]
   }, {
     path: '/home/aunt',
     name: 'AUNT模块',
     component: HomeView,
-    meta: {title:'aunt管理'},
+    meta: {
+      title: 'aunt管理',
+      roles: ['admin']
+    },
     hidden: false,
-    myIcon: "el-icon-s-management",
+    myIcon: "el-icon-s-grid",
     children: [
-      { path: "/home/aunt/AuntDashBoard", name: "AuntDashBoard",meta: {title:'aunt看板'}, component: () => import('@/views/aunt/AuntDashBoard.vue'), myIcon: "el-icon-s-data" },
-      { path: "/home/aunt/AuntAdd", name: "AuntAdd",meta: {title:'新增aunt'}, component: () => import('@/views/aunt/AuntAdd.vue'), myIcon: "el-icon-plus" },
-      { path: "/home/aunt/CreateEven/:data", name: "CreateEven",meta: {title:'创建事件'}, component: () => import('@/views/aunt/CreateEven.vue'), props: true, hidden: true },
-      { path: "/home/aunt/EvenList", name: "EvenList",meta: {title:'事件列表'}, component: () => import('@/views/aunt/EvenList.vue'), myIcon: "el-icon-s-order" },
+      { path: "/home/aunt/AuntDashBoard", name: "AuntDashBoard", meta: { title: 'aunt看板' }, component: () => import('@/views/aunt/AuntDashBoard.vue'), myIcon: "el-icon-s-data" },
+      { path: "/home/aunt/AuntAdd", name: "AuntAdd", meta: { title: '新增aunt' }, component: () => import('@/views/aunt/AuntAdd.vue'), myIcon: "el-icon-plus" },
+      { path: "/home/aunt/CreateEven/:data", name: "CreateEven", meta: { title: '创建事件' }, component: () => import('@/views/aunt/CreateEven.vue'), props: true, hidden: true },
+      { path: "/home/aunt/EvenList", name: "EvenList", meta: { title: '事件列表' }, component: () => import('@/views/aunt/EvenList.vue'), myIcon: "el-icon-s-order" },
+    ]
+  }, {
+    path: '/home/family',
+    name: '族谱管理',
+    component: HomeView,
+    meta: { title: '族谱管理', roles: ['admin', 'user_manage', 'blog_manager', 'user'] },
+    hidden: false,
+    myIcon: "el-icon-s-order",
+    children: [
+      { path: "/home/family/FamilySource", name: "FamilySource", meta: { title: '朔源一览图' }, component: () => import('@/views/family/FamilySource.vue'), myIcon: "el-icon-s-data" },
+      { path: "/home/family/FamilyListView", name: "FamilyListView", meta: { title: '成员列表' }, component: () => import('@/views/family/FamilyListView.vue'), myIcon: "el-icon-s-custom" },
     ]
   }, {
     path: '/test',
     name: '其他模块',
     component: HomeView,
-    meta: {title:'其他模块'},
+    meta: { title: '其他模块' },
     hidden: false,
     myIcon: "el-icon-setting",
     children: [
@@ -115,9 +129,29 @@ const router = new VueRouter({
   routes: constantRoutes
 })
 
-// router.beforeEach(async (to, from, next) => {
-//   router.addRoute(v)
-// })
+router.beforeEach((to, from, next) => {
+  // console.log(to)
+  // console.log(from)
+  // console.log(next)
+  // console.log(this.$store.state.login_user)
+  // const isAdmin = checkAdminPermission() // 检查用户是否具有管理员权限
+  // const isUser = checkUserPermission() // 检查用户是否具有用户权限
+  if (to.matched.some(record => record.meta.requiresAdmin)) {
+    // if (!isAdmin) {
+    //   next({ path: '/' }) // 如果用户没有管理员权限，则重定向到首页
+    // } else {
+    //   next() // 如果用户具有管理员权限，则继续访问路由
+    // }
+  } else if (to.matched.some(record => record.meta.requiresUser)) {
+    // if (!isUser) {
+    //   next({ path: '/' }) // 如果用户没有用户权限，则重定向到首页
+    // } else {
+    //   next() // 如果用户具有用户权限，则继续访问路由
+    // }
+  } else {
+    next() // 如果路由不需要权限控制，则继续访问路由
+  }
+})
 
 // let isToken = true;
 

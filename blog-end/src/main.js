@@ -3,6 +3,16 @@ import router from './router/router'
 import store from './store/store'
 import App from './App.vue'
 
+//gojs
+import gojs from "./utils/go";
+// import GenogramLayout from "./utils/GenogramLayout";
+Vue.prototype.go = gojs
+// Vue.prototype.GenogramLayout = GenogramLayout
+
+//树形图
+import Vue2OrgTree from 'vue2-org-tree'
+Vue.use(Vue2OrgTree)
+
 
 Vue.config.productionTip = false
 

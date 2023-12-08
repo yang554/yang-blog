@@ -67,6 +67,18 @@ export const postRequest = (url, params) => {
 		data: params
 	})
 }
+
+export const postRequestJson = (url, params) => {
+	return axios({
+		method: "post",
+		url: `${baseURL}${url}`,
+		headers: {
+			'Content-Type': 'application/json',//设置请求头请求格式为JSON
+		},
+		data: params
+	})
+}
+
 //delete
 export const deleteRequest = (url, params) => {
 	return axios({

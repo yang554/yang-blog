@@ -1,4 +1,4 @@
-import { request, postKeyValueRequest, getRequest, postRequest, deleteRequest ,uploadRequest} from "./request.js"
+import { request, postKeyValueRequest, getRequest, postRequest, deleteRequest ,uploadRequest,postRequestJson} from "./request.js"
 
 //登录
 export const _userLogin = (data) => {
@@ -108,6 +108,20 @@ export const _addAunt = (data) => {
 export const _updAunt = (data) => {
     return postRequest("/aunt/updAunt",data)
 }
+export const _getEventAll = (data) => {
+    return getRequest(data)
+} 
 export const _addEvent = (data) => {
     return postRequest("/event/addEvent",data)
+}
+//族谱管理
+export const _getSourceAll = () => {
+    return getRequest("/source/getSourceAll")
+}
+export const _addSource = (data) => {
+    return postRequest("/source/addSource",data);
+}
+export const _addParents = (data) => {
+    console.log(data)
+    return postRequestJson("/source/addParents",data);
 }

@@ -38,7 +38,7 @@
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="submitForm('scheduleForm')">立即创建</el-button>
-                <el-button @click="resetForm('scheduleForm')">重置</el-button>
+                <el-button @click="$router.push('/home/aunt/AuntDashBoard')">返回</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -61,7 +61,7 @@ export default {
             isReciprocalTab: false,  //倒数日
             isOtherTab: false,   //其他
             scheduleForm: {
-                type:'0',   //事件类型
+                type:'普通',   //事件类型
                 scheduleTitle: '',  //事件标题
                 scheduleAddress: '',    //事件地址
                 startDate: '',  //事件开始时间

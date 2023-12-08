@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RespBean {
-    private Integer status = 0;
+    private int status = 0;
     private String msg;
     private Object obj;
 
@@ -42,5 +42,13 @@ public class RespBean {
 
     public static RespBean error(String msg, Object obj){
         return new RespBean(500,msg,obj);
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

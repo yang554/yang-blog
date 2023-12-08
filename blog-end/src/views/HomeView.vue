@@ -2,15 +2,14 @@
   <el-container class="admin-home-view">
     <el-header class="header-container">
       <div class="logo">
-        <!-- <img src='@/assets/images/logo.png' alt='' width='50px' height='50px'> -->
+        <img src='@/assets/images/logo.png' alt='' width='50px' height='50px'>
       </div>
       <div class="title">博客后台管理系统</div>
       <div class="right">
         <div>
           <el-dropdown class="userinfo-dropdown" @command="handleCommand">
-            <span class="el-dropdown-link">
-              <span>{{ this.$store.state.login_user.username }}</span>
-              <img style="width: 55px; height: 55px;border-radius:50%;border: 1px solid #ddd;" alt="">
+            <span class="el-dropdown-link" style="margin-bottom: 100px;">
+              <img style="width: 55px; height: 55px;border-radius:50%;border: 1px solid #ddd;" alt="" :src="this.$store.state.login_user.avatar">
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="userInfo">个人中心</el-dropdown-item>
@@ -19,6 +18,7 @@
             </el-dropdown-menu>
           </el-dropdown>
         </div>
+        <span style="color: #ddd;font-size: 20px;margin-top: 15px;">{{ this.$store.state.login_user.username }}</span>
       </div>
     </el-header>
 
@@ -49,13 +49,13 @@
         <!-- 面包屑 -->
         <div class="breadcrumb">
           <el-breadcrumb separator="/" v-if="this.$router.currentRoute.path != '/home/blog'">
-            <el-breadcrumb-item :to="{ path: '/home/blog' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/admin/dashboard' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item>{{ this.$router.currentRoute.meta.title }}</el-breadcrumb-item>
           </el-breadcrumb>
         </div>
 
         <!--主要内容-->
-        <div class="main-content" :style="{'max-height': this.timeLineHeight + 'px' }"><router-view /></div>
+        <div class="main-content" :style="{'max-height': this.timeLineHeight + 'px' }"><router-view :key="this.$store.state.date" /></div>
       </el-main>
     </el-container>
   </el-container>
@@ -69,7 +69,8 @@ export default {
   data() {
     return {
       timeLineHeight: "",
-      sidebarActiveIndex: "/admin/dashboard"
+      sidebarActiveIndex: "/admin/dashboard",
+      activeDate: new Date().getTime(),
     };
   },
   computed: {
@@ -85,12 +86,16 @@ export default {
   },
   methods: {
     handleCommand(command) {
-      console.log(this.$store.state)
+      if(command === 'logout'){
+        this.$router.push("/login")
+        this.$store.commit('removeLoginUser')
+      }
     }
   },
   created() {
-    // console.log(this.$store.state.login_user);
-    // console.log(this.$router.options.routes);
+    if(undefined == this.$store.state.login_user.username){
+      this.$router.push("/login")
+    }
   },
   watch: {
     $route(route) {
@@ -133,7 +138,7 @@ export default {
 
     .title {
       flex: 1;
-      margin-left: 30px;
+      margin-left: 5px;
       line-height: 60px;
       font-size: 26px;
     }
@@ -142,8 +147,9 @@ export default {
       display: flex;
 
       div {
-        margin-left: 10px;
-        margin-right: 10px;
+        margin-left: 1px;
+        margin-right: 1px;
+        margin-top: 1px;
       }
     }
   }

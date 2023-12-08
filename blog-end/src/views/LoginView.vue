@@ -88,10 +88,8 @@ export default {
                         _userLogin(this.userForm).then(res => {
                             // console.log(res);
                             if (res.data.status === 200) {
-                                this.$notify.success('登录成功！')
-                                // 直接修改store的state数据Vuex跟踪不到，建议不要直接修改
+                                // this.$notify.success('登录成功！')
                                 this.$store.commit('updateLoginUser', res.data.obj)
-
                                 setTimeout(() => {
                                     this.$router.replace('/admin/dashboard')
                                 }, 500)

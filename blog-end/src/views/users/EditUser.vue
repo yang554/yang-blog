@@ -116,7 +116,6 @@ export default {
         },
     },
     methods: {
-
         submitBlogForm() {
             this.$refs.editForm.validate((valid) => {
                 if (valid) {

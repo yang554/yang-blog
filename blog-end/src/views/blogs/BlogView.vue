@@ -138,7 +138,6 @@ export default {
             inputSearchKeyWord: "",
             activeName: "first",   //当前选项卡的label
             tabindex: "0",   //选项卡index
-            hidden_search_comp: false,		//false隐藏搜索子组件,true显示
             pagination: {
                 listData: null,  //微博总data
                 currentPage: 1, //当前页
@@ -246,14 +245,7 @@ export default {
         },
         //根据标题栏搜索
         searchByTitle() {
-            if (this.inputSearchKeyWord === "") {
-                this.$message.error("请输入搜索关键字")
-                this.hidden_search_comp = false;
-            } else {
-                this.hidden_search_comp = true;
-            }
             //根据博客标题关键字搜索
-            console.log(this.baseLikeUrl+"&title="+this.inputSearchKeyWord)
             _getBlogByTile(this.baseLikeUrl+"&title="+this.inputSearchKeyWord).then(res => {
                 if (res.data.status === 200) {
                     this.pagination.totalBlogs = Number(res.data.obj.length);

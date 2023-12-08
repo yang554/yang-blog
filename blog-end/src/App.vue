@@ -5,9 +5,10 @@
   </div>
 </template>
 
-<style scoped>
+<style lang="less">
   @import './assets/normalize.css';
   @import './assets/mybase.css';
+  @import './assets/org-tree.less';
 
   #app{
     width: 100%;

@@ -52,7 +52,7 @@
             </el-table-column>
             <el-table-column label="个人签名">
                 <template slot-scope="scope">
-                    {{ scope.row.description }}
+                    {{ scope.row.description | tableTile}}
                 </template>
             </el-table-column>
             <el-table-column label="操作" width="200">
@@ -100,6 +100,15 @@ export default {
                 name: ""
             },		//当前编辑的user
         }
+    },
+    filters:{
+        tableTile(value) {
+            if (!value) return '';
+            if (value.length > 30) {
+                return value.slice(0, 30) + '...'
+            }
+            return value
+        },
     },
     methods: {
         //初始化
@@ -168,8 +177,9 @@ export default {
 
         /*搜索*/
         handleSearchByName() {
-            this.$getRequest("/user/getByName?name=" + this.inputKeyWord.trim()).then(res => {
+            this.$getRequest("/user/selectUserByName?name=" + this.inputKeyWord.trim()).then(res => {
                 if (res.data.status === 200) {
+                    console.log(res)
                     //每次请求时清空tableData数据
                     this.tableData.splice(0);
                     this.tableData.push(...res.data.obj)

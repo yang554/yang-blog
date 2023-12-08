@@ -9,6 +9,7 @@ export default new Vuex.Store({
     HOST: "http://localhost:8080/",
     Router:'',
     login_user: getToken() || {},    //后台管理员登录的信息
+    date: new Date().getTime()
   },
   getters: {
 
