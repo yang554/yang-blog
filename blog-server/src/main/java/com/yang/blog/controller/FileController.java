@@ -2,6 +2,7 @@ package com.yang.blog.controller;
 
 import com.yang.blog.service.FileService;
 import com.yang.blog.service.SysUserService;
+import com.yang.blog.service.USourceService;
 import com.yang.blog.utils.RespBean;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ public class FileController {
     private FileService fileService;
     @Autowired
     private SysUserService userService;
+    @Autowired
+    private USourceService sourceService;
 
     @PostMapping("/upload")
     public RespBean upload(@RequestParam(value = "file") MultipartFile file) throws IOException {
@@ -48,28 +51,13 @@ public class FileController {
                 System.out.println(e.getMessage());
             }
         }
-
-
-//        for (int i=0;i==0;) {
-//            File f = new File(uploadUrl);
-//            if(!f.exists()){
-//                try {
-//                    FileUtils.copyInputStreamToFile(file.getInputStream(),f);
-//                    continue;
-//                }catch (IOException e){
-//                    System.out.println(e.getMessage());
-//                }
-//                i = 1;
-//            }else  if(f.exists()){
-//                i=1;
-//            }
-//        }
         return RespBean.ok("ok",url);
     }
 
     @PostMapping("/upload/avatar")
     public RespBean uploadAvatar(@RequestParam(value = "file") MultipartFile file, HttpServletRequest request) throws IOException {
         String id = request.getParameter("id");
+        String type = request.getParameter("type");
         String fileName = file.getOriginalFilename();//文件名
         String filePath = new SimpleDateFormat("yyyy-MM-dd/").format(new Date());// 构建日期路径
         String path = "/MyItem/yang-blog/blog-end/public";
@@ -83,6 +71,14 @@ public class FileController {
                 System.out.println(e.getMessage());
             }
         }
-        return userService.saveAvatar(url,id);
+        if("sourceAvatar".equals(type)){
+            return sourceService.updateImgByKey(url,id);
+        }else if ("userAvatar".equals(type)){
+            return userService.saveAvatar(url,id);
+        }else {
+            return RespBean.error("上传失败");
+        }
     }
+
+
 }

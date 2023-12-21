@@ -102,7 +102,6 @@
     </div>
 
     <div class="echarts-group" v-show="isShowContent">
-
       <div class="chart-item">
         <div class="echart" id="mychart" style="float: left; width: 70%;height: 550px;"></div>
         <div class="select">
@@ -278,10 +277,6 @@ export default {
       if (this.uName === "") {
         const num = 1000 * 3600 * 24 * 35
         const d = Date.now() - num
-        console.log("35天时间" + num)
-        console.log("当前：" + Date.now())
-        console.log("差值：" + d)
-        console.log(parseTime(d))
         this.$notify.error({
           title: '错误',
           message: '请选择查询用户'
@@ -299,8 +294,6 @@ export default {
             this.xData.push(element.startDate + "~" + element.endDate)
             this.yData.push(element.bloodVolume)
           });
-          // this.initEcharts();
-
           this.nextAuntForm.daysUntilNextPeriod = res.data.daysUntilNextPeriod
           this.nextAuntForm.nextPeriodEndDate = res.data.nextPeriodEndDate
           this.nextAuntForm.nextPeriodStartDate = res.data.nextPeriodStartDate
@@ -331,6 +324,8 @@ export default {
           this.realAuntForm.duration = res.data.auntList[0].duration
           this.realAuntForm.cycle = res.data.auntList[0].cycle
           this.realAuntForm.bloodVolume = res.data.auntList[0].bloodVolume
+          this.realAuntForm.symptom = res.data.auntList[0].symptom
+          this.realAuntForm.note = res.data.auntList[0].note
         }
 
       })
@@ -436,20 +431,6 @@ export default {
         this.chkIndex_i = i
         this.chkIndex_j = j
       }
-      // if (this.selectedMode) {
-      // this.$nextTick(() => {
-      //   // this.$set(this.res[i][j], 'isSelected', )
-      //   this.res[i][j].isSelected = !this.res[i][j].isSelected
-      //   if (this.res[i][j].isSelected) {
-      //     this.selectedDates.push(this.res[i][j].date)
-      //     this.selectedDates = Array.from(new Set(this.selectedDates))
-      //   } else {
-      //     this.selectedDates.splice(this.selectedDates.indexOf(item.date), 1)
-      //   }
-      //   // this.$emit('dateSelected', this.selectedDates)
-      //   console.log(this.selectedDates)
-      // })
-      // }
     },
     handleItemMove(data, i, j) {
       if (this.canMove && !this.selectedMode) {
@@ -526,14 +507,27 @@ export default {
     initEcharts() {
       // 基本柱状图
       const option = {
+        title: {
+          text: '月例-流血量',
+          left: 'center'
+        },
+        tooltip: {
+          trigger: 'item'
+        },
         xAxis: {
           data: this.xData
         },
         yAxis: {},
         series: [
           {
+            name:'日期范围',
             type: "bar", //形状为柱状图
-            data: this.yData
+            data: this.yData,
+            tooltip: {
+              valueFormatter: function (value) {
+                return value + ' ml';
+              }
+            },
           }
         ]
       };
@@ -541,7 +535,7 @@ export default {
       setTimeout(() => {
         const myChart = this.$echarts.init(document.getElementById("mychart"));
         myChart.setOption(option);
-      }, 1000)
+      }, 500)
     },
     // 当前记录时间控件改变事件
     auntDatetChange(val, flag) {

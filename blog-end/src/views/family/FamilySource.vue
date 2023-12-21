@@ -136,6 +136,8 @@
                                         type="danger" plain>添加配偶</el-button></a></li>
                             <li><a><el-button @click="addChildrenBtn" class="btn-style" v-show="this.childrenInfoBtn"
                                         type="success" plain>添加子女</el-button></a></li>
+                            <li><a><el-button @click="delChildrenBtn" class="btn-style" v-show="this.childrenInfoBtn"
+                                        type="warning" plain>删除成员</el-button></a></li>
                         </ul>
                     </el-aside>
                     <el-main style="overflow:auto;height: 500px;">
@@ -357,6 +359,21 @@
                                         plain>{{ item.userName }}</el-button>
                                 </div>
                             </el-main>
+                        </el-container>
+                        <el-container v-show="this.delCHildrenPan">
+                            <el-header class="d-header">下列人员将会被移除族谱</el-header>
+                            <el-main style="overflow:auto;">
+                                <el-container>
+                                    <el-main style="overflow:auto;height: 370px;">
+                                        <div v-for="item in this.selectChildrenName" style="float: left;margin:5px">
+                                            <el-button plain>{{ item }}</el-button>
+                                        </div>
+                                    </el-main>
+                                </el-container>
+                                <el-button style="margin-top: 10px;float: right;" type="warning"
+                                    @click="delChildrenBtnFun">确认删除</el-button>
+                            </el-main>
+
                         </el-container>
                     </el-main>
                 </el-container>
@@ -602,14 +619,17 @@ class GenogramLayout extends go.LayeredDigraphLayout {
         return null;
     }
 } // end GenogramLayout class
+var gojs = null
 var myDiagram = null
-import { _getSourceAll, _addSource, _addParents } from "@/api/api.js";
+import { _getSourceAll, _addSource, _addParents, _delSource } from "@/api/api.js";
 import { validatePhone, validateEmail } from "@/utils/validate";
 import { parseTime } from '@/utils/calendar';
 export default {
     name: 'test',
     data() {
         return {
+            selectChildren: [],
+            selectChildrenName: [],
             // myDiagram: null, //这个是为了将初始化的结构保存起来，可以调用go.js的方法
             panTitle: '',    //面板标题
             mateOptionPan: false,    //配偶列表
@@ -626,6 +646,7 @@ export default {
             mateInfoBtn: true,
             childrenInfoPan: false,  //子女信息面板开关
             childrenInfoBtn: true,
+            delCHildrenPan: false,   //删除人员名单
             jsonarray: [],  //数据
             ManImg: '/static/defaultImg.png',
             WmanImg: '/static/defaultW.png',
@@ -754,7 +775,7 @@ export default {
     },
     methods: {
         init() {
-            const gojs = this.go.GraphObject.make; // 为了定义模板的简洁性
+            gojs = this.go.GraphObject.make; // 为了定义模板的简洁性
             myDiagram = gojs(go.Diagram, this.$refs.myDiagramDiv,
                 {
                     initialAutoScale: go.Diagram.Uniform,
@@ -1029,7 +1050,6 @@ export default {
                         } else if ((img == null || img == undefined || img == "") && arrays[i].userSex == "女") {
                             img = this.WmanImg;
                         }
-                        // console.log(arrays[1])
                         let arr = {
                             "key": arrays[i].userId,
                             "pId": arrays[i].userPId,
@@ -1105,7 +1125,6 @@ export default {
                             // 为婚姻链接添加标签节点
                             var mlab = { styleNo: "LinkLabel" };
                             model.addNodeData(mlab);
-                            // console.log("婚姻关系：from-key:"+key+"==="+"to:"+wife+"====labelKeys:"+mlab.key);
                             // 添加婚姻链接本身，也指标签节点
                             var mdata = { from: key, to: wife, labelKeys: [mlab.key], category: "Marriage" };
                             model.addLinkData(mdata);
@@ -1130,7 +1149,6 @@ export default {
                     }
                     var mdata = link.data;
                     var mlabkey = mdata.labelKeys[0];
-                    // console.log("亲子关系：from-mlabkey:"+mlabkey+"==="+"to-key:"+key);
                     var cdata = { from: mlabkey, to: key };
                     myDiagram.model.addLinkData(cdata);
                 }
@@ -1189,6 +1207,7 @@ export default {
                     }
                     this.dialogUserInfo = true
                     this.panTitle = '姓名：' + pData.name + '-第' + pData.love + '代'
+
                 } else {
                     this.dialogUserInfo = false
                 }
@@ -1204,6 +1223,8 @@ export default {
                 this.mateInfoPan = false
                 this.childrenInfoPan = false
                 this.mateOptionPan = false
+                this.delCHildrenPan = false
+
                 if (clicked.data.pId == null && clicked.data.mId == null) {
                     this.fmInfoBtn = true
                 } else {
@@ -1231,8 +1252,69 @@ export default {
                 return
             }
             res.each(function (node) {
+                myDiagram.select(node);
                 myDiagram.scale = 1;
                 myDiagram.commandHandler.scrollToPart(myDiagram.findNodeForKey(node.key));
+            });
+        },
+        //获取选中节点及字节点
+        getChildNodes(key) {
+            for (let i = 0; i < this.jsonarray.length; i++) {
+                if (key === this.jsonarray[i].pId || key === this.jsonarray[i].mId) {
+                    this.selectChildren.push(this.jsonarray[i].key)
+                    this.selectChildrenName.push(this.jsonarray[i].name)
+                    this.getChildNodes(this.jsonarray[i].key)
+                    this.getMateNodes(this.jsonarray[i].key)
+                }
+            }
+        },
+        //获取选中节点子节点的配偶
+        getMateNodes(key) {
+            for (let i = 0; i < this.jsonarray.length; i++) {
+                if (key === this.jsonarray[i].mateId) {
+                    this.selectChildren.push(this.jsonarray[i].key)
+                    this.selectChildrenName.push(this.jsonarray[i].name)
+                }
+            }
+        },
+        //删除事件按钮
+        delChildrenBtn() {
+            this.fmInfoPan = false
+            this.mateInfoPan = false
+            this.childrenInfoPan = false
+            this.mateOptionPan = false
+            this.delCHildrenPan = true
+
+            this.selectChildren = []
+            this.selectChildrenName = []
+            this.selectChildren.push(this.selectUserKey)
+            this.selectChildrenName.push(this.selectUserName)
+            if (this.selectUserMates) {
+                for (let i = 0;i<this.selectUserMates.length; i++) {
+                    this.selectChildren.push(this.selectUserMates[i].userId)
+                    this.selectChildrenName.push(this.selectUserMates[i].userName)
+                }
+            }
+            this.getChildNodes(this.selectUserKey);
+        },
+        delChildrenBtnFun() {
+            this.$confirm('此操作将永久删除成员, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                //网络请求
+                _delSource(this.selectChildren).then(res => {
+                    if (res.data.status === 200) {
+                        this.$message.success('删除成功!');
+                        this.$store.state.date = new Date().getTime()
+                    }
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
             });
         },
         //年龄计算
@@ -1257,7 +1339,7 @@ export default {
             this.mateInfoPan = false
             this.childrenInfoPan = false
             this.mateOptionPan = false
-
+            this.delCHildrenPan = false
         },
         //添加父母信息方法
         addFMinfoBtnFun() {
@@ -1274,7 +1356,6 @@ export default {
                     this.userFatherForm.userLove = this.selectUserLove
                     this.userFatherForm.userBirthDay = parseTime(this.userFatherForm.userBirthDay)
                     if (this.userFatherForm.userDieDay != '') this.userFatherForm.userDieDay = parseTime(this.userFatherForm.userDieDay)
-
                     arr.push(this.userFatherForm)
                 }
             })
@@ -1311,6 +1392,7 @@ export default {
             this.mateInfoPan = true
             this.childrenInfoPan = false
             this.mateOptionPan = false
+            this.delCHildrenPan = false
 
             this.resetValue(this.UserInfo)
             this.UserInfo.isSurvival = '是'
@@ -1346,6 +1428,7 @@ export default {
             this.mateInfoPan = false
             this.childrenInfoPan = false
             this.mateOptionPan = true
+            this.delCHildrenPan = false
 
             this.resetValue(this.UserInfo)
             this.UserInfo.isSurvival = '是'
@@ -1464,6 +1547,11 @@ export default {
 
 .m-header {
     background-color: #ee6666;
+    color: #333;
+}
+
+.d-header {
+    background-color: #e7b445;
     color: #333;
 }
 

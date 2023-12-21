@@ -69,6 +69,11 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
+    public List<SysUserEntity> selectByUsername(String username) {
+        return userMapper.selectByUsername(username);
+    }
+
+    @Override
     public RespBean register(SysUserEntity user) {
         //1、先检查用户名是否已存在
         if(!ObjectUtils.isEmpty(this.selectRolesByUsername(user.getUsername()))){
@@ -150,6 +155,26 @@ public class SysUserServiceImpl implements SysUserService {
         }else {
             return RespBean.error("保存失败");
         }
+    }
+
+    @Override
+    public RespBean resetUserPwd(HashMap<String, Object> userEntity) {
+        SysUserEntity user = new SysUserEntity();
+        String id = (String) userEntity.get("id");
+        String pwd = (String) userEntity.get("pwd");
+
+        //2、产生随机盐
+        String ss = RandomUtil.randomString(6);
+        user.setSalt(ss);
+        Md5Hash md5Hash = new Md5Hash(pwd, ss, 1024);
+        user.setPassword(md5Hash.toHex());
+        user.setId(Long.parseLong(id));
+
+        int count = userMapper.resetUserPwd(user);
+
+        if(count == 1) return RespBean.ok("修改成功！");
+        else return RespBean.error("未知错误！");
+
     }
 
     @Override

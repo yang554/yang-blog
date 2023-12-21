@@ -23,11 +23,47 @@ public class USourceController {
     private USourceService sourceService;
 
     @GetMapping("/getSourceAll")
-    @ApiOperation("获取事件")
+    @ApiOperation("获取所有成员")
     private List<USourceEntity> getSourceAll(){
         return sourceService.selectSourceAll();
     }
 
+    @GetMapping("/getSourceCount")
+    @ApiOperation("获取所有成员数量")
+    private RespBean getSourceCount(){
+        return sourceService.selectRecordsTotal();
+    }
+
+    @GetMapping("/getSourceCountByDX")
+    @ApiOperation("获取嫡系成员数量")
+    private RespBean getSourceCountByDX(@RequestParam("search") String search){
+        return sourceService.selectRecordsFiltered(search);
+    }
+
+    @GetMapping("/getSourceByName")
+    private List<USourceEntity> getSourceByName(@RequestParam("s_name") String s_name){
+        return sourceService.selectUserByName(s_name);
+    }
+    @GetMapping("/getUserCountBySex")
+    @ApiOperation("获取成员男女比例")
+    private RespBean getUserCountBySex(){
+        return sourceService.getUserCountBySex();
+    }
+    @GetMapping("/getUserCountBySexDX")
+    @ApiOperation("获取成员男女比例")
+    private RespBean getUserCountBySexDX(){
+        return sourceService.getUserCountBySexDX();
+    }
+    @GetMapping("/getUserCountByLove")
+    @ApiOperation("根据代系获取人口数量")
+    private RespBean getUserCountByLove(){
+        return sourceService.getUserCountByLove();
+    }
+    @GetMapping("/getUserCountByLoveAndSex")
+    @ApiOperation("根据代系获取男女比例")
+    private RespBean getUserCountByLoveAndSex(){
+        return sourceService.getUserCountByLoveAndSex();
+    }
     //添加配偶、子女
     @PostMapping("/addSource")
     public RespBean addSource(@RequestBody HashMap<String,String> params){
@@ -86,11 +122,9 @@ public class USourceController {
     @RequestMapping("/addParents")
     @ResponseBody
     public RespBean addParents(@RequestBody List<USourceEntity> parentsList){
-
         USourceEntity userInfo;
         if(parentsList.size() == 2){
             List<USourceEntity> list = JSON.parseArray(JSON.toJSONString(parentsList),USourceEntity.class);
-
             String key = list.get(0).getUserId();//用户ID
             String pId = CodeUtil.getRandomCode(10);//父ID
             String mId = CodeUtil.getRandomCode(11);//母ID
@@ -114,9 +148,20 @@ public class USourceController {
             sourceService.updateParentsByKey(key,pId,mId);
             return RespBean.ok("addParents is ok");
         }
-
-
         return null;
 
+    }
+
+    @PostMapping("/saveSource")
+    @ApiOperation("保存成员")
+    private RespBean saveSource(@RequestBody HashMap<String,Object> entity){
+        return sourceService.updateUserByKey(entity);
+    }
+
+    @RequestMapping("/delSource")
+    @ResponseBody
+    @ApiOperation("删除成员")
+    private RespBean delSource(@RequestBody  List<String> list){
+        return sourceService.deleteUserByKey(list);
     }
 }

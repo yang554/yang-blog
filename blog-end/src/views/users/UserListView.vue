@@ -18,20 +18,20 @@
             </el-col>
         </el-row>
 
-        <el-table v-loading="pagination.loading" border :data="pagination.currentTableData" style="width: 100%">
-            <el-table-column label="编码">
-                <template slot-scope="scope">
+        <el-table v-loading="pagination.loading" border :data="pagination.currentTableData"  :header-cell-style="{'text-align':'center'}"  max-height="650px" style="width: 100%">
+            <el-table-column label="编码" width="150px" align='center'>
+                <template slot-scope="scope" >
                     <span style="margin-left: 10px">{{ scope.row.id }}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="头像">
+            <el-table-column width="100px" label="头像" align='center'>
                 <template slot-scope="scope">
-                    <el-image class="my-border" style="width: 100px; height: 80px" :src="scope.row.avatar"
+                    <el-image class="my-border"  :src="scope.row.avatar"
                         fit="contain"></el-image>
                 </template>
             </el-table-column>
-            <el-table-column label="用户名">
-                <template slot-scope="scope">
+            <el-table-column label="用户名" width="100px" align='center'>
+                <template slot-scope="scope" style="">
                     {{ scope.row.username }}
                 </template>
             </el-table-column>
@@ -40,26 +40,28 @@
                     {{ scope.row.nickname }}
                 </template>
             </el-table-column>
-            <el-table-column label="邮箱">
+            <el-table-column label="邮箱" width="200px">
                 <template slot-scope="scope">
                     {{ scope.row.email }}
                 </template>
             </el-table-column>
-            <el-table-column label="电话">
+            <el-table-column label="电话" width="120px" align='center'>
                 <template slot-scope="scope">
                     {{ scope.row.phone }}
                 </template>
             </el-table-column>
             <el-table-column label="个人签名">
                 <template slot-scope="scope">
-                    {{ scope.row.description | tableTile}}
+                    {{ scope.row.description | tableTile }}
                 </template>
             </el-table-column>
-            <el-table-column label="操作" width="200">
+            <el-table-column label="操作" width="250" align='center'>
                 <template slot-scope="scope">
                     <el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row)">编辑
                     </el-button>
                     <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除
+                    </el-button>
+                    <el-button size="mini" type="warning" @click="handleRest(scope.$index, scope.row)">重置密码
                     </el-button>
                 </template>
             </el-table-column>
@@ -75,7 +77,7 @@
 </template>
   
 <script>
-import { _getUserAll ,_delUserById} from "@/api/api.js";
+import { _getUserAll, _delUserById, _resetUserPwd } from "@/api/api.js";
 export default {
     name: "UserListView",
     data() {
@@ -88,7 +90,7 @@ export default {
                 listData: null,  //总data
                 currentPage: 1, //当前页
                 pageSizes: [5, 10, 15, 20],
-                pageSize: 5,    //每页显示条数
+                pageSize: 10,    //每页显示条数
                 totalPage: 1,		//总页数
                 currentTableData: [],		//当前页data
                 total: 0,  //总数量
@@ -101,7 +103,7 @@ export default {
             },		//当前编辑的user
         }
     },
-    filters:{
+    filters: {
         tableTile(value) {
             if (!value) return '';
             if (value.length > 30) {
@@ -117,7 +119,7 @@ export default {
                 if (res.status === 200) {
                     this.pagination.listData = res.data;
                     this.pagination.total = res.data.length;
-            
+
 
                     this.pagination.totalPage = Math.ceil(this.pagination.listData.length / this.pagination.pageSize);
                     this.pagination.totalPage = this.pagination.totalPage == 0 ? 1 : this.pagination.totalPage;
@@ -136,6 +138,21 @@ export default {
                 begin,
                 end
             );
+        },
+        //表格操作-重置密码
+        handleRest(index, row){
+            let form = {
+                id: row.id,
+                pwd:'123456'
+            }
+            _resetUserPwd(form).then(res => {
+                if(res.data.status === 200){
+                    this.$message.success('重置成功!初始密码为：123456');
+                }else{
+                    this.$message.success(res.data.msg);
+                }
+            })
+
         },
         //表格操作-删除
         handleDelete(index, row) {
@@ -179,10 +196,15 @@ export default {
         handleSearchByName() {
             this.$getRequest("/user/selectUserByName?name=" + this.inputKeyWord.trim()).then(res => {
                 if (res.data.status === 200) {
-                    console.log(res)
-                    //每次请求时清空tableData数据
-                    this.tableData.splice(0);
-                    this.tableData.push(...res.data.obj)
+                    this.pagination.listData = res.data.obj;
+                    this.pagination.total = res.data.length;
+
+
+                    this.pagination.totalPage = Math.ceil(this.pagination.listData.length / this.pagination.pageSize);
+                    this.pagination.totalPage = this.pagination.totalPage == 0 ? 1 : this.pagination.totalPage;
+
+                    this.getCurrentPageData(this.pagination.listData, this.pagination.currentPage, this.pagination.pageSize);
+                    this.pagination.loading = false;
                 } else {
                     this.$message.error(res.data.msg);
                 }

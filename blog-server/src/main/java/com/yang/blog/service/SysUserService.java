@@ -15,6 +15,8 @@ public interface SysUserService {
     List<SysUserEntity> findAll();
     //根据用户名查询
     SysUserEntity selectRolesByUsername(String username);
+    //根据用户名模糊查询
+    List<SysUserEntity> selectByUsername(String username);
     //用户注册
     RespBean register(SysUserEntity user);
     //添加用户
@@ -25,6 +27,8 @@ public interface SysUserService {
     List<SysRoleEntity> getRoleAll();
     //编辑用户
     RespBean editUser(HashMap<String,Object> userEntity);
+    //修改用户密码
+    RespBean resetUserPwd(HashMap<String,Object> userEntity);
     //保存头像
     RespBean saveAvatar(String avatar,String id);
     //删除用户
