@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.SysRoleMapper">
+    <resultMap id="map" type="com.yang.blog.entity.SysRoleEntity">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="name_zh" property="nameZh"/>
+    </resultMap>
+    <resultMap id="resultMap" type="com.yang.blog.entity.SysRoleEntity">
+        <result column="name" property="name"/>
+        <result column="name_zh" property="name_zh"/>
+    </resultMap>
+
+    <select id="getRoleAll" resultMap="map">
+        SELECT * FROM sys_role
+    </select>
+
+    <select id="getUserRoleAll" resultType="map">
+        SELECT
+		  r.`name_zh` AS `name`,
+		  COUNT(u.`id`) AS `value`
+		FROM
+		  sys_role AS r
+		  LEFT JOIN sys_user_role AS ur
+			ON ur.`roleid` = r.`id`
+		  LEFT JOIN sys_user AS u
+			ON ur.`userid` = u.`id`
+		GROUP BY r.`name_zh`
+    </select>
+</mapper>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yang.blog.mapper.USourceMapper">
+    <resultMap id="BaseResultMap" type="com.yang.blog.entity.USourceEntity">
+        <id column="S_ID" jdbcType="VARCHAR" property="UserId" />
+        <result column="S_NAME" jdbcType="VARCHAR" property="UserName" />
+        <result column="S_PIN_YIN" jdbcType="VARCHAR" property="UserPinYin" />
+        <result column="S_BIRTHDAY" jdbcType="VARCHAR" property="UserBirthDay" />
+        <result column="S_SEX" jdbcType="VARCHAR" property="UserSex" />
+        <result column="S_ADDRESS_NEW" jdbcType="VARCHAR" property="UserAddressNew" />
+        <result column="S_ADDRESS_OLD" jdbcType="VARCHAR" property="UserAddressOld" />
+        <result column="S_PHONE" jdbcType="VARCHAR" property="UserPhone" />
+        <result column="S_EMIL" jdbcType="INTEGER" property="UserEmil" />
+        <result column="S_LOVE" jdbcType="VARCHAR" property="UserLove" />
+        <result column="S_FID" jdbcType="INTEGER" property="UserPId" />
+        <result column="S_MID" jdbcType="VARCHAR" property="UserMID" />
+        <result column="S_IMG_URL" jdbcType="VARCHAR" property="UserImgUrl" />
+        <result column="S_IS_SURVIVAL" jdbcType="VARCHAR" property="IsSurvival" />
+        <result column="S_DIE_DAY" jdbcType="VARCHAR" property="UserDieDay" />
+        <result column="S_MATE_ID" jdbcType="VARCHAR" property="UserMateId" />
+        <result column="S_NOTE" jdbcType="VARCHAR" property="UserNote" />
+
+        <result column="pName" jdbcType="VARCHAR" property="pName" />
+        <result column="mName" jdbcType="VARCHAR" property="mName" />
+        <result column="mateName" jdbcType="VARCHAR" property="mateName" />
+    </resultMap>
+    <resultMap id="map" type="com.yang.blog.entity.CountEntity">
+        <result column="name" property="name"/>
+        <result column="count" property="count"/>
+    </resultMap>
+    <!--查询所有用户-->
+    <select id="selectSourceAll" resultMap="BaseResultMap">
+        SELECT b.S_NAME as pName,c.S_NAME as mName,'' as mateName,a.* FROM u_source a
+        LEFT JOIN (SELECT s_id,s_name FROM u_source) b on a.S_FID=b.S_ID
+        LEFT JOIN (SELECT s_id,s_name FROM u_source) c on a.S_MID=c.S_ID
+        ORDER BY a.S_BIRTHDAY ASC
+    </select>
+    <!--根据name查询用户-->
+    <select id="selectUserByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT b.S_NAME as pName,c.S_NAME as mName,'' as mateName,a.* FROM u_source a
+        LEFT JOIN (SELECT s_id,s_name FROM u_source) b on a.S_FID=b.S_ID
+        LEFT JOIN (SELECT s_id,s_name FROM u_source) c on a.S_MID=c.S_ID
+        WHERE a.S_NAME LIKE CONCAT('%',#{s_name},'%')
+        ORDER BY a.S_BIRTHDAY ASC
+    </select>
+    <!--根据key查询用户姓名-->
+    <select id="selectUserByKey" resultType="java.lang.String" parameterType="java.lang.String">
+        SELECT S_NAME FROM u_source WHERE S_ID = #{key}
+    </select>
+    <!--根据keys查询用户-->
+    <select id="selectSourceByKeys" parameterType="java.util.List" resultMap="BaseResultMap">
+        SELECT * FROM u_source WHERE S_ID IN
+        <foreach collection="list" item="label" open="(" close=")" separator=",">
+            #{label}
+        </foreach>
+    </select>
+    <!--根据性别查询男女比例-->
+    <select id="getUserCountBySex" resultMap="map" >
+        SELECT S_SEX as `name`,count(*) as `value` FROM u_source  GROUP BY S_SEX
+    </select>
+    <!--根据性别查询男女比例（嫡系）-->
+    <select id="getUserCountBySexDX" resultMap="map">
+        SELECT S_SEX as `name`,count(*) as `value` FROM u_source WHERE S_NAME like '杨%'  GROUP BY S_SEX
+    </select>
+    <!--根据代系获取人口数量-->
+    <select id="getUserCountByLove" resultMap="map">
+        SELECT S_LOVE as `name`,count(*) as `value` FROM u_source  GROUP BY S_LOVE ORDER BY name
+    </select>
+    <!--根据代系获取男女比例-->
+    <select id="getUserCountByLoveAndSex" resultMap="map">
+        SELECT S_LOVE as `id`,S_SEX as `name`,count(*) as `value` FROM u_source  GROUP BY S_LOVE,S_SEX ORDER BY S_LOVE
+    </select>
+    <!--分页查询所有信息-->
+    <select id="selectSourceAllFY" resultMap="BaseResultMap" >
+        SELECT * FROM u_source WHERE S_NAME LIKE CONCAT('%',#{search},'%') LIMIT #{start},#{length}
+    </select>
+    <!--查询用户总条数-->
+    <select id="selectRecordsTotal" resultType="java.lang.Integer">
+        SELECT count(*) FROM u_source
+    </select>
+    <!--查询条数(条件过滤后的)-->
+    <select id="selectRecordsFiltered" resultType="java.lang.Integer" parameterType="java.lang.String">
+        SELECT count(*) FROM u_source WHERE S_NAME LIKE CONCAT(#{search},'%')
+    </select>
+    <!--添加用户-->
+    <insert id="insertUserSource" useGeneratedKeys="true" keyProperty="UserId" parameterType="com.yang.blog.entity.USourceEntity">
+        INSERT INTO u_source(S_ID,S_NAME,S_PIN_YIN,S_BIRTHDAY,S_SEX,S_ADDRESS_NEW,S_ADDRESS_OLD,S_PHONE,
+          S_EMIL,S_LOVE,S_IS_SURVIVAL,S_DIE_DAY,S_NOTE,S_MATE_ID,S_FID,S_MID)
+        VALUES(
+          #{UserId,jdbcType=VARCHAR},#{UserName,jdbcType=VARCHAR},#{UserPinYin,jdbcType=VARCHAR},
+          #{UserBirthDay,jdbcType=VARCHAR},#{UserSex,jdbcType=VARCHAR},#{UserAddressNew,jdbcType=VARCHAR},
+          #{UserAddressOld,jdbcType=VARCHAR},#{UserPhone,jdbcType=VARCHAR},#{UserEmil,jdbcType=VARCHAR},
+          #{UserLove,jdbcType=VARCHAR},#{IsSurvival,jdbcType=INTEGER},#{UserDieDay,jdbcType=INTEGER},
+          #{UserNote,jdbcType=VARCHAR},#{UserMateId,jdbcType=VARCHAR},#{UserPId,jdbcType=VARCHAR},
+          #{UserMID,jdbcType=VARCHAR})
+    </insert>
+    <!--根据用户KEY修改PID-->
+    <update id="updatePidByKey">
+        UPDATE u_source SET S_FID=#{Pid} WHERE S_ID=#{key}
+    </update>
+    <!--根据用户KEY修改MID-->
+    <update id="updateMidByKey">
+        UPDATE u_source SET S_MID=#{Mid} WHERE S_ID=#{key}
+    </update>
+    <!--根据key修改用户parents-->
+    <update id="updateParentsByKey">
+        UPDATE u_source SET S_FID=#{Pid},S_MID=#{Mid} WHERE S_ID=#{key}
+    </update>
+    <!--根据key修改用户MATE-->
+    <update id="updateMateByKey">
+        UPDATE u_source SET S_MATE_ID = CONCAT_WS(',',S_MATE_ID,#{id,jdbcType=VARCHAR}) WHERE S_ID=#{key,jdbcType=VARCHAR}
+    </update>
+    <!--根据key修改头像-->
+    <update id="updateImgByKey" parameterType="java.lang.String">
+        UPDATE u_source SET S_IMG_URL=#{avatar,jdbcType=VARCHAR}
+        WHERE S_ID=#{id,jdbcType=VARCHAR}
+    </update>
+    <!--根据key修改信息-->
+    <update id="updateUserByKey" parameterType="com.yang.blog.entity.USourceEntity">
+        UPDATE u_source SET
+          S_NAME=#{UserName,jdbcType=VARCHAR},S_PIN_YIN=#{UserPinYin,jdbcType=VARCHAR},
+          S_BIRTHDAY=#{UserBirthDay,jdbcType=VARCHAR},S_SEX=#{UserSex,jdbcType=VARCHAR},
+          S_ADDRESS_NEW=#{UserAddressNew,jdbcType=VARCHAR},S_ADDRESS_OLD=#{UserAddressOld,jdbcType=VARCHAR},
+          S_PHONE=#{UserPhone,jdbcType=INTEGER},S_EMIL=#{UserEmil,jdbcType=VARCHAR},
+          S_IS_SURVIVAL=#{IsSurvival,jdbcType=VARCHAR},S_DIE_DAY=#{UserDieDay,jdbcType=INTEGER},
+          S_NOTE=#{UserNote,jdbcType=VARCHAR}
+        WHERE S_ID=#{UserId,jdbcType=INTEGER}
+    </update>
+    <!--根据ID删除成员-->
+    <delete id="deleteUserByKey" parameterType="java.util.List">
+        DELETE FROM u_source WHERE S_ID IN
+        <foreach collection="list" item="label" open="(" close=")" separator=",">
+            #{label}
+        </foreach>
+    </delete>
+</mapper>

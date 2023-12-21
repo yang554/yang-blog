@@ -83,6 +83,7 @@ export const constantRoutes = [
     hidden: false,
     myIcon: "el-icon-s-grid",
     children: [
+      { path: "/home/aunt/AuntList", name: "AuntList", meta: { title: 'aunt列表' }, component: () => import('@/views/aunt/AuntList.vue'), myIcon: "el-icon-s-operation" },
       { path: "/home/aunt/AuntDashBoard", name: "AuntDashBoard", meta: { title: 'aunt看板' }, component: () => import('@/views/aunt/AuntDashBoard.vue'), myIcon: "el-icon-s-data" },
       { path: "/home/aunt/AuntAdd", name: "AuntAdd", meta: { title: '新增aunt' }, component: () => import('@/views/aunt/AuntAdd.vue'), myIcon: "el-icon-plus" },
       { path: "/home/aunt/CreateEven/:data", name: "CreateEven", meta: { title: '创建事件' }, component: () => import('@/views/aunt/CreateEven.vue'), props: true, hidden: true },
