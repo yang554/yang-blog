@@ -1,14 +1,16 @@
 package com.yang.blog.service.impl;
 
+import com.yang.blog.entity.CountEntity;
 import com.yang.blog.entity.USourceEntity;
 import com.yang.blog.mapper.USourceMapper;
 import com.yang.blog.service.USourceService;
+import com.yang.blog.utils.PinYinUtil;
 import com.yang.blog.utils.RespBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,9 +59,21 @@ public class USourceServiceImpl implements USourceService {
      * @return
      */
     @Override
-    public RespBean selectUserByName(String s_name) {
-        USourceEntity sourceEntity = sourceMapper.selectUserByName(s_name);
-        return RespBean.ok("ok",sourceEntity);
+    public List<USourceEntity> selectUserByName(String s_name) {
+        List<USourceEntity> sourceEntities = sourceMapper.selectUserByName(s_name);
+        for (int i=0;i<sourceEntities.size();i++){
+            String mateIds = "";
+            List<USourceEntity> list = null;
+            if(!"".equals(sourceEntities.get(i).getUserMateId()) && sourceEntities.get(i).getUserMateId() != null){
+                mateIds =  sourceEntities.get(i).getUserMateId();
+                List<String> result = Arrays.stream(mateIds.split(","))
+                        .filter(s -> !s.isEmpty())
+                        .collect(Collectors.toList());
+                list = sourceMapper.selectSourceByKeys(result);
+            }
+            sourceEntities.get(i).setList(list);
+        }
+        return sourceEntities;
     }
 
     /**
@@ -71,6 +85,46 @@ public class USourceServiceImpl implements USourceService {
     public RespBean selectUserByKey(String key) {
         String name = sourceMapper.selectUserByKey(key);
         return RespBean.ok("ok",name);
+    }
+
+    @Override
+    public RespBean getUserCountBySex() {
+        List<Map<String,Integer>> list = sourceMapper.getUserCountBySex();
+        if(ObjectUtils.isEmpty(list)){
+            return RespBean.error("查询失败");
+        }else{
+            return RespBean.ok("ok",list);
+        }
+    }
+
+    @Override
+    public RespBean getUserCountBySexDX() {
+        List<Map<String,Integer>> list = sourceMapper.getUserCountBySexDX();
+        if(ObjectUtils.isEmpty(list)){
+            return RespBean.error("查询失败");
+        }else{
+            return RespBean.ok("ok",list);
+        }
+    }
+
+    @Override
+    public RespBean getUserCountByLove() {
+        List<Map<String,Integer>> list = sourceMapper.getUserCountByLove();
+        if(ObjectUtils.isEmpty(list)){
+            return RespBean.error("查询失败");
+        }else{
+            return RespBean.ok("ok",list);
+        }
+    }
+
+    @Override
+    public RespBean getUserCountByLoveAndSex() {
+        List<Map<String,Integer>> list = sourceMapper.getUserCountByLoveAndSex();
+        if(ObjectUtils.isEmpty(list)){
+            return RespBean.error("查询失败");
+        }else{
+            return RespBean.ok("ok",list);
+        }
     }
 
     /**
@@ -187,7 +241,11 @@ public class USourceServiceImpl implements USourceService {
     @Override
     public RespBean updateImgByKey(String imgUrl, String key) {
         int count = sourceMapper.updateImgByKey(imgUrl,key);
-        return RespBean.ok("ok",count);
+        if(count > 0){
+            return RespBean.ok("头像上传成功",imgUrl);
+        }else {
+            return RespBean.error("头像上传失败");
+        }
     }
 
     /**
@@ -196,19 +254,37 @@ public class USourceServiceImpl implements USourceService {
      * @return
      */
     @Override
-    public RespBean updateUserByKey(USourceEntity user) {
-        int count = sourceMapper.updateUserByKey(user);
-        return RespBean.ok("ok",count);
+    public RespBean updateUserByKey(HashMap<String,Object> user) {
+        USourceEntity sourceEntity = new USourceEntity();
+        sourceEntity.setUserId((String) user.get("userId"));
+        sourceEntity.setUserName((String) user.get("userName"));
+        sourceEntity.setUserPinYin(PinYinUtil.getPinyin((String) user.get("userName")));
+        sourceEntity.setUserSex((String) user.get("userSex"));
+        sourceEntity.setUserBirthDay((String) user.get("userBirthDay"));
+        sourceEntity.setIsSurvival((String) user.get("isSurvival"));
+        sourceEntity.setUserDieDay((String) user.get("userDieDay"));
+        sourceEntity.setUserAddressOld((String) user.get("userAddressOld"));
+        sourceEntity.setUserAddressNew((String) user.get("userAddressNew"));
+        sourceEntity.setUserPhone((String) user.get("userPhone"));
+        sourceEntity.setUserEmil((String) user.get("userEmil"));
+        sourceEntity.setUserNote((String) user.get("userNote"));
+
+        int count = sourceMapper.updateUserByKey(sourceEntity);
+        if(count > 0){
+            return RespBean.ok("修改成功");
+        }else {
+            return RespBean.error("修改失败");
+        }
     }
 
     /**
      * 根据key删除用户信息
-     * @param key
+     * @param list
      * @return
      */
     @Override
-    public RespBean deleteUserByKey(String key) {
-        int count = sourceMapper.deleteUserByKey(key);
-        return RespBean.ok("ok",count);
+    public RespBean deleteUserByKey(List<String> list) {
+        sourceMapper.deleteUserByKey(list);
+        return RespBean.ok("ok");
     }
 }

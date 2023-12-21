@@ -156,6 +156,11 @@ public class SysUserController {
     public RespBean editUser(@RequestBody HashMap<String,Object> params){
         return userService.editUser(params);
     }
+    //修改用户密码
+    @PostMapping("/resetUserPwd")
+    public RespBean resetUserPwd(@RequestBody HashMap<String,Object> params){
+        return userService.resetUserPwd(params);
+    }
     //修改头像
     @PostMapping("/saveAvatar")
     public RespBean saveAvatar(@RequestParam String avatar,@RequestParam String id){
@@ -166,9 +171,20 @@ public class SysUserController {
     public RespBean delUser(@RequestParam("id") String id){
         return userService.delUser(id);
     }
-    //根据用户名查询用户信息
+    //根据用户名模糊查询用户信息
     @GetMapping("/selectUserByName")
     public RespBean selectUserByName(@RequestParam("name") String name){
+        List<SysUserEntity> user = userService.selectByUsername(name);
+        if(user != null){
+            return RespBean.ok("ok",user);
+        }else {
+            return RespBean.error("error");
+        }
+    }
+
+    //根据用户名查询用户信息
+    @GetMapping("/getUserByName")
+    public RespBean getUserByName(@RequestParam("name") String name){
         SysUserEntity user = userService.selectRolesByUsername(name);
         if(user != null){
             return RespBean.ok("ok",user);

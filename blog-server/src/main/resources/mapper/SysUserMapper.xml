@@ -46,6 +46,17 @@
         LEFT JOIN sys_role r on ur.roleid = r.id
         WHERE u.username = #{username}
     </select>
+
+    <select id="selectByUsername" parameterType="string" resultMap="userMap">
+        SELECT
+          u.id uid,u.username,u.password,u.nickname,
+          u.avatar,u.email,u.phone,u.address,u.description,u.salt,
+          u.create_time,u.update_time,u.note,u.etx01,u.etx02,r.id rid,r.name rname
+        FROM sys_user u
+        LEFT JOIN sys_user_role ur on u.id = ur.userid
+        LEFT JOIN sys_role r on ur.roleid = r.id
+        WHERE u.username like CONCAT('%',#{username},'%')
+    </select>
     
     <insert id="register" useGeneratedKeys="true" keyProperty="id" parameterType="com.yang.blog.entity.SysUserEntity">
       INSERT INTO sys_user (username,password,salt)
@@ -62,6 +73,11 @@
     <update id="editUser" parameterType="com.yang.blog.entity.SysUserEntity">
         UPDATE sys_user SET username = #{username},nickname = #{nickname},email = #{email},
         phone = #{phone},address = #{address},description = #{description},update_time = #{updateTime}
+        WHERE id=#{id}
+    </update>
+
+    <update id="resetUserPwd" parameterType="com.yang.blog.entity.SysUserEntity">
+        UPDATE sys_user SET salt=#{salt},password=#{password}
         WHERE id=#{id}
     </update>
 

@@ -50,7 +50,7 @@
 </template>
   
 <script>
-import { _uploadImgs, _getUserByName, _editUserById, _delUserById } from "@/api/api.js";
+import { _uploadImgs, _getUserByNameLike, _editUserById, _delUserById } from "@/api/api.js";
 import { formatDate } from '@/utils/formatDate';
 export default {
     name: "EditUser",
@@ -78,6 +78,7 @@ export default {
         return {
             uploadAvatarParams: {
                 "id": "",
+                "type":'userAvatar',
             },
             rules: {
                 username: [
@@ -159,9 +160,19 @@ export default {
         },
     },
     created() {
-        _getUserByName(this.$route.query.username).then(res => {
+        _getUserByNameLike(this.$route.query.username).then(res => {
+            console.log(res)
             if (res.data.status === 200) {
-                this.editForm = res.data.obj;
+                this.editForm.id = res.data.obj.id,
+                this.editForm.username = res.data.obj.username,
+                // this.editForm.password = res.data.obj[0].,
+                this.editForm.nickname = res.data.obj.nickname,
+                this.editForm.avatar = res.data.obj.avatar,
+                this.editForm.email = res.data.obj.email,
+                this.editForm.description = res.data.obj.description,
+                this.editForm.createTime = res.data.obj.createTime,
+                this.editForm.updateTime = res.data.obj.updateTime,
+                this.editForm.phone = res.data.obj.phone
             }
         })
         this.uploadAvatarParams.id = this.$route.query.id;

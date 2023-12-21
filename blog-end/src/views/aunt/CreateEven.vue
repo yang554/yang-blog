@@ -128,7 +128,6 @@ export default {
                     }else{
                         this.scheduleForm.isNotice = "0"
                     }
-                    console.log(this.scheduleForm)
                     _addEvent(this.scheduleForm).then(res => {
                         if(res.status == 200){
                             this.$message.success("创建成功!");
@@ -138,7 +137,6 @@ export default {
                         }
                     })
                 } else {
-                    console.log('error submit!!');
                     return false;
                 }
             });

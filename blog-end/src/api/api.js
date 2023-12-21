@@ -89,8 +89,14 @@ export const _addUser = (data) => {
 export const _getUserByName = (data) => {
     return getRequest("/user/selectUserByName?name="+data);
 }
+export const _getUserByNameLike = (data) => {
+    return getRequest("/user/getUserByName?name="+data);
+}
 export const _editUserById = (data) => {
     return postRequest("/user/editUser",data);
+}
+export const _resetUserPwd = (data) => {
+    return postRequest("/user/resetUserPwd",data);
 }
 export const _delUserById = (data) => {
     return deleteRequest("/user/delUser?id="+data);
@@ -118,10 +124,33 @@ export const _addEvent = (data) => {
 export const _getSourceAll = () => {
     return getRequest("/source/getSourceAll")
 }
+export const _getSourceCount = () => {
+    return getRequest("/source/getSourceCount")
+}
+export const _getUserCountBySexDX = () => {
+    return getRequest("/source/getUserCountBySexDX")
+}
+export const _getSourceCountByDX = () => {
+    return getRequest("/source/getSourceCountByDX?search="+'杨')
+}
+export const _getUserCountBySex = () => {
+    return getRequest("/source/getUserCountBySex")
+}
+export const _getUserCountByLove = () => {
+    return getRequest("/source/getUserCountByLove")
+}
+export const _getUserCountByLoveAndSex = () => {
+    return getRequest("/source/getUserCountByLoveAndSex")
+}
 export const _addSource = (data) => {
     return postRequest("/source/addSource",data);
 }
 export const _addParents = (data) => {
-    console.log(data)
     return postRequestJson("/source/addParents",data);
+}
+export const _saveSource = (data) => {
+    return postRequestJson("/source/saveSource",data);
+}
+export const _delSource = (data) => {
+    return postRequest("/source/delSource",data);
 }

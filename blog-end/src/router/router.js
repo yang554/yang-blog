@@ -23,11 +23,6 @@ export const constantRoutes = [
     path: '/',
     name: 'LoginView',
     component: LoginView,
-    hidden: true
-  }, {
-    path: '/login',
-    name: 'LoginView',
-    component: LoginView,
     meta: { title: '登录' },
     hidden: true
   }, {
@@ -38,7 +33,6 @@ export const constantRoutes = [
     hidden: true
   }, {
     path: '/admin/dashboard',
-    name: 'register',
     component: HomeView,
     hidden: true,
     children: [
@@ -100,10 +94,12 @@ export const constantRoutes = [
     component: HomeView,
     meta: { title: '族谱管理', roles: ['admin', 'user_manage', 'blog_manager', 'user'] },
     hidden: false,
-    myIcon: "el-icon-s-order",
+    myIcon: "el-icon-s-home",
     children: [
+      { path: "/home/family/FamilyDashBoard", name: "FamilyDashBoard", meta: { title: '族谱仪表板' }, component: () => import('@/views/family/FamilyDashBoard.vue'), myIcon: "el-icon-office-building" },
       { path: "/home/family/FamilySource", name: "FamilySource", meta: { title: '朔源一览图' }, component: () => import('@/views/family/FamilySource.vue'), myIcon: "el-icon-s-data" },
       { path: "/home/family/FamilyListView", name: "FamilyListView", meta: { title: '成员列表' }, component: () => import('@/views/family/FamilyListView.vue'), myIcon: "el-icon-s-custom" },
+      { path: "/home/family/FamilyEditRank", name: "FamilyEditRank", meta: { title: '编辑家族成员信息' }, component: () => import('@/views/family/FamilyEditRank.vue'), hidden: true },
     ]
   }, {
     path: '/test',

@@ -13,48 +13,68 @@
             </el-col>
         </el-row>
 
-        <el-table v-loading="pagination.loading" border :data="pagination.currentTableData" style="width: 100%">
-            <el-table-column label="编码">
+        <el-table v-loading="pagination.loading" border max-height="650px" :header-cell-style="{ 'text-align': 'center' }"
+            :data="pagination.currentTableData" style="width: 100%">
+            <el-table-column label="头像" width="100px" align='center'>
                 <template slot-scope="scope">
-                    <span style="margin-left: 10px">{{ scope.row.id }}</span>
+                    <el-image class="my-border" v-if="scope.row.userImgUrl != null" :src="scope.row.userImgUrl"></el-image>
+                    <el-image class="my-border"
+                        v-else-if="(scope.row.userImgUrl == null || scope.row.userImgUrl == undefined || scope.row.userImgUrl == '') && scope.row.userSex == '男'"
+                        :src="ManImg"></el-image>
+                    <el-image class="my-border"
+                        v-else-if="(scope.row.userImgUrl == null || scope.row.userImgUrl == undefined || scope.row.userImgUrl == '') && scope.row.userSex == '女'"
+                        :src="WmanImg"></el-image>
                 </template>
             </el-table-column>
-            <el-table-column label="头像">
+            <el-table-column label="姓名" width="100px" align='center'>
                 <template slot-scope="scope">
-                    <el-image class="my-border" style="width: 100px; height: 80px" :src="scope.row.avatar"
-                        fit="contain"></el-image>
+                    {{ scope.row.userName }}
                 </template>
             </el-table-column>
-            <el-table-column label="用户名">
+            <el-table-column label="性别" width="50px" align='center'>
                 <template slot-scope="scope">
-                    {{ scope.row.username }}
+                    {{ scope.row.userSex }}
                 </template>
             </el-table-column>
-            <el-table-column label="昵称">
+            <el-table-column label="生辰" width="120px" align='center'>
                 <template slot-scope="scope">
-                    {{ scope.row.nickname }}
+                    {{ scope.row.userBirthDay }}
                 </template>
             </el-table-column>
-            <el-table-column label="邮箱">
+            <el-table-column label="邮箱" width="200px">
                 <template slot-scope="scope">
-                    {{ scope.row.email }}
+                    {{ scope.row.userEmil }}
                 </template>
             </el-table-column>
-            <el-table-column label="电话">
+            <el-table-column label="电话" width="120px" align='center'>
                 <template slot-scope="scope">
-                    {{ scope.row.phone }}
+                    {{ scope.row.userPhone }}
+                </template>
+            </el-table-column>
+            <el-table-column label="父亲" width="100px" align='center'>
+                <template slot-scope="scope">
+                    {{ scope.row.pName }}
+                </template>
+            </el-table-column>
+            <el-table-column label="母亲" width="100px" align='center'>
+                <template slot-scope="scope">
+                    {{ scope.row.mName }}
+                </template>
+            </el-table-column>
+            <el-table-column label="配偶" width="100px" align='center'>
+                <template slot-scope="scope">
+                    <div v-for=" item in scope.row.list">{{ item.userName }}</div>
+
                 </template>
             </el-table-column>
             <el-table-column label="个人签名">
                 <template slot-scope="scope">
-                    {{ scope.row.description | tableTile}}
+                    {{ scope.row.userNote | tableTile }}
                 </template>
             </el-table-column>
-            <el-table-column label="操作" width="200">
+            <el-table-column label="操作" width="180" align='center'>
                 <template slot-scope="scope">
-                    <el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row)">编辑
-                    </el-button>
-                    <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除
+                    <el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row)">查看\编辑
                     </el-button>
                 </template>
             </el-table-column>
@@ -70,11 +90,13 @@
 </template>
   
 <script>
-import { _getUserAll ,_delUserById} from "@/api/api.js";
+import { _getSourceAll, _delSource } from "@/api/api.js";
 export default {
-    name: "UserListView",
+    name: "FamilyListView",
     data() {
         return {
+            ManImg: '/static/defaultImg.png',
+            WmanImg: '/static/defaultW.png',
             inputKeyWord: "",
             inputNewTypeName: "",
             postNewTypeLoading: false,
@@ -89,14 +111,15 @@ export default {
                 total: 0,  //总数量
                 loading: true, 		//table加载样式是否显示
             },
-
+            ManImg: '/static/defaultImg.png',
+            WmanImg: '/static/defaultW.png',
             currentUser: {
                 id: "",
                 name: ""
             },		//当前编辑的user
         }
     },
-    filters:{
+    filters: {
         tableTile(value) {
             if (!value) return '';
             if (value.length > 30) {
@@ -108,11 +131,10 @@ export default {
     methods: {
         //初始化
         init() {
-            _getUserAll().then(res => {
+            _getSourceAll().then(res => {
                 if (res.status === 200) {
                     this.pagination.listData = res.data;
                     this.pagination.total = res.data.length;
-            
 
                     this.pagination.totalPage = Math.ceil(this.pagination.listData.length / this.pagination.pageSize);
                     this.pagination.totalPage = this.pagination.totalPage == 0 ? 1 : this.pagination.totalPage;
@@ -132,54 +154,60 @@ export default {
                 end
             );
         },
-        //表格操作-删除
-        handleDelete(index, row) {
-            this.$confirm('此操作将永久删除该标签, 是否继续?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                //网络请求
-                _delUserById(row.id).then(res => {
-                    if (res.data.status === 200) {
-                        this.init();
-                        this.$message.success('删除成功!');
-                    }
-                })
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
-            });
-        },
-
         //表格操作-编辑
         handleEdit(index, row) {
+
             let obj = {
-                id: row.id,
-                username: row.username,
-                password: row.password,
-                nickname: row.nickname,
-                avatar: row.avatar,
-                email: row.email,
-                phone: row.phone,
-                description: row.description,
+                "key": row.userId,
+                "pId": row.userPId,
+                "mId": row.userMID,
+                "name": row.userName,
+                "pinyin": row.userPinYin,
+                "birthDay": row.userBirthDay,
+                "isDie": row.isSurvival,
+                "dieDay": row.userDieDay,
+                "sex": row.userSex,
+                "phone": row.userPhone,
+                "addressNew": row.userAddressNew,
+                "addressOld": row.userAddressOld,
+                "emil": row.userEmil,
+                "img": row.userImgUrl,
+                "mateId": row.userMateId,
+                "note": row.userNote,
+                "love": row.userLove,
+                "pName": row.pName,
+                "mName": row.mName,
+                "mateName": row.mateName,
+                "styleNo": row.styleNo,
+                "mate": row.list,
             };
-            let stringfy_url = this.$qs.stringify(obj);
-            this.$router.replace("/home/user/update?" + stringfy_url)
+            if((row.userImgUrl == '' || row.userImgUrl == null) && row.userSex == '男'){
+                obj.img = this.ManImg
+            }else if ((row.userImgUrl == '' || row.userImgUrl == null) && row.userSex == '女'){
+                obj.img = this.WmanImg
+            }
+            this.$router.push({
+                name: 'FamilyEditRank',
+                params: {
+                    jsonParam: JSON.stringify(obj)
+                }
+            })
         },
 
         /*搜索*/
         handleSearchByName() {
-            this.$getRequest("/user/selectUserByName?name=" + this.inputKeyWord.trim()).then(res => {
-                if (res.data.status === 200) {
-                    console.log(res)
-                    //每次请求时清空tableData数据
-                    this.tableData.splice(0);
-                    this.tableData.push(...res.data.obj)
+            this.$getRequest("/source/getSourceByName?s_name=" + this.inputKeyWord.trim()).then(res => {
+                if (res.status === 200) {
+                    this.pagination.listData = res.data;
+                    this.pagination.total = res.data.length;
+
+                    this.pagination.totalPage = Math.ceil(this.pagination.listData.length / this.pagination.pageSize);
+                    this.pagination.totalPage = this.pagination.totalPage == 0 ? 1 : this.pagination.totalPage;
+
+                    this.getCurrentPageData(this.pagination.listData, this.pagination.currentPage, this.pagination.pageSize);
+                    this.pagination.loading = false;
                 } else {
-                    this.$message.error(res.data.msg);
+                    this.$message.error("查询异常");
                 }
             })
         },

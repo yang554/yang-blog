@@ -16,12 +16,16 @@ public interface SysUserMapper extends BaseMapper {
     List<SysUserEntity> findAll();
     //根据用户名查询
     SysUserEntity selectRolesByUsername(String username);
+    //根据用户名模糊查询
+    List<SysUserEntity> selectByUsername(String username);
     //用户注册
     int register(SysUserEntity user);
     //添加用户
     int addUser(SysUserEntity user);
     //编辑用户
     int editUser(SysUserEntity userEntity);
+    //修改密码
+    int resetUserPwd(SysUserEntity userEntity);
     //头像保存
     int saveAvatar(@Param(value = "avatar") String avatar,@Param(value = "id") String id);
     //删除用户

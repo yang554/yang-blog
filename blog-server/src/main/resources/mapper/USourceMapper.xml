@@ -24,6 +24,10 @@
         <result column="mName" jdbcType="VARCHAR" property="mName" />
         <result column="mateName" jdbcType="VARCHAR" property="mateName" />
     </resultMap>
+    <resultMap id="map" type="com.yang.blog.entity.CountEntity">
+        <result column="name" property="name"/>
+        <result column="count" property="count"/>
+    </resultMap>
     <!--查询所有用户-->
     <select id="selectSourceAll" resultMap="BaseResultMap">
         SELECT b.S_NAME as pName,c.S_NAME as mName,'' as mateName,a.* FROM u_source a
@@ -33,7 +37,11 @@
     </select>
     <!--根据name查询用户-->
     <select id="selectUserByName" resultMap="BaseResultMap" parameterType="java.lang.String">
-        SELECT * FROM u_source WHERE S_NAME = #{s_name}
+        SELECT b.S_NAME as pName,c.S_NAME as mName,'' as mateName,a.* FROM u_source a
+        LEFT JOIN (SELECT s_id,s_name FROM u_source) b on a.S_FID=b.S_ID
+        LEFT JOIN (SELECT s_id,s_name FROM u_source) c on a.S_MID=c.S_ID
+        WHERE a.S_NAME LIKE CONCAT('%',#{s_name},'%')
+        ORDER BY a.S_BIRTHDAY ASC
     </select>
     <!--根据key查询用户姓名-->
     <select id="selectUserByKey" resultType="java.lang.String" parameterType="java.lang.String">
@@ -46,6 +54,22 @@
             #{label}
         </foreach>
     </select>
+    <!--根据性别查询男女比例-->
+    <select id="getUserCountBySex" resultMap="map" >
+        SELECT S_SEX as `name`,count(*) as `value` FROM u_source  GROUP BY S_SEX
+    </select>
+    <!--根据性别查询男女比例（嫡系）-->
+    <select id="getUserCountBySexDX" resultMap="map">
+        SELECT S_SEX as `name`,count(*) as `value` FROM u_source WHERE S_NAME like '杨%'  GROUP BY S_SEX
+    </select>
+    <!--根据代系获取人口数量-->
+    <select id="getUserCountByLove" resultMap="map">
+        SELECT S_LOVE as `name`,count(*) as `value` FROM u_source  GROUP BY S_LOVE ORDER BY name
+    </select>
+    <!--根据代系获取男女比例-->
+    <select id="getUserCountByLoveAndSex" resultMap="map">
+        SELECT S_LOVE as `id`,S_SEX as `name`,count(*) as `value` FROM u_source  GROUP BY S_LOVE,S_SEX ORDER BY S_LOVE
+    </select>
     <!--分页查询所有信息-->
     <select id="selectSourceAllFY" resultMap="BaseResultMap" >
         SELECT * FROM u_source WHERE S_NAME LIKE CONCAT('%',#{search},'%') LIMIT #{start},#{length}
@@ -56,7 +80,7 @@
     </select>
     <!--查询条数(条件过滤后的)-->
     <select id="selectRecordsFiltered" resultType="java.lang.Integer" parameterType="java.lang.String">
-        SELECT count(*) FROM u_source WHERE S_NAME LIKE CONCAT('%',#{search},'%')
+        SELECT count(*) FROM u_source WHERE S_NAME LIKE CONCAT(#{search},'%')
     </select>
     <!--添加用户-->
     <insert id="insertUserSource" useGeneratedKeys="true" keyProperty="UserId" parameterType="com.yang.blog.entity.USourceEntity">
@@ -88,8 +112,8 @@
     </update>
     <!--根据key修改头像-->
     <update id="updateImgByKey" parameterType="java.lang.String">
-        UPDATE u_source SET S_IMG_URL=#{imgUrl,jdbcType=VARCHAR}
-        WHERE S_ID=#{key,jdbcType=VARCHAR}
+        UPDATE u_source SET S_IMG_URL=#{avatar,jdbcType=VARCHAR}
+        WHERE S_ID=#{id,jdbcType=VARCHAR}
     </update>
     <!--根据key修改信息-->
     <update id="updateUserByKey" parameterType="com.yang.blog.entity.USourceEntity">
@@ -98,13 +122,15 @@
           S_BIRTHDAY=#{UserBirthDay,jdbcType=VARCHAR},S_SEX=#{UserSex,jdbcType=VARCHAR},
           S_ADDRESS_NEW=#{UserAddressNew,jdbcType=VARCHAR},S_ADDRESS_OLD=#{UserAddressOld,jdbcType=VARCHAR},
           S_PHONE=#{UserPhone,jdbcType=INTEGER},S_EMIL=#{UserEmil,jdbcType=VARCHAR},
-          S_LOVE=#{UserLove,jdbcType=INTEGER},S_IS_SURVIVAL=#{IsSurvival,jdbcType=VARCHAR},
-          S_DIE_DAY=#{UserDieDay,jdbcType=INTEGER},S_NOTE=#{UserNote,jdbcType=VARCHAR}
+          S_IS_SURVIVAL=#{IsSurvival,jdbcType=VARCHAR},S_DIE_DAY=#{UserDieDay,jdbcType=INTEGER},
+          S_NOTE=#{UserNote,jdbcType=VARCHAR}
         WHERE S_ID=#{UserId,jdbcType=INTEGER}
     </update>
     <!--根据ID删除成员-->
-    <delete id="deleteUserByKey" parameterType="java.lang.String">
-        DELETE FROM u_source WHERE S_ID=#{key} OR S_MATE_ID LIKE CONCAT('%',#{key},'%')
+    <delete id="deleteUserByKey" parameterType="java.util.List">
+        DELETE FROM u_source WHERE S_ID IN
+        <foreach collection="list" item="label" open="(" close=")" separator=",">
+            #{label}
+        </foreach>
     </delete>
-
 </mapper>
