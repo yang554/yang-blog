@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.TTagMapper">
+    <resultMap id="map" type="com.yang.blog.entity.TTagEntity">
+        <id column="tid" property="id"/>
+        <result column="name" property="name"/>
+        <result column="color" property="color"/>
+    </resultMap>
+
+    <select id="getTagAll" resultMap="map">
+        SELECT t.id tid,t.name,t.color FROM t_tag t ORDER BY tid DESC
+    </select>
+
+    <select id="getTagById" resultMap="map">
+        SELECT t.id tid,t.name,t.color FROM t_tag t WHERE t.id IN
+        <foreach collection="array" index="index" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="getTagByName" resultMap="map" parameterType="string">
+        SELECT t.id tid,t.name,t.color FROM t_tag t WHERE `name` LIKE CONCAT('%',#{name},'%') ORDER BY tid DESC
+    </select>
+
+    <insert id="addTag" parameterType="com.yang.blog.entity.TTagEntity">
+        INSERT INTO t_tag (id,`name`) VALUES(#{id,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="updTagById" parameterType="com.yang.blog.entity.TTagEntity">
+        UPDATE t_tag SET `name`=#{name,jdbcType=VARCHAR},color=#{color,jdbcType=VARCHAR}
+        WHERE id=#{id,jdbcType=VARCHAR}
+    </update>
+
+    <delete id="delTag" parameterType="String">
+        DELETE FROM t_tag WHERE id=#{id,jdbcType=VARCHAR}
+    </delete>
+</mapper>
