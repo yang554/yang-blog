@@ -4,7 +4,7 @@
         <el-row style="margin-top: 10px;margin-bottom: 10px;">
             <el-col :span="5">
                 <span class="span-txt">&emsp;姓名：</span>
-                <el-input size="small" style="width: 200px;" placeholder="按姓名搜索" v-model="params.uName"></el-input>
+                <el-input size="small" style="width: 200px;" placeholder="按姓名搜索" v-model="searchName"></el-input>
             </el-col>
             <el-col :span="1">
                 <el-button size="small" type="success" @click="handleSearchEvent">
@@ -20,51 +20,57 @@
             </el-col>
         </el-row>
 
-        <el-table v-loading="pagination.loading" border :data="pagination.currentTableData" style="width: 100%">
-            <el-table-column label="编码">
+        <el-table v-loading="pagination.loading" border :data="pagination.currentTableData" style="width: 100%"
+            :header-cell-style="{ 'text-align': 'center' }">
+            <el-table-column label="编码" width="130px" align='center'>
                 <template slot-scope="scope">
-                    {{ scope.row.e_id }}
+                    {{ scope.row.id }}
                 </template>
             </el-table-column>
-            <el-table-column label="姓名">
+            <el-table-column label="姓名" width="100px" align='center'>
                 <template slot-scope="scope">
-                    {{ scope.row.e_title | tableTile }}
+                    <!-- {{ scope.row.e_title | tableTile }} -->
+                    {{ scope.row.uName }}
                 </template>
             </el-table-column>
-            <el-table-column label="开始时间">
+            <el-table-column label="开始时间" width="130px" align='center'>
                 <template slot-scope="scope">
-                    {{ scope.row.e_type }}
+                    {{ scope.row.startDate }}
                 </template>
             </el-table-column>
-            <el-table-column label="结束时间">
+            <el-table-column label="结束时间" width="130px" align='center'>
                 <template slot-scope="scope">
-                    {{ scope.row.e_name }}
+                    {{ scope.row.endDate }}
                 </template>
             </el-table-column>
-            <el-table-column label="持续天数">
+            <el-table-column label="持续天数" width="80px" align='center'>
                 <template slot-scope="scope">
-                    {{ scope.row.e_startDate }}
+                    {{ scope.row.duration }}
                 </template>
             </el-table-column>
-            <el-table-column label="经血量">
+            <el-table-column label="经血量" width="80px" align='center'>
                 <template slot-scope="scope">
-                    {{ scope.row.e_endDate }}
+                    {{ scope.row.bloodVolume }}ml
                 </template>
             </el-table-column>
-            <el-table-column label="周期长度">
+            <el-table-column label="周期长度" width="80px" align='center'>
                 <template slot-scope="scope">
-                    {{ scope.row.e_createDate }}
+                    {{ scope.row.cycle }}
                 </template>
             </el-table-column>
             <el-table-column label="症状">
                 <template slot-scope="scope">
-                    {{ scope.row.e_createName }}
+                    {{ scope.row.symptom | tableTile }}
                 </template>
             </el-table-column>
-            <el-table-column label="操作" width="210">
+            <el-table-column label="备注">
                 <template slot-scope="scope">
-                    <el-button type="warning" size="mini">预览</el-button>
-                    <el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row)">编辑
+                    {{ scope.row.note | tableTile }}
+                </template>
+            </el-table-column>
+            <el-table-column label="操作" width="200" align='center'>
+                <template slot-scope="scope">
+                    <el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row)">查看\编辑
                     </el-button>
                     <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除
                     </el-button>
@@ -78,19 +84,56 @@
                 layout="total, sizes, prev, pager, next, jumper" :total="pagination.total">
             </el-pagination>
         </div>
+        <!--dialog  -->
+        <el-dialog title="本次实际记录" :visible.sync="dialogFormVisible">
+            <el-form v-model="realAuntForm">
+                <el-form-item label="姓名" label-width="120px">
+                    <el-input v-model="realAuntForm.name" autocomplete="off" disabled style="width: 50%;">{{
+                        realAuntForm.name }}</el-input>
+                </el-form-item>
+                <el-form-item label="周期长度" label-width="120px">
+                    <el-input class="el-form-item__label" v-model="realAuntForm.cycle" autocomplete="off" disabled
+                        style="width: 10%;"></el-input>
+                    <label class="el-form-item__label">持续时间</label>
+                    <el-input class="el-form-item__label" v-model="realAuntForm.duration" autocomplete="off" disabled
+                        style="width: 10%;"></el-input>
+                    <label class="el-form-item__label">血量</label>
+                    <el-input class="el-form-item__label" v-model="realAuntForm.bloodVolume" autocomplete="off"
+                        style="width: 10%;"></el-input>ml
+                </el-form-item>
+                <el-form-item label="开始日期" label-width="120px">
+                    <el-date-picker class="el-form-item__label" disabled v-model="realAuntForm.startDate" type="date"
+                        placeholder="选择开始时间">
+                    </el-date-picker>
+                    <label class="el-form-item__label">结束日期</label>
+                    <el-date-picker class="el-form-item__label" disabled v-model="realAuntForm.endDate" type="date"
+                        placeholder="选择结束时间">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="症状" label-width="120px">
+                    <el-input class="el-form-item__label" type="textarea" :rows="5"
+                        placeholder="记录每个月姨妈期间出现的症状，如腹痛、乳房胀痛、情绪波动等" v-model="realAuntForm.symptom"
+                        style="width: 40%;"></el-input>
+                    <label class="el-form-item__label">备注</label>
+                    <el-input class="el-form-item__label" type="textarea" placeholder="可以记录一些额外的信息，如服用的药物、健康状况等。" :rows="5"
+                        v-model="realAuntForm.note" style="width: 40%;"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="handleEditAunt">保 存</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
   
 <script>
-import { _getUserAll, _delUserById, _getEventAll } from "@/api/api.js";
+import { _getByALL, _selectByName, _updAunt, _delAunt } from "@/api/api.js";
 export default {
     name: "UserListView",
     data() {
         return {
-            baseUrl: '/event/getEventAll?1=1',
-            inputKeyWord: "",
-            inputNewTypeName: "",
-            postNewTypeLoading: false,
+            dialogFormVisible: false,
             tableData: [],
             pagination: {
                 listData: null,  //总data
@@ -102,23 +145,26 @@ export default {
                 total: 0,  //总数量
                 loading: true, 		//table加载样式是否显示
             },
-            params: {
-                type: '', //事件类型
-                eTitle: '',  //标题
-                uName: '',   //当事人
-                createName: ''   //创建人
+            searchName: '',  //搜索的用户名
+            realAuntForm: {
+                id: '',
+                name: '',
+                startDate: '',   //开始日期
+                endDate: '',     //结束日期
+                duration: '',    //持续时间
+                cycle: '',      //周期长度
+                bloodVolume: '', //姨妈血量
+                symptom: '', //症状
+                note: '', //备注
+                uStatus: ''
             },
-            currentUser: {
-                id: "",
-                name: ""
-            },		//当前编辑的user
         }
     },
     filters: {
         tableTile(value) {
             if (!value) return '';
-            if (value.length > 10) {
-                return value.slice(0, 10) + '...'
+            if (value.length > 19) {
+                return value.slice(0, 19) + '...'
             }
             return value
         },
@@ -126,7 +172,7 @@ export default {
     methods: {
         //初始化
         init() {
-            _getEventAll(this.baseUrl).then(res => {
+            _getByALL().then(res => {
                 if (res.status === 200) {
                     if (res.data.obj != '') {
                         this.pagination.listData = res.data.obj;
@@ -161,7 +207,7 @@ export default {
                 type: 'warning'
             }).then(() => {
                 //网络请求
-                _delUserById(row.id).then(res => {
+                _delAunt(row.id).then(res => {
                     if (res.data.status === 200) {
                         this.init();
                         this.$message.success('删除成功!');
@@ -177,42 +223,29 @@ export default {
 
         //表格操作-编辑
         handleEdit(index, row) {
-            let obj = {
-                id: row.id,
-                username: row.username,
-                password: row.password,
-                nickname: row.nickname,
-                avatar: row.avatar,
-                email: row.email,
-                phone: row.phone,
-                description: row.description,
-            };
-            let stringfy_url = this.$qs.stringify(obj);
-            this.$router.replace("/home/user/update?" + stringfy_url)
+            this.realAuntForm.id = row.id
+            this.realAuntForm.name = row.uName
+            this.realAuntForm.startDate = row.startDate
+            this.realAuntForm.endDate = row.endDate
+            this.realAuntForm.duration = row.duration
+            this.realAuntForm.cycle = row.cycle
+            this.realAuntForm.bloodVolume = row.bloodVolume
+            this.realAuntForm.symptom = row.symptom
+            this.realAuntForm.note = row.note
+            this.dialogFormVisible = true
         },
-
+        // 保存当前记录
+        handleEditAunt() {
+            _updAunt(this.realAuntForm).then(res => {
+                this.$message.success("编辑成功!");
+                this.dialogFormVisible = false
+            })
+            this.$store.state.date = new Date().getTime()
+        },
         /*搜索*/
         handleSearchEvent() {
-
-            if (this.params.type != '') {
-                this.baseUrl += "&type="
-                this.baseUrl += this.params.type
-            }
-            if (this.params.eTitle != '') {
-                this.baseUrl += "&eTitle="
-                this.baseUrl += this.params.eTitle
-            }
-            if (this.params.uName != '') {
-                this.baseUrl += "&uName="
-                this.baseUrl += this.params.uName
-            }
-            if (this.params.createName != '') {
-                this.baseUrl += "&createName="
-                this.baseUrl += this.params.createName
-            }
-            _getEventAll(this.baseUrl).then(res => {
+            _selectByName(this.searchName).then(res => {
                 if (res.data.status === 200) {
-                    this.baseUrl = '/event/getEventAll?1=1'
                     this.pagination.listData = res.data.obj;
                     this.pagination.total = res.data.obj.length;
 
@@ -222,18 +255,12 @@ export default {
                     this.getCurrentPageData(this.pagination.listData, this.pagination.currentPage, this.pagination.pageSize);
                     this.pagination.loading = false;
                 } else {
-                    this.baseUrl = '/event/getEventAll?1=1'
                     this.$message.error(res.data.msg);
                 }
             })
         },
-        handleReset(){
-            this.params = {
-                type: '', //事件类型
-                eTitle: '',  //标题
-                uName: '',   //当事人
-                createName: ''   //创建人
-            }
+        handleReset() {
+            this.searchName = ''
         },
         /*分页事件*/
         handleSizeChange(val) {
@@ -244,10 +271,6 @@ export default {
             this.pagination.currentPage = val
             this.getCurrentPageData(this.pagination.listData, this.pagination.currentPage, this.pagination.pageSize)
         },
-        //下拉点击事件
-        selectClickEvent(val) {
-            this.params.type = val
-        }
     },
     created() {
         this.init();

@@ -46,4 +46,15 @@
         ,#{endDate,jdbcType=VARCHAR},#{uName,jdbcType=VARCHAR},#{eAddress,jdbcType=VARCHAR},#{isNotice,jdbcType=VARCHAR}
         ,#{createNameID,jdbcType=VARCHAR},#{createDate,jdbcType=VARCHAR},#{note,jdbcType=VARCHAR},#{type,jdbcType=VARCHAR})
     </insert>
+
+    <update id="updEvent" parameterType="com.yang.blog.entity.UEventEntity">
+        UPDATE u_even SET e_title=#{eTitle,jdbcType=VARCHAR},e_content=#{eContent,jdbcType=VARCHAR},
+        e_startDate=#{startDate,jdbcType=VARCHAR},e_endDate=#{endDate,jdbcType=VARCHAR},
+        e_address=#{eAddress,jdbcType=VARCHAR},isNotice=#{isNotice,jdbcType=VARCHAR},e_note=#{note,jdbcType=VARCHAR}
+        WHERE e_id=#{id}
+    </update>
+
+    <delete id="delEvent" parameterType="String">
+        DELETE FROM u_even WHERE e_id=#{id,jdbcType=VARCHAR}
+    </delete>
 </mapper>

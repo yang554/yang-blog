@@ -61,7 +61,7 @@ export default {
         return {
             isUsernamePasswordLogin: true,   // 默认使用用户名密码登录
             userForm: {
-                username: '柳莉莉',
+                username: '杨华杰',
                 password: '123456',
                 verify_code: '',
             },

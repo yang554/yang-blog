@@ -66,8 +66,8 @@ public class TBlogController {
 
     @DeleteMapping("/delBlogH")
     @ApiOperation("删除博客进回收站")
-    private RespBean delBlogH(@RequestParam String bID){
-        return blogService.delBlogH(bID);
+    private RespBean delBlogH(@RequestParam(value = "bID") String bID,@RequestParam(value = "isdel") Boolean isdel){
+        return blogService.delBlogH(bID,isdel);
     }
 
     @GetMapping("getBlogByID")

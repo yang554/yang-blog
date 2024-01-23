@@ -9,7 +9,8 @@
         <div>
           <el-dropdown class="userinfo-dropdown" @command="handleCommand">
             <span class="el-dropdown-link" style="margin-bottom: 100px;">
-              <img style="width: 55px; height: 55px;border-radius:50%;border: 1px solid #ddd;" alt="" :src="this.$store.state.login_user.avatar">
+              <img style="width: 55px; height: 55px;border-radius:50%;border: 1px solid #ddd;" alt=""
+                :src="this.$store.state.login_user.avatar">
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="userInfo">个人中心</el-dropdown-item>
@@ -23,8 +24,9 @@
     </el-header>
 
     <el-container class="main">
-      <el-aside class="main-aside">
-        <el-menu class="home-aside" :default-active="sidebarActiveIndex" router background-color="#545c64"
+      <el-aside class="main-aside" >
+        <!-- unique-opened="true" -->
+        <el-menu class="home-aside"  unique-opened :default-active="sidebarActiveIndex" router background-color="#545c64"
           text-color="#fff" active-text-color="#ffd04b">
 
           <el-menu-item index="/admin/dashboard">
@@ -43,6 +45,7 @@
             </el-menu-item>
           </el-submenu>
         </el-menu>
+
       </el-aside>
 
       <el-main class="main-container">
@@ -55,7 +58,8 @@
         </div>
 
         <!--主要内容-->
-        <div class="main-content" :style="{'max-height': this.timeLineHeight + 'px' }"><router-view :key="this.$store.state.date" /></div>
+        <div class="main-content" :style="{ 'max-height': this.timeLineHeight + 'px' }"><router-view
+            :key="this.$store.state.date" /></div>
       </el-main>
     </el-container>
   </el-container>
@@ -86,14 +90,14 @@ export default {
   },
   methods: {
     handleCommand(command) {
-      if(command === 'logout'){
+      if (command === 'logout') {
         this.$router.push("/login")
         this.$store.commit('removeLoginUser')
       }
     }
   },
   created() {
-    if(undefined == this.$store.state.login_user.username){
+    if (undefined == this.$store.state.login_user.username) {
       this.$router.push("/login")
     }
   },
@@ -161,14 +165,16 @@ export default {
     display: flex;
 
     .main-aside {
-      overflow: hidden;
+      // overflow: hidden;
+      overflow-y: auto;
       display: flex;
       height: 100vh;
+
       //菜单
       .home-aside {
         width: 280px;
         margin-top: 60px;
-        background-color: rgb(84, 92, 100);
+        background-color: rgb(84, 92, 100)
       }
     }
 
@@ -182,7 +188,7 @@ export default {
       .main-content {
         flex: 1;
         padding: 10px;
-        overflow-y:scroll;
+        overflow-y: scroll;
         height: calc(100vh - 150px);
       }
     }

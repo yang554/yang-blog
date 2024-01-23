@@ -23,8 +23,20 @@ public class UAuntServiceImpl implements UAuntService {
     private UAuntMapper auntMapper;
 
     @Override
+    public RespBean getByALL() {
+        List<UAuntEntity> auntEntities = auntMapper.getByALL();
+        return RespBean.ok("ok",auntEntities);
+    }
+
+    @Override
     public RespBean findNameAll() {
         List<UAuntEntity> auntEntities = auntMapper.findNameAll();
+        return RespBean.ok("ok",auntEntities);
+    }
+
+    @Override
+    public RespBean selectByName(String uName) {
+        List<UAuntEntity> auntEntities = auntMapper.selectByName(uName);
         return RespBean.ok("ok",auntEntities);
     }
 
@@ -134,6 +146,16 @@ public class UAuntServiceImpl implements UAuntService {
         auntEntity.setId((Long) entity.get("id"));
 
         int status = auntMapper.updAunt(auntEntity);
+        if(status > 0){
+            return RespBean.ok("成功");
+        }else{
+            return RespBean.error("失败");
+        }
+    }
+
+    @Override
+    public RespBean delAunt(String id) {
+        int status = auntMapper.delAunt(id);
         if(status > 0){
             return RespBean.ok("成功");
         }else{

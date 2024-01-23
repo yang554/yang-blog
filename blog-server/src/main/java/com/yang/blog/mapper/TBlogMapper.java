@@ -33,6 +33,6 @@ public interface TBlogMapper {
     int saveBlog(TBlogEntity entity);
     //删除博客(永久)
     int delBlog(String bID);
-    //删除至回收站
-    int delBlogH(String bID);
+    //删除至回收站\还原
+    int delBlogH(@Param(value = "bID")String bID,@Param(value = "isdel")Boolean isdel);
 }

@@ -49,4 +49,35 @@ public class UEventServiceImpl implements UEventService {
             return RespBean.error("失败");
         }
     }
+
+    @Override
+    public RespBean updEvent(HashMap<String, Object> entity) {
+        UEventEntity eventEntity = new UEventEntity();
+        eventEntity.setId((Long) entity.get("id"));
+        eventEntity.seteTitle((String) entity.get("scheduleTitle"));
+        eventEntity.seteContent((String) entity.get("content"));
+        eventEntity.setStartDate((String) entity.get("startDate"));
+        eventEntity.setEndDate((String) entity.get("endDate"));
+        eventEntity.seteAddress((String) entity.get("scheduleAddress"));
+        eventEntity.setNote((String) entity.get("note"));
+        eventEntity.setIsNotice((String) entity.get("isNotice"));
+
+        int status = eventMapper.updEvent(eventEntity);
+        if(status > 0){
+            return RespBean.ok("成功");
+        }else{
+            return RespBean.error("失败");
+        }
+    }
+
+    @Override
+    public RespBean delEvent(String id) {
+        System.out.println(id);
+        int status = eventMapper.delEvent(id);
+        if(status > 0){
+            return RespBean.ok("成功");
+        }else{
+            return RespBean.error("失败");
+        }
+    }
 }

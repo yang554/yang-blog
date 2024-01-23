@@ -27,21 +27,21 @@
                 <el-descriptions :column="3" border>
                     <el-descriptions-item labelStyle="width: 90px">
                         <template slot="label">
-                            <i class="el-icon-user"></i>
+                            <i class="el-icon-set-up"></i>
                             性别
                         </template>
                         {{ UserInfo.userSex }}
                     </el-descriptions-item>
                     <el-descriptions-item>
                         <template slot="label">
-                            <i class="el-icon-user"></i>
+                            <i class="el-icon-star-off"></i>
                             年龄
                         </template>
                         {{ UserInfo.age }}
                     </el-descriptions-item>
                     <el-descriptions-item>
                         <template slot="label">
-                            <i class="el-icon-user"></i>
+                            <i class="el-icon-date"></i>
                             生日
                         </template>
                         {{ UserInfo.userBirthDay }}
@@ -71,7 +71,7 @@
                 <el-descriptions :column="1" border>
                     <el-descriptions-item labelStyle="width: 90px">
                         <template slot="label">
-                            <i class="el-icon-user"></i>
+                            <i class="el-icon-postcard"></i>
                             邮箱
                         </template>
                         {{ UserInfo.userEmil }}

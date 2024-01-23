@@ -17,8 +17,16 @@
         <result column="uStatus" property="uStatus"/>
     </resultMap>
 
+    <select id="getByALL"  resultMap="map">
+        SELECT * FROM u_aunt ORDER BY endDate DESC
+    </select>
+
     <select id="findNameAll" resultMap="map">
         SELECT uName FROM u_aunt GROUP BY uName
+    </select>
+
+    <select id="selectByName" resultMap="map">
+        SELECT * FROM u_aunt WHERE uName LIKE CONCAT('%',#{uName},'%') ORDER BY endDate DESC
     </select>
 
     <select id="selectByNameAll" resultMap="map">
@@ -38,5 +46,9 @@
         symptom=#{symptom,jdbcType=VARCHAR},note=#{note,jdbcType=VARCHAR},uStatus=#{uStatus,jdbcType=VARCHAR}
         WHERE id=#{id}
     </update>
+
+    <delete id="delAunt" parameterType="String">
+        DELETE FROM u_aunt WHERE id=#{id,jdbcType=VARCHAR}
+    </delete>
 
 </mapper>

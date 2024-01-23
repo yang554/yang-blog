@@ -178,8 +178,8 @@ public class TBlogServiceImpl implements TBlogService {
     }
 
     @Override
-    public RespBean delBlogH(String bID) {
-        int status = blogMapper.delBlogH(bID);
+    public RespBean delBlogH(String bID,Boolean isdel) {
+        int status = blogMapper.delBlogH(bID,isdel);
         if(status > 0){
             return RespBean.ok("删除博客成功");
         }else{

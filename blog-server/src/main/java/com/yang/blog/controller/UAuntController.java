@@ -24,6 +24,16 @@ public class UAuntController {
         return auntService.findNameAll();
     }
 
+    @GetMapping("/getByALL")
+    private RespBean getByALL(){
+        return auntService.getByALL();
+    }
+
+    @GetMapping("/selectByName")
+    private RespBean selectByName(@RequestParam("uName") String uName){
+        return auntService.selectByName(uName);
+    }
+
     @GetMapping("/selectByNameAll")
     private Map<String,Object> selectByNameAll(@RequestParam("uName") String uName,@RequestParam("uStatus") String uStatus){
         return auntService.selectByNameAll(uName,uStatus);
@@ -39,5 +49,10 @@ public class UAuntController {
     @ApiOperation("upd-aunt")
     private RespBean updAunt(@RequestBody HashMap<String,Object> entity){
         return auntService.updAunt(entity);
+    }
+
+    @DeleteMapping("/delAunt")
+    private RespBean delAunt(@RequestParam String id){
+        return auntService.delAunt(id);
     }
 }
