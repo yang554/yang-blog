@@ -31,4 +31,14 @@ public class UEventController {
     private RespBean addEvent(@RequestBody HashMap<String,Object> entity){
         return eventService.addEvent(entity);
     }
+
+    @PostMapping("/updEvent")
+    @ApiOperation("修改事件")
+    private RespBean updEvent(@RequestBody HashMap<String,Object> entity){
+        return eventService.updEvent(entity);
+    }
+    @DeleteMapping("/delAunt")
+    private RespBean delAunt(@RequestParam String id){
+        return eventService.delEvent(id);
+    }
 }

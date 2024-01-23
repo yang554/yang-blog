@@ -18,6 +18,6 @@ public interface TBlogService {
     RespBean saveBlog(HashMap<String,Object> entity);
     //删除博客(永久)
     RespBean delBlog(String bID);
-    //删除博客回收站
-    RespBean delBlogH(String bID);
+    //删除博客回收站\还原
+    RespBean delBlogH(String bID,Boolean isdel);
 }

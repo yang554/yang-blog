@@ -18,7 +18,7 @@
           </el-row>
         </el-col>
         <el-col :xs="24" :lg="8" class="card-panel-col">
-          <div class="card-panel">
+          <div class="card-panel" v-show="isShowContent">
             <el-descriptions class="margin-top" title="上次记录" :column="2" border>
               <el-descriptions-item label="姓名">{{ auntForm.name }}</el-descriptions-item>
               <el-descriptions-item label="周期长度">{{ auntForm.cycle }}</el-descriptions-item>
@@ -30,7 +30,7 @@
           </div>
         </el-col>
         <el-col :xs="24" :lg="8" class="card-panel-col">
-          <div class="card-panel">
+          <div class="card-panel" v-show="isShowContent">
             <el-descriptions class="margin-top" title="系统推测下次经期情况" :column="2" border>
               <el-descriptions-item label="姓名">{{ auntForm.name }}</el-descriptions-item>
               <el-descriptions-item label="周期长度">{{ nextAuntForm.cycleLength }}天</el-descriptions-item>
@@ -42,7 +42,7 @@
           </div>
         </el-col>
         <el-col :xs="24" :lg="8" class="card-panel-col">
-          <div class="card-panel">
+          <div class="card-panel" v-show="isShowContent">
             <el-descriptions class="margin-top" title="本次实际记录" :column="2" border>
               <template slot="extra">
                 <el-button type="primary" @click="dialogFunction" size="small">编辑</el-button>
@@ -95,15 +95,13 @@
             </el-dialog>
           </div>
         </el-col>
-        <el-col :xs="24" :lg="24" class="card-panel-col">
-          <div v-show="this.isEmpty"><el-empty description="暂无该用户数据"></el-empty></div>
-        </el-col>
       </el-row>
     </div>
 
-    <div class="echarts-group" v-show="isShowContent">
+    <div class="echarts-group" >
       <div class="chart-item">
-        <div class="echart" id="mychart" style="float: left; width: 70%;height: 550px;"></div>
+        <div class="echart" v-show="isShowContent" id="mychart" style="float: left; width: 70%;height: 550px;"></div>
+        <div class="echart" v-show="this.isEmpty" style="float: left; width: 70%;height: 550px;"><el-empty description="暂无该用户数据"></el-empty></div>
         <div class="select">
           <el-form inline>
             <el-form-item>
@@ -286,6 +284,7 @@ export default {
       this.xData = []
       this.yData = []
       _getAuntByNameAll(this.uName, 0).then(res => { //历史记录
+
         if (res.data == "") {
           this.isEmpty = true
         } else {
@@ -329,6 +328,10 @@ export default {
         }
 
       })
+
+      setTimeout(() => {
+        this.initEcharts();
+      }, 100)
     },
     //获取天数
     handleGetDays(year, month, startOfWeek) {
@@ -505,6 +508,7 @@ export default {
       }
     },
     initEcharts() {
+      if (this.isEmpty) return
       // 基本柱状图
       const option = {
         title: {
@@ -520,7 +524,7 @@ export default {
         yAxis: {},
         series: [
           {
-            name:'日期范围',
+            name: '日期范围',
             type: "bar", //形状为柱状图
             data: this.yData,
             tooltip: {
@@ -598,7 +602,8 @@ export default {
 
     if (localStorage.selectedDates) this.selectedDates = JSON.parse(localStorage.selectedDates);
 
-    this.initEcharts();
+
+
   },
   created() {
     this.init();

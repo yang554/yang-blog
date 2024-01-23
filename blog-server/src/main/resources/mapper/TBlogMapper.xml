@@ -149,7 +149,7 @@
     </update>
 
     <update id="delBlogH" >
-        UPDATE t_blog SET isdel = 01 WHERE id = #{bID}
+        UPDATE t_blog SET isdel = #{isdel} WHERE id = #{bID}
     </update>
 
     <delete id="delBlog" >

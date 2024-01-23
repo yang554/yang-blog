@@ -9,4 +9,9 @@ public interface UEventService {
     RespBean getEventByPage(String type, String eTitle,String uName,String createName);
     //添加
     RespBean addEvent(HashMap<String,Object> entity);
+    //编辑数据
+    RespBean updEvent(HashMap<String,Object> entity);
+    //删除数据
+    RespBean delEvent(String id);
+
 }

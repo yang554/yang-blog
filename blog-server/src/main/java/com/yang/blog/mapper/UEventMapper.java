@@ -19,4 +19,8 @@ public interface UEventMapper {
 
     //添加数据
     int addEven(UEventEntity entity);
+    //编辑数据
+    int updEvent(UEventEntity entity);
+    //删除数据
+    int delEvent(String id);
 }

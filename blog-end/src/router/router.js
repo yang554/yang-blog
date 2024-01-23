@@ -20,7 +20,7 @@ import BlogView from '@/views/blogs/BlogView.vue'
 //静态路由
 export const constantRoutes = [
   {
-    path: '/',
+    path: '/login',
     name: 'LoginView',
     component: LoginView,
     meta: { title: '登录' },
@@ -81,7 +81,7 @@ export const constantRoutes = [
       roles: ['admin']
     },
     hidden: false,
-    myIcon: "el-icon-s-grid",
+    myIcon: "el-icon-date",
     children: [
       { path: "/home/aunt/AuntList", name: "AuntList", meta: { title: 'aunt列表' }, component: () => import('@/views/aunt/AuntList.vue'), myIcon: "el-icon-s-operation" },
       { path: "/home/aunt/AuntDashBoard", name: "AuntDashBoard", meta: { title: 'aunt看板' }, component: () => import('@/views/aunt/AuntDashBoard.vue'), myIcon: "el-icon-s-data" },

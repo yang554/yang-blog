@@ -96,8 +96,8 @@
                                         <el-button type="warning" size="mini"
                                             @click="handlePreviewContent(scope.$index, scope.row)">预览</el-button>
                                     </div>
-                                    <div style="margin-right: 20px;" v-if="scope.row.isDelete">
-                                        <el-button @click="recoveryBlog(scope.row.id)" type="primary"
+                                    <div style="margin-right: 20px;" v-if="scope.row.isdel">
+                                        <el-button @click="recoveryBlog(scope.row.bid)" type="success"
                                             size="mini">还原</el-button>
                                     </div>
                                 </div>
@@ -123,18 +123,18 @@
                 layout="total, sizes, prev, pager, next, jumper" :total="pagination.totalBlogs">
             </el-pagination>
         </div>
-</div>
+    </div>
 </template>
 
 <script>
-import { _getBlog, _delBlog, _delBlogH ,_getBlogByTile} from "@/api/api.js";
+import { _getBlog, _delBlog, _delBlogH, _getBlogByTile } from "@/api/api.js";
 import { formatDate } from '@/utils/formatDate'
 export default {
     name: "BlogView",
     data() {
         return {
-            baseUrl:"",
-            baseLikeUrl:"",
+            baseUrl: "",
+            baseLikeUrl: "",
             inputSearchKeyWord: "",
             activeName: "first",   //当前选项卡的label
             tabindex: "0",   //选项卡index
@@ -246,7 +246,7 @@ export default {
         //根据标题栏搜索
         searchByTitle() {
             //根据博客标题关键字搜索
-            _getBlogByTile(this.baseLikeUrl+"&title="+this.inputSearchKeyWord).then(res => {
+            _getBlogByTile(this.baseLikeUrl + "&title=" + this.inputSearchKeyWord).then(res => {
                 if (res.data.status === 200) {
                     this.pagination.totalBlogs = Number(res.data.obj.length);
                     this.pagination.listData = res.data.obj;
@@ -263,7 +263,6 @@ export default {
                 }
             })
         },
-
         //表格操作-删除
         handleDelete(index, bid) {
             if (this.activeTab === '6') {
@@ -273,7 +272,7 @@ export default {
 
                 })
             } else {
-                _delBlogH(bid).then(res => {
+                _delBlogH(bid, "1").then(res => {
                     this.$message.success("删除成功!");
                     this.initBlogs();
 
@@ -285,7 +284,6 @@ export default {
             this.currentBlog = row;
             this.previewBlogDialogVisible = true;
         },
-
         //nav改变
         handleNavTagSelect(key, keypath) {
             this.activeTab = key;
@@ -300,6 +298,12 @@ export default {
             this.pagination.currentPage = val
             this.getCurrentPageData(this.pagination.listData, this.pagination.currentPage, this.pagination.pageSize)
         },
+        //恢复博客
+        recoveryBlog(val) {
+            _delBlogH(val, "0").then(res => {
+                this.initBlogs();
+            })
+        }
     }
 }
 </script>

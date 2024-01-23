@@ -67,8 +67,8 @@ export const _getBlogById = (data) => {
 export const _delBlog = (data) => {
     return deleteRequest("/blog/delBlog?bID=" + data);
 }
-export const _delBlogH = (data) => {
-    return deleteRequest("/blog/delBlogH?bID=" + data);
+export const _delBlogH = (id,isdel) => {
+    return deleteRequest("/blog/delBlogH?bID=" + id+"&isdel="+isdel);
 }
 export const _saveBlog = (data) => {
     return postRequest("/blog/saveBlog",data);
@@ -102,8 +102,14 @@ export const _delUserById = (data) => {
     return deleteRequest("/user/delUser?id="+data);
 }
 //用户经期管理
+export const _getByALL = () => {
+    return getRequest("/aunt/getByALL")
+}
 export const _getAuntNameAll = () => {
     return getRequest("/aunt/all")
+}
+export const _selectByName = (data) => {
+    return getRequest("/aunt/selectByName?uName="+data)
 }
 export const _getAuntByNameAll = (uName,status) => {
     return getRequest("/aunt/selectByNameAll?uName="+uName+"&uStatus="+status)
@@ -114,11 +120,20 @@ export const _addAunt = (data) => {
 export const _updAunt = (data) => {
     return postRequest("/aunt/updAunt",data)
 }
+export const _delAunt = (data) => {
+    return deleteRequest("/aunt/delAunt?id="+data);
+}
 export const _getEventAll = (data) => {
     return getRequest(data)
 } 
 export const _addEvent = (data) => {
     return postRequest("/event/addEvent",data)
+}
+export const _updEvent = (data) => {
+    return postRequest("/event/updEvent",data)
+}
+export const _delEventById = (data) => {
+    return deleteRequest("/event/delAunt?id="+data);
 }
 //族谱管理
 export const _getSourceAll = () => {
