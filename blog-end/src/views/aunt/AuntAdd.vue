@@ -123,7 +123,6 @@ export default {
         },
         getUserNameAll() {
             _getUserAll().then(res => {
-                console.log(res.data)
                 this.uNameAll = res.data
             })
         }

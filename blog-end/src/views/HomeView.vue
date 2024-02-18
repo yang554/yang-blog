@@ -81,8 +81,11 @@ export default {
     menus() {
       let arr = [''];
       arr = this.$router.options.routes.filter(item => {
-        // console.log(item.hidden);
-        return item.hidden == false;
+        if(item.meta.roles == undefined && item.hidden == false) {
+          return true
+        }else if (item.meta.roles != undefined){
+          return item.meta.roles.includes(this.$store.state.login_user.roles[0].name)
+        }
       })
       // console.log(arr);
       return arr;
@@ -91,15 +94,15 @@ export default {
   methods: {
     handleCommand(command) {
       if (command === 'logout') {
-        this.$router.push("/login")
         this.$store.commit('removeLoginUser')
+        this.$router.push("/login")
       }
     }
   },
   created() {
-    if (undefined == this.$store.state.login_user.username) {
-      this.$router.push("/login")
-    }
+    // if (undefined == this.$store.state.login_user.username) {
+    //   this.$router.push("/login")
+    // }
   },
   watch: {
     $route(route) {

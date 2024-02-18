@@ -7,15 +7,15 @@
                     小杨博客后台管理</div>
             </div>
 
-            <el-form :model='userForm' :rules='rules'
-                ref='userForm' label-width='100px' label-position='left' class='userFormClass'>
+            <el-form :model='userForm' :rules='rules' ref='userForm' label-width='100px' label-position='left'
+                class='userFormClass'>
 
                 <el-form-item label='用户名' prop='username'>
                     <el-input v-model='userForm.username'></el-input>
                 </el-form-item>
 
                 <el-form-item label='密码' prop='password'>
-                    <el-input v-model='userForm.password'></el-input>
+                    <el-input v-model='userForm.password' show-password></el-input>
                 </el-form-item>
 
                 <el-form-item label="验证码" prop="verify_code">
@@ -39,21 +39,21 @@
                 </el-col>
 
                 <el-col :span='4'>
-                    <el-button type='danger' @click='$router.push("/register")'>注册</el-button>
+                    <el-button type='danger' @click='registerBtn'>注册</el-button>
                 </el-col>
             </el-row>
         </el-card>
 
         <!--粒子特效-->
         <vue-particles color='#dedede' :particleOpacity='0.7' :particlesNumber='80' shapeType='circle' :particleSize='4'
-            linesColor='#dedede' :linesWidth='1' :lineLinked='true' :lineOpacity='0.4' :linesDistance='150'
-            :moveSpeed='3' :hoverEffect='true' hoverMode='grab' :clickEffect='true' clickMode='push'>
+            linesColor='#dedede' :linesWidth='1' :lineLinked='true' :lineOpacity='0.4' :linesDistance='150' :moveSpeed='3'
+            :hoverEffect='true' hoverMode='grab' :clickEffect='true' clickMode='push'>
         </vue-particles>
     </div>
 </template>
 
 <script>
-import {_userLogin} from "@/api/api.js"
+import { _userLogin } from "@/api/api.js"
 
 export default {
     name: 'LoginView',
@@ -61,14 +61,14 @@ export default {
         return {
             isUsernamePasswordLogin: true,   // 默认使用用户名密码登录
             userForm: {
-                username: '杨华杰',
-                password: '123456',
+                username: '',
+                password: '',
                 verify_code: '',
             },
             rules: {
                 username: [
                     { required: true, message: '请输入用户名', trigger: 'blur' },
-                    { min: 3, max: 18, message: '长度在 3 到 18 个字符', trigger: 'blur' }
+                    { min: 1, max: 18, message: '长度在 1 到 18 个字符', trigger: 'blur' }
                 ],
                 password: [
                     { required: true, message: '请输入密码', trigger: 'blur' },
@@ -81,6 +81,7 @@ export default {
         };
     },
     methods: {
+        //登录
         submitForm(formName) {
             if (formName === 'userForm') {
                 this.$refs[formName].validate(valid => {
@@ -90,9 +91,13 @@ export default {
                             if (res.data.status === 200) {
                                 // this.$notify.success('登录成功！')
                                 this.$store.commit('updateLoginUser', res.data.obj)
-                                setTimeout(() => {
-                                    this.$router.replace('/admin/dashboard')
-                                }, 500)
+                                // setTimeout(() => {
+                                //     this.$router.replace('/admin/dashboard')
+                                // }, 500)
+                                this.$router.push({
+                                    //   接受路由参数然后跳转
+                                    path: '/admin/dashboard' || "/"
+                                });
                             } else {
                                 this.$notify.error(res.data.msg)
                             }
@@ -103,6 +108,13 @@ export default {
                     }
                 })
             }
+        },
+        //注册
+        registerBtn() {
+            this.$router.push({
+                //   接受路由参数然后跳转
+                path: '/register' || "/"
+            });
         },
         //更新验证码
         updateVerifyCode(e) {

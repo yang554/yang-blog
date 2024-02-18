@@ -130,7 +130,7 @@
 <script>
 import { _getByALL, _selectByName, _updAunt, _delAunt } from "@/api/api.js";
 export default {
-    name: "UserListView",
+    name: "AuntList",
     data() {
         return {
             dialogFormVisible: false,

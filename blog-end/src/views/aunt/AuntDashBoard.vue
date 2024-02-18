@@ -268,7 +268,7 @@ export default {
       })
       this.uName = this.$store.state.login_user.username
 
-      this.selectByNameAllFun()
+      // this.selectByNameAllFun()
     },
     //根据名字查询所有记录
     selectByNameAllFun() {

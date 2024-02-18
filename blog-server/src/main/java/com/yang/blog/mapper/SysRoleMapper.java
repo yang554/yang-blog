@@ -12,4 +12,10 @@ public interface SysRoleMapper {
     List<SysRoleEntity> getRoleAll();
 
     List<Map<String,Integer>> getUserRoleAll();
+
+    int addRole(String RoleName);
+
+    int updRole(SysRoleEntity roleEntities);
+
+    int delRole(String RoleId);
 }

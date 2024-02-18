@@ -9,10 +9,6 @@
         <result column="name" property="name"/>
         <result column="name_zh" property="nameZh"/>
     </resultMap>
-    <resultMap id="resultMap" type="com.yang.blog.entity.SysRoleEntity">
-        <result column="name" property="name"/>
-        <result column="name_zh" property="name_zh"/>
-    </resultMap>
 
     <select id="getRoleAll" resultMap="map">
         SELECT * FROM sys_role
@@ -30,4 +26,17 @@
 			ON ur.`userid` = u.`id`
 		GROUP BY r.`name_zh`
     </select>
+
+    <insert id="addRole">
+        INSERT INTO sys_role (`name`) VALUES (#{RoleName,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="updRole" parameterType="com.yang.blog.entity.SysRoleEntity">
+        UPDATE sys_role SET `name`=#{name},name_zh=#{nameZh}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delRole">
+        DELETE FROM sys_role WHERE id = #{id}
+    </delete>
 </mapper>
