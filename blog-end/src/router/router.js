@@ -2,6 +2,12 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '@/store/store'
 
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location, onResolve, onReject) {
+  if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+  return originalPush.call(this, location).catch(err => err)
+}
+
 Vue.use(VueRouter)
 
 import LoginView from '@/views/LoginView.vue'
@@ -29,14 +35,15 @@ export const constantRoutes = [
     path: '/register',
     name: 'RegisterView',
     component: RegisterView,
-    title: '注册',
+    meta: { title: '注册' },
     hidden: true
   }, {
     path: '/admin/dashboard',
     component: HomeView,
     hidden: true,
+    meta: { title: '首页' },
     children: [
-      { path: "/", name: "Home", meta: { title: '' }, component: DashBoardView },
+      { path: "/", name: "Home", meta: { title: '数据面板' }, component: DashBoardView },
     ]
   }, {
     path: '/home/blog',
@@ -46,7 +53,7 @@ export const constantRoutes = [
     myIcon: "el-icon-s-management",
     meta: {
       title: '博客管理',
-      roles: ['admin']
+      roles: ['admin', 'user','visitor']
     },
     children: [
       { path: "/home/blog/write", name: "WriteView", meta: { title: '写博客' }, component: () => import('@/views/blogs/WriteView.vue'), myIcon: "el-icon-edit" },
@@ -56,7 +63,7 @@ export const constantRoutes = [
       { path: '/home/tagblog', name: 'TagView', meta: { title: '云标签管理' }, component: TagView, myIcon: "el-icon-collection-tag" },
       { path: '/home/commentblog', name: '评论管理', meta: { title: '评论管理' }, component: () => import('@/views/blogs/RemarkView.vue'), props: true, myIcon: "el-icon-tickets" },
     ]
-  }, {
+  },{
     path: '/home/user',
     name: '用户管理',
     component: HomeView,
@@ -70,6 +77,7 @@ export const constantRoutes = [
       { path: "/home/user/list", name: "UserListView", meta: { title: '用户列表' }, component: () => import('@/views/users/UserListView.vue'), myIcon: "el-icon-user" },
       { path: "/home/user/collection/:uid", name: "用户收藏", meta: { title: '用户收藏' }, component: WriteView, hidden: true },
       { path: "/home/user/add", name: "UserAddView", meta: { title: '新增用户' }, component: () => import('@/views/users/UserAddView.vue'), myIcon: "el-icon-plus" },
+      { path: "/home/user/role", name: "RoleView", meta: { title: '权限管理' }, component: () => import('@/views/users/RoleView.vue'), myIcon: "el-icon-key" },
       { path: "/home/user/update", name: "EditUser", meta: { title: '编辑用户' }, component: () => import('@/views/users/EditUser.vue'), hidden: true },
     ]
   }, {
@@ -93,7 +101,7 @@ export const constantRoutes = [
     path: '/home/family',
     name: '族谱管理',
     component: HomeView,
-    meta: { title: '族谱管理', roles: ['admin', 'user_manage', 'blog_manager', 'user'] },
+    meta: { title: '族谱管理', roles: ['admin', 'user_manager', 'blog_manager', 'user','visitor'] },
     hidden: false,
     myIcon: "el-icon-s-home",
     children: [
@@ -116,7 +124,7 @@ export const constantRoutes = [
 
 //动态路由
 export const asyncRoutes = [
-
+  
 ]
 
 const router = new VueRouter({
@@ -126,71 +134,36 @@ const router = new VueRouter({
   routes: constantRoutes
 })
 
-router.beforeEach((to, from, next) => {
-  // console.log(to)
-  // console.log(from)
-  // console.log(next)
-  // console.log(this.$store.state.login_user)
-  // const isAdmin = checkAdminPermission() // 检查用户是否具有管理员权限
-  // const isUser = checkUserPermission() // 检查用户是否具有用户权限
-  if (to.matched.some(record => record.meta.requiresAdmin)) {
-    // if (!isAdmin) {
-    //   next({ path: '/' }) // 如果用户没有管理员权限，则重定向到首页
-    // } else {
-    //   next() // 如果用户具有管理员权限，则继续访问路由
-    // }
-  } else if (to.matched.some(record => record.meta.requiresUser)) {
-    // if (!isUser) {
-    //   next({ path: '/' }) // 如果用户没有用户权限，则重定向到首页
-    // } else {
-    //   next() // 如果用户具有用户权限，则继续访问路由
-    // }
+const whiteList = ["/login","/register"]; //无需令牌白名单
+
+router.beforeEach(async (to, from, next) => {
+  // 获取令牌判断用户是否登录
+  const hasToken = store.state.login_user.roles;
+  if (hasToken) {
+    //已登录
+    if (to.path === "/login") {
+      //若以登录没有必要显示登录页，重定向回首页
+      next({ path: "/login" });
+    } else {
+      // 去其他路由
+      const hasRoles = store.state.login_user.roles && store.state.login_user.roles.length > 0;
+      if (hasRoles) {
+        // 若用户角色已付加则说明权限以判定，动态路由已添加
+        next();
+      } else {
+        next(`/login`);
+        alert(error || "未知错误");
+      }
+    }
   } else {
-    next() // 如果路由不需要权限控制，则继续访问路由
+    if (whiteList.indexOf(to.path) !== -1) {
+      // 白名单中的路由路过
+      next();
+    } else {
+      // 重定向至登录页
+      next(`/login`);
+    }
   }
 })
-
-// let isToken = true;
-
-// router.beforeEach(async (to, from, next) => {
-//   //定义isToken为true和vuex不为空时添加路由
-//   if (isToken) {
-//     //从vuex中获取动态路由
-//     const accessRouteses = await asyncRoutes;
-//     // console.log(accessRouteses);
-//     //动态路由循环解析和添加
-//     accessRouteses.forEach(v => {
-//       // v.children = routerChildren(v.children);
-//       v.component = routerCom(v.component);
-//       console.log(v);
-//       router.addRoute(v); //添加
-//     })
-//     isToken = false //将isToken赋为 false ，否则会一直循环，崩溃
-//     next({...to,replace: true,})
-//   } else {
-//     if (to.name == null) {
-//       next("/404")
-//     } else {
-//       if (to.meta.title) { //判断是否有标题
-//         document.title = to.meta.title //给相应页面添加标题
-//       }
-//       next()
-//     }
-//   }
-// })
-
-// function routerCom(path) { //对路由的component解析
-//   // console.log(path);
-//   return require('@/views/blogs/WriteView.vue');
-// }
-// function routerChildren(children) { //对子路由的component解析
-//   children.forEach(v => {
-//     v.component = routerCom(v.component);
-//     if (v.children != undefined) {
-//       v.children = routerChildren(v.children)
-//     }
-//   })
-//   return children
-// }
 
 export default router

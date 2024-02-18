@@ -49,10 +49,19 @@ export const _uploadImgs = (data) => {
 }
 //权限管理
 export const _getRoleAll = () => {
-    return getRequest("/user/getRoleAll");
+    return getRequest("/role/all");
 }
 export const _getCountByRole = ()=> {
     return getRequest("/user/count/role");
+}
+export const _addRole = (data) => {
+    return postRequest("/role/addRole",data);
+}
+export const _updRole = (data) => {
+    return postRequest("/role/updRole",data);
+}
+export const _delRole = (data) => {
+    return deleteRequest("/role/delRole?id="+data);
 }
 //博客管理
 export const _addBlog = (data) => {

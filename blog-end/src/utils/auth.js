@@ -5,9 +5,6 @@ export function getToken() {
 }
 
 export function setToken(token, rememberMe) {
-  // val必须是字符串
-  // window.sessionStorage.setItem(key,val);
-  // window.sessionStorage.setItem("LoginUser",JSON.stringify(payload));
 
   window.sessionStorage.setItem(TokenKey,JSON.stringify(token));
 }

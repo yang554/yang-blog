@@ -31,7 +31,7 @@ public class SwaggerConfig {
         return new ApiInfo("Api Documentation",
                 "Yang blog API文档",
                 "1.0",
-                "http://localhost:8080",
+                "http://localhost:8090",
                 contact,
                 "Apache 2.0",
                 "http://www.apache.org/licenses/LICENSE-2.0",
