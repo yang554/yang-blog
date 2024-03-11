@@ -4,7 +4,7 @@
             <div slot='header' class='clearfix logo-title'>
                 <div class='logo-image'><img src='@/assets/images/logo.png' alt='' width='50px' height='50px'></div>
                 <div style="font-size: 26px;font-weight: bold;height: 50px;line-height: 50px;margin-left: 10px">
-                    小杨博客后台管理</div>
+                    杨柳博客后台管理</div>
             </div>
 
             <el-form :model='userForm' :rules='rules' ref='userForm' label-width='100px' label-position='left'
@@ -34,7 +34,7 @@
 
             <el-row>
                 <el-col :offset='16' :span='4'>
-                    <el-button type='primary' @click='submitForm("userForm")'>登录
+                    <el-button type='primary' @click='submitForm("userForm")' @keyup.enter='keyDown($event)'>登录
                     </el-button>
                 </el-col>
 
@@ -80,6 +80,17 @@ export default {
             }
         };
     },
+    directives: {
+        enter: {
+            bind(el, binding) {
+                el.addEventListener('keydown', (event) => {
+                    if (event.keyCode === 13) {
+                        binding.value();
+                    }
+                });
+            },
+        },
+    },
     methods: {
         //登录
         submitForm(formName) {
@@ -89,11 +100,7 @@ export default {
                         _userLogin(this.userForm).then(res => {
                             // console.log(res);
                             if (res.data.status === 200) {
-                                // this.$notify.success('登录成功！')
                                 this.$store.commit('updateLoginUser', res.data.obj)
-                                // setTimeout(() => {
-                                //     this.$router.replace('/admin/dashboard')
-                                // }, 500)
                                 this.$router.push({
                                     //   接受路由参数然后跳转
                                     path: '/admin/dashboard' || "/"
@@ -119,7 +126,27 @@ export default {
         //更新验证码
         updateVerifyCode(e) {
             document.getElementById("verify_captcha").setAttribute("src", "/api/user/getCaptcha?time=" + new Date());
-        }
+        },
+        keyDown(e) {
+            // 回车则执行登录方法 enter键的ASCII是13
+            if (e.key == 'Enter') {
+                this.submitForm("userForm"); // 定义的登录方法 ...............
+                e.preventDefault(); // 去掉默认的换行
+            }
+        },
+    },
+    mounted() {
+
+        // 绑定监听事件
+        window.addEventListener("keydown", this.keyDown);
+    },
+    destroyed() {
+
+        // 销毁事件
+        window.addEventListener("keydown", this.keyDown);
+    },
+    created() {
+        // window.addEventListener('keydown', this.handleKeyCode, false)
     }
 }
 </script>

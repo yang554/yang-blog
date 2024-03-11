@@ -2,9 +2,9 @@
   <el-container class="admin-home-view">
     <el-header class="header-container">
       <div class="logo">
-        <img src='@/assets/images/logo.png' alt='' width='50px' height='50px'>
+        <img src='@/assets/images/logo.png' alt='' width='30px' height='30px'>
       </div>
-      <div class="title">博客后台管理系统</div>
+      <div class="title">杨柳博客后台管理</div>
       <div class="right">
         <div>
           <el-dropdown class="userinfo-dropdown" @command="handleCommand">
@@ -58,8 +58,8 @@
         </div>
 
         <!--主要内容-->
-        <div class="main-content" :style="{ 'max-height': this.timeLineHeight + 'px' }"><router-view
-            :key="this.$store.state.date" /></div>
+        <div class="main-content" :style="{ 'max-height': this.timeLineHeight + 'px' }">
+          <router-view :key="this.$store.state.date" /></div>
       </el-main>
     </el-container>
   </el-container>
@@ -140,7 +140,7 @@ export default {
     color: white;
 
     .logo {
-      margin-left: 15px;
+      margin: 15px;
     }
 
     .title {

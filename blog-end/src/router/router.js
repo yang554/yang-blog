@@ -17,12 +17,6 @@ import HomeView from '@/views/HomeView.vue'
 //首页
 import DashBoardView from '@/views/index/DashBoardView.vue'
 
-//博客管理
-import WriteView from '@/views/blogs/WriteView.vue'
-import SortView from '@/views/blogs/SortView.vue'
-import TagView from '@/views/blogs/TagView.vue'
-import BlogView from '@/views/blogs/BlogView.vue'
-
 //静态路由
 export const constantRoutes = [
   {
@@ -58,9 +52,9 @@ export const constantRoutes = [
     children: [
       { path: "/home/blog/write", name: "WriteView", meta: { title: '写博客' }, component: () => import('@/views/blogs/WriteView.vue'), myIcon: "el-icon-edit" },
       { path: '/home/editblog/:id', name: 'EditBlog', meta: { title: '编辑博客' }, component: () => import('@/views/blogs/EditBlog.vue'), props: true, hidden: true },
-      { path: '/home/allblog', name: 'BlogView', meta: { title: '文章管理' }, component: BlogView, myIcon: "el-icon-notebook-1" },
-      { path: '/home/sortblog', name: 'SortView', meta: { title: '分类专栏' }, component: SortView, myIcon: "el-icon-document" },
-      { path: '/home/tagblog', name: 'TagView', meta: { title: '云标签管理' }, component: TagView, myIcon: "el-icon-collection-tag" },
+      { path: '/home/allblog', name: 'BlogView', meta: { title: '文章管理' }, component: () => import('@/views/blogs/BlogView.vue'), myIcon: "el-icon-notebook-1" },
+      { path: '/home/sortblog', name: 'SortView', meta: { title: '分类专栏' }, component: () => import('@/views/blogs/SortView.vue'), myIcon: "el-icon-document" },
+      { path: '/home/tagblog', name: 'TagView', meta: { title: '云标签管理' }, component: () => import('@/views/blogs/TagView.vue'), myIcon: "el-icon-collection-tag" },
       { path: '/home/commentblog', name: '评论管理', meta: { title: '评论管理' }, component: () => import('@/views/blogs/RemarkView.vue'), props: true, myIcon: "el-icon-tickets" },
     ]
   },{
@@ -75,7 +69,7 @@ export const constantRoutes = [
     myIcon: "el-icon-user-solid",
     children: [
       { path: "/home/user/list", name: "UserListView", meta: { title: '用户列表' }, component: () => import('@/views/users/UserListView.vue'), myIcon: "el-icon-user" },
-      { path: "/home/user/collection/:uid", name: "用户收藏", meta: { title: '用户收藏' }, component: WriteView, hidden: true },
+      { path: "/home/user/collection/:uid", name: "用户收藏", meta: { title: '用户收藏' }, component: null, hidden: true },
       { path: "/home/user/add", name: "UserAddView", meta: { title: '新增用户' }, component: () => import('@/views/users/UserAddView.vue'), myIcon: "el-icon-plus" },
       { path: "/home/user/role", name: "RoleView", meta: { title: '权限管理' }, component: () => import('@/views/users/RoleView.vue'), myIcon: "el-icon-key" },
       { path: "/home/user/update", name: "EditUser", meta: { title: '编辑用户' }, component: () => import('@/views/users/EditUser.vue'), hidden: true },

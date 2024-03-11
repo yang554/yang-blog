@@ -4,9 +4,9 @@ module.exports = defineConfig({
   // IntOnSave:true,
   publicPath:"/",
   devServer: {  //配置开发环境
-    host: '118.25.110.52',
-    // host: '127.0.0.1',
-    open: true,
+    // host: '118.25.110.52',
+    host: '127.0.0.1',
+    // open: true,
     port: 8091,
     proxy: {
       '^/api': {
