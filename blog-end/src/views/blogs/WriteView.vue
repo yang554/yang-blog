@@ -184,7 +184,6 @@ export default {
 
             _uploadImgs(formdata).then(res => {
                 //将返回的url替换到文本原位置![...](0) -> ![...](url)
-                console.log(res);
                 if (res.data.status === 200) {
                     this.$message.success("图片上传成功");
                     this.$refs.md.$img2Url(pos, res.data.obj);
