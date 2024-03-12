@@ -24,9 +24,8 @@ export default defineConfig({
         target: 'http://118.25.110.52:8090/',
         // target: 'http://127.0.0.1:8090/',
         changeOrigin: true,
-        rewrite: (path) => {
-          return path;
-        },
+        secure: false,  
+        rewrite: (path) => path.replace(/^\/api/, '')
       },
     },
   },
