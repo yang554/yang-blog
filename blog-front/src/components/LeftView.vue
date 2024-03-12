@@ -35,12 +35,12 @@ onUnmounted(() => {
         <el-container class="left-home">
             <el-main :style="{ width: state.width + 'px', height: state.mainHeight + 'px' }">
                 <CarouselView class="home-left-car" />
-                <!-- <div style="height: 100px;background-color: blueviolet;">1111</div>
+                <div style="height: 100px;background-color: blueviolet;">1111</div>
                 <div style="height: 100px;background-color: blueviolet;">222</div>
                 <div style="height: 100px;background-color: blueviolet;">333</div>
                 <div style="height: 100px;background-color: blueviolet;">444</div>
                 <div style="height: 100px;background-color: blueviolet;">555</div>
-                <div style="height: 100px;background-color: blueviolet;">666</div> -->
+                <div style="height: 100px;background-color: blueviolet;">666</div>
             </el-main>
             <el-footer :style="{ height: state.footerHeight + 'px' }"></el-footer>
         </el-container>

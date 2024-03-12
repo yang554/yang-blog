@@ -2,16 +2,24 @@
   <div class="resize" :style="{ width: state.width + 'px', height: state.hHeight + 'px' }">
     <el-container class="content">
       <el-header class="header">
-        <img class="img" :style="{ width: state.width + 'px', height: state.headerhHeight + 'px' }"
-          src="@/assets/top-bg.png" />
-        <div class="avatar-block" :style="{ width: state.avatarBlock + 'px', height: state.headerhHeight + 'px' }">
+        <img
+          class="img"
+          :style="{ width: state.width + 'px', height: state.headerhHeight + 'px' }"
+          src="@/assets/top-bg.png"
+        />
+        <div
+          class="avatar-block"
+          :style="{ width: state.avatarBlock + 'px', height: state.headerhHeight + 'px' }"
+        >
           <TextScrollView class="block-left" />
           <div class="block-right">
             <el-avatar :size="130" src="../assets/defaultImg.png" />
           </div>
         </div>
-        <div class="content-right"
-          :style="{ width: state.contentRightWith + 'px', height: state.headerhHeight + 'px' }">
+        <div
+          class="content-right"
+          :style="{ width: state.contentRightWith + 'px', height: state.headerhHeight + 'px' }"
+        >
           <div class="span-div">
             <el-icon color="#409EFC">
               <Avatar />
@@ -25,7 +33,6 @@
               <Postcard />
             </el-icon>
             <span class="span-txt">邮箱：1251120808@qq.com</span>
-
           </div>
           <div class="span-div">
             <el-icon color="#409EFC">
@@ -52,32 +59,54 @@
               <Collection />
             </el-icon>
             <span class="span-txt">原创：58</span>
-
           </div>
         </div>
       </el-header>
       <el-container class="container">
-        <el-aside class="home-left" :style="{ width: state.homeLeftWidth + 'px', height: state.homeLeftHeight + 'px' }">
-          <img class="img" :style="{ width: state.homeLeftWidth + 'px', height: state.homeLeftHeight + 'px' }"
-            src="@/assets/left-bg.png" />
-          <LeftView />
-
+        <el-aside
+          class="home-left"
+          :style="{ width: state.homeLeftWidth + 'px', height: state.homeLeftHeight + 'px' }"
+        >
+          <img
+            class="img"
+            :style="{ width: state.homeLeftWidth + 'px', height: state.homeLeftHeight + 'px' }"
+            src="@/assets/left-bg.png"
+          />
+          <div class="common-layout">
+            <el-container>
+              <!-- <el-header style="height:10px"></el-header> -->
+              <el-main
+                :style="{ width: state.homeLeftWidth + 'px', height: state.leftMainHeight + 'px' }"
+              >
+                <CarouselView class="home-left-car" />
+              </el-main>
+              <el-footer :style="{ height: state.footerHeight + 'px' }"></el-footer>
+            </el-container>
+          </div>
         </el-aside>
         <el-main class="main-content">
-          <img class="img" :style="{ width: state.mainWidth + 'px', height: state.homeLeftHeight + 'px' }"
-            src="@/assets/main-bg.png" />
-          <!-- <MainContentView /> -->
+          <img
+            class="img"
+            :style="{ width: state.mainWidth + 'px', height: state.homeLeftHeight + 'px' }"
+            src="@/assets/main-bg.png"
+          />
           <div class="common-layout">
             <el-container>
               <el-header>
-                <el-menu class="el-menu-demo" mode="horizontal" background-color="#545c64" text-color="#fff"
-                  active-text-color="#ffd04b" router>
+                <el-menu
+                  class="el-menu"
+                  mode="horizontal"
+                  background-color="#86ac79"
+                  text-color="#fff"
+                  active-text-color="#ffd04b"
+                  router
+                >
                   <el-menu-item :index="menu.path" v-for="(menu, idx) in menus" :key="idx">
                     <span>{{ menu.meta.title }}</span>
                   </el-menu-item>
                 </el-menu>
               </el-header>
-              <el-main>
+              <el-main :style="{ width: state.mainWidth + 'px', height: state.mainHeight + 'px' }">
                 <router-view :key="$route.fullPath" />
               </el-main>
               <el-footer></el-footer>
@@ -90,10 +119,20 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter, useRoute } from 'vue-router'
-import { ref, onMounted, onUnmounted, defineComponent, reactive, nextTick, watch, computed } from 'vue'
-import TextScrollView from "@/components/TextScrollView.vue"
-import LeftView from "@/components/LeftView.vue"
+import { useRouter, useRoute } from "vue-router";
+import {
+  ref,
+  onMounted,
+  onUnmounted,
+  defineComponent,
+  reactive,
+  nextTick,
+  watch,
+  computed
+} from "vue";
+import CarouselView from "@/components/CarouselView.vue";
+import TextScrollView from "@/components/TextScrollView.vue";
+import LeftView from "@/components/LeftView.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -108,16 +147,15 @@ const state = reactive({
   contentRightWith: document.documentElement.clientWidth * 0.75,
   avatarBlock: document.documentElement.clientWidth * 0.22,
 
+  leftMainHeight: document.documentElement.clientHeight * 0.64,
+
   homeLeftHeight: document.documentElement.clientHeight * 0.78,
   homeLeftWidth: document.documentElement.clientWidth * 0.14,
 
   mainWidth: document.documentElement.clientWidth * 0.86,
-  mainHeight: document.documentElement.clientHeight * 0.7,
-  homeLeftFooterHeight: document.documentElement.clientWidth * 0.08,
-
-
-})
-
+  mainHeight: document.documentElement.clientHeight * 0.55,
+  homeLeftFooterHeight: document.documentElement.clientWidth * 0.08
+});
 
 // watch(router, () => {
 //   console.log("fdsf")
@@ -131,10 +169,10 @@ const menus = computed(() => {
     if (item.name === "home") {
       menuList = item.children;
     }
-  })
+  });
   // console.log(state.arr)
   return menuList;
-})
+});
 
 const handleResize = () => {
   state.hHeight = document.documentElement.clientHeight;
@@ -144,24 +182,25 @@ const handleResize = () => {
   state.contentRightWith = document.documentElement.clientWidth * 0.75;
   state.avatarBlock = document.documentElement.clientWidth * 0.22;
 
+  state.leftMainHeight = document.documentElement.clientHeight * 0.64;
+
   state.homeLeftHeight = document.documentElement.clientHeight * 0.78;
   state.homeLeftWidth = document.documentElement.clientWidth * 0.14;
 
-  state.mainHeight = document.documentElement.clientHeight * 0.7;
+  state.mainHeight = document.documentElement.clientHeight * 0.55;
   state.mainWidth = document.documentElement.clientWidth * 0.86;
   state.homeLeftFooterHeight = document.documentElement.clientHeight * 0.08;
-}
+};
 
 onMounted(() => {
   window.onresize = () => {
-    handleResize()
-  }
-})
+    handleResize();
+  };
+});
 
 onUnmounted(() => {
-  window.onresize = null
-})
-
+  window.onresize = null;
+});
 </script>
 
 <style lang="scss" scoped>
@@ -241,11 +280,15 @@ onUnmounted(() => {
   .home-left {
     padding: 0px;
     margin: 0px;
-
-    // background-color: rgb(25, 37, 30);
-    // height: calc(100vh - 230px);
-    // background-image: url('@/assets/left-bg.png');
-    // background-size: cover;
+    .el-main {
+      margin: 0px;
+      padding: 12px;
+      //overflow: hidden;
+    }
+    /* 隐藏滚动条的CSS */
+    .el-main::-webkit-scrollbar {
+      display: none;
+    }
     .footer {
       background-color: rgb(0, 255, 98);
     }
@@ -255,9 +298,23 @@ onUnmounted(() => {
     // background-color: rgb(145, 6, 6);
     // background-image: url('@/assets/main-bg.png');
     // background-size: cover;
-    padding: 0px;
+    padding: 0px 10px 0px 0px;
 
-    .el-header{
+    .el-main {
+      overflow: hidden;
+      scrollbar-width: none;
+      padding: 0px 20px 0px 20px;
+    }
+
+    .router-content {
+      overflow: auto;
+    }
+    /* 隐藏滚动条的CSS */
+    .el-main::-webkit-scrollbar {
+      display: none;
+    }
+
+    .el-header {
       padding: 0px;
     }
   }
