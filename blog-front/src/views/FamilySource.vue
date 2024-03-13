@@ -17,7 +17,137 @@
       </el-row>
     </div>
     <!--族谱面板-->
-    <div ref="myDiagramDiv" style="background-color: rgb(248, 248, 248); border: 0px solid #9b9b9b; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;height: 90%">fdsfa</div>
+    <div
+      ref="myDiagramDiv"
+      style="background-color: rgb(248, 248, 248); border: 0px solid #9b9b9b; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;height: 90%"
+    ></div>
+    <div>
+      <!--单击节点-成员详细信息面板-->
+      <el-dialog width="30%" center :title="panTitle" v-model="dialogUserInfo">
+        <el-avatar style="margin-left: 25%;" :size="200" :src="UserInfo.userImgUrl"></el-avatar>
+        <el-descriptions :column="3" border>
+          <el-descriptions-item width="90px">
+            <template #label>
+              <el-icon :style="iconStyle">
+                <Discount />
+              </el-icon>性别
+            </template>
+            {{ UserInfo.userSex }}
+          </el-descriptions-item>
+
+          <el-descriptions-item>
+            <template #label>
+              <el-icon :style="iconStyle">
+                <Star />
+              </el-icon>年龄
+            </template>
+            {{ UserInfo.age }}
+          </el-descriptions-item>
+
+          <el-descriptions-item>
+            <template #label>
+              <el-icon :style="iconStyle">
+                <Calendar />
+              </el-icon>生日
+            </template>
+            {{ UserInfo.userBirthDay }}
+          </el-descriptions-item>
+
+          <el-descriptions-item>
+            <template #label>
+              <el-icon :style="iconStyle">
+                <Male />
+              </el-icon>父亲
+            </template>
+            {{ UserInfo.pName }}
+          </el-descriptions-item>
+
+          <el-descriptions-item>
+            <template #label>
+              <el-icon :style="iconStyle">
+                <Female />
+              </el-icon>母亲
+            </template>
+            {{ UserInfo.mName }}
+          </el-descriptions-item>
+
+          <el-descriptions-item>
+            <template #label>
+              <el-icon :style="iconStyle">
+                <Connection />
+              </el-icon>配偶
+            </template>
+            <el-tag size="small"  v-for="(item,idx ) in selectUserMates.values">{{ item.userName }}</el-tag>
+          </el-descriptions-item>
+        </el-descriptions>
+
+        <el-descriptions :column="1" border>
+          <el-descriptions-item width="90px">
+            <template #label>
+              <el-icon :style="iconStyle">
+                <Printer />
+              </el-icon>邮箱
+            </template>
+            {{ UserInfo.userEmil }}
+          </el-descriptions-item>
+
+          <el-descriptions-item >
+            <template #label>
+              <el-icon :style="iconStyle">
+                <Iphone />
+              </el-icon>手机号
+            </template>
+            {{ UserInfo.userPhone }}
+          </el-descriptions-item>
+
+          <el-descriptions-item>
+            <template #label>
+              <el-icon :style="iconStyle">
+                <Flag />
+              </el-icon>座右铭
+            </template>
+            {{ UserInfo.userNote }}
+          </el-descriptions-item>
+
+          <el-descriptions-item >
+            <template #label>
+              <el-icon :style="iconStyle">
+                <Place />
+              </el-icon>现地址
+            </template>
+            {{ UserInfo.userAddressNew }}
+          </el-descriptions-item>
+
+          <el-descriptions-item>
+            <template #label>
+              <el-icon :style="iconStyle">
+                <MapLocation />
+              </el-icon>户籍地
+            </template>
+            {{ UserInfo.userAddressOld }}
+          </el-descriptions-item>
+        </el-descriptions>
+
+        <el-descriptions :column="1" border v-if="isDieShow">
+          <el-descriptions-item width="90px">
+            <template #label>
+              <el-icon :style="iconStyle">
+                <CreditCard />
+              </el-icon>忌日
+            </template>
+            {{ UserInfo.userDieDay }}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
+              <el-icon :style="iconStyle">
+                <Calendar />
+              </el-icon>亡故年
+            </template>
+            {{ UserInfo.dieDayNum }}年
+          </el-descriptions-item>
+        </el-descriptions>
+      </el-dialog>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -286,31 +416,59 @@ class GenogramLayout extends go.LayeredDigraphLayout {
     return null;
   }
 } // end GenogramLayout class
-import {
-  ref,
-  onMounted,
-  onUnmounted,
-  defineComponent,
-  reactive,
-  nextTick,
-  watch,
-  computed
-} from "vue";
+import { ref, onMounted, reactive, computed } from "vue";
 import { _getSourceAll } from "@/api/api";
-import go from "gojs"; //在export default前
-// import { go } from "@/utils/go.js";
-
-function textStyle() {
-  return { font: "9pt  Segoe UI,sans-serif", stroke: "white" };
-}
+import { ElMessage } from "element-plus";
+import go from "gojs";
 const jsonarray = []; //数据
-const ManImg = "/static/defaultImg.png";
-const WmanImg = "/static/defaultW.png";
+const ManImg = "/static/defaultImg.png"; //默认男头
+const WmanImg = "/static/defaultW.png"; //默认女头
 let myDiagram = null;
-let serachName = "";
-// const go = gojs;
-// const $ = go.GraphObject.make;
+
 const myDiagramDiv = ref(null);
+const serachName = ref(""); //搜索人员关键词
+const panTitle = ref(""); //单击名片面板标题
+const dialogUserInfo = ref(false); //人员详细面板开关
+const isDieShow = ref(false); //已故人员日期显示开关
+const UserInfo = reactive({
+  userId: "", //id
+  userName: "", //姓名
+  isSurvival: "是", //是否存活
+  mName: "", //母亲姓名
+  pName: "", //父亲姓名
+  mateName: "", //配偶名称
+  userAddressNew: "", //现地址
+  userAddressOld: "", //户口地址
+  userBirthDay: "", //生日
+  userDieDay: "", //死亡日期
+  userEmil: "", //邮箱
+  userImgUrl: "", //头像
+  userLove: "", //代数
+  userMID: "", //母亲ID
+  userMateId: "", //配偶ID
+  userNote: "", //备注
+  userPId: "", //父亲ID
+  userPhone: "", //电话
+  userPinYin: "", //拼音
+  userSex: "", //性别
+  age: "", //年龄
+  dieDayNum: "", //亡故日期
+  type: "" //操作
+});
+const selectUserMates = new Array<String>(); //选中成员配偶
+const size = ref("default");
+const iconStyle = computed(() => {
+  const marginMap = {
+    large: "8px",
+    default: "6px",
+    small: "4px"
+  };
+  return {
+    marginRight: marginMap[size.value] || marginMap.default
+  };
+});
+
+/*初始化方法*/
 function init() {
   const gojs = go.GraphObject.make; // 为了定义模板的简洁性
   myDiagram = gojs(go.Diagram, myDiagramDiv.value, {
@@ -319,7 +477,7 @@ function init() {
     layout: gojs(GenogramLayout, { direction: 90, layerSpacing: 35 }),
     allowZoom: true
   });
-  // 两个不同的节点模板，每个性别一个
+
   myDiagram.nodeTemplateMap.add(
     "活女",
     gojs(
@@ -414,7 +572,10 @@ function init() {
             new go.Binding("text", "addressNew").makeTwoWay()
           )
         )
-      )
+      ),
+      {
+        click: nodeClick
+      }
     )
   );
 
@@ -512,7 +673,10 @@ function init() {
             new go.Binding("text", "addressNew").makeTwoWay()
           )
         )
-      )
+      ),
+      {
+        click: nodeClick
+      }
     )
   );
 
@@ -612,7 +776,10 @@ function init() {
             new go.Binding("text", "addressNew").makeTwoWay()
           )
         )
-      )
+      ),
+      {
+        click: nodeClick
+      }
     )
   );
 
@@ -712,7 +879,10 @@ function init() {
             new go.Binding("text", "addressNew").makeTwoWay()
           )
         )
-      )
+      ),
+      {
+        click: nodeClick
+      }
     )
   );
   // 每个标签节点的表示形式——婚姻链接上不显示任何内容
@@ -746,6 +916,7 @@ function init() {
       gojs(go.Shape, { strokeWidth: 2, stroke: "#0071c1" })
     )
   );
+  //数据
   _getSourceAll().then(res => {
     if (res.status === 200) {
       let arrays = res.data;
@@ -792,7 +963,11 @@ function init() {
     setupDiagram(myDiagram, jsonarray, 1);
   });
 }
-
+/*模板字体样式*/
+function textStyle() {
+  return { font: "9pt  Segoe UI,sans-serif", stroke: "white" };
+}
+/*了解所有婚姻后处理亲子关系*/
 function setupDiagram(diagram, array, focusId) {
   diagram.model = go.GraphObject.make(go.GraphLinksModel, {
     // 声明对链接标签节点的支持
@@ -811,7 +986,7 @@ function setupDiagram(diagram, array, focusId) {
     diagram.select(node);
   }
 }
-
+/*处理节点数据以确定婚姻*/
 function setupMarriages(diagram) {
   var model = diagram.model;
   var nodeDataArray = model.nodeDataArray;
@@ -845,7 +1020,7 @@ function setupMarriages(diagram) {
     }
   }
 }
-
+/*了解所有婚姻后处理亲子关系*/
 function setupParents(diagram) {
   var model = diagram.model;
   var nodeDataArray = model.nodeDataArray;
@@ -866,7 +1041,7 @@ function setupParents(diagram) {
     }
   }
 }
-
+/*画线*/
 function findMarriage(diagram, a, b) {
   // A和B是节点密钥
   var nodeA = diagram.findNodeForKey(a);
@@ -881,15 +1056,18 @@ function findMarriage(diagram, a, b) {
   }
   return null;
 }
-
+/*放大、缩小树*/
 function zoomToFitFun() {
   myDiagram.commandHandler.zoomToFit();
 }
-
+/*搜索人员*/
 function serachByNameFun() {
-  let res = myDiagram.findNodesByExample({ name: this.serachName });
+  let res = myDiagram.findNodesByExample({ name: serachName.value });
   if (res.count < 1) {
-    this.$notify.warning("未查到该人员");
+    ElMessage({
+      message: "未查到该人员",
+      type: "warning"
+    });
     return;
   }
   res.each(function(node) {
@@ -898,6 +1076,69 @@ function serachByNameFun() {
     myDiagram.commandHandler.scrollToPart(myDiagram.findNodeForKey(node.key));
   });
 }
+/*单击节点事件*/
+function nodeClick(e, obj) {
+  const timeId = setTimeout(() => {
+    var clicked = obj.part;
+    if (clicked !== null) {
+      var pData = clicked.data;
+      UserInfo.userId = pData.key;
+      UserInfo.userName = pData.name;
+      UserInfo.isSurvival = pData.isDie;
+      UserInfo.userAddressNew = pData.addressNew;
+      UserInfo.userAddressOld = pData.addressOld;
+      UserInfo.userBirthDay = pData.birthDay;
+      UserInfo.userDieDay = pData.dieDay;
+      UserInfo.mName = pData.mName;
+      UserInfo.pName = pData.pName;
+      UserInfo.mateName = pData.mateName;
+      UserInfo.userEmil = pData.emil;
+      UserInfo.userImgUrl = pData.img;
+      UserInfo.userLove = pData.love;
+      UserInfo.userMID = pData.mId;
+      UserInfo.userMateId = pData.mateId;
+      UserInfo.userPId = pData.pId;
+      UserInfo.userNote = pData.note;
+      UserInfo.userPhone = pData.phone;
+      UserInfo.userPinYin = pData.pinyin;
+      UserInfo.userSex = pData.sex;
+      selectUserMates.values = pData.mate;
+      myDiagram.scale = 1;
+      myDiagram.commandHandler.scrollToPart(
+        myDiagram.findNodeForKey(obj.part.data.key)
+      );
+
+      countAgeFun();
+      if (pData.isDie === "0") {
+        isDieShow.value = true;
+      } else {
+        isDieShow.value = false;
+      }
+      dialogUserInfo.value = true;
+      panTitle.value = "姓名：" + pData.name + "-第" + pData.love + "代";
+      console.log(selectUserMates.values[0].userName)
+    } else {
+      dialogUserInfo.value = false;
+    }
+  }, 250);
+}
+/*年龄计算方法*/
+function countAgeFun() {
+  let uDate = UserInfo.userBirthDay;
+  let dDate = UserInfo.userDieDay;
+  let date = new Date().getTime();
+  if (uDate != "") {
+    uDate = new Date(uDate).getTime();
+    let numAge = date - uDate;
+    UserInfo.age = Math.floor(numAge / 1000 / 60 / 60 / 24 / 365);
+  }
+  if (dDate != "") {
+    dDate = new Date(dDate).getTime();
+    let numDie = date - dDate;
+    UserInfo.dieDayNum = Math.floor(numDie / 1000 / 60 / 60 / 24 / 365);
+  }
+}
+
 onMounted(() => {
   init();
 });

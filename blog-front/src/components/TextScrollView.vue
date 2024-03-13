@@ -21,14 +21,14 @@
 }
 
 #marquee div:first-of-type {
-    background: #e5233e;
+    background: #86ac79;
     transform-origin: top right;
     transform: rotateY(-40deg);
     color: #fff;
 }
 
 #marquee div:last-of-type {
-    background: #b31e31;
+    background: #86ac79;
     transform-origin: top left;
     transform: rotateY(45deg);
     color: #f8c9d9;
