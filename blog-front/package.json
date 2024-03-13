@@ -5,14 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "run-p  \"build-only {@}\" --",
+    "build": "node removeWatermarkForGoJs && run-p  \"build-only {@}\" --",
     "preview": "vite preview",
-    "build-only": "vite build"
+    "build-only": "vite build",
+    "test:unit": "vite test:unit",
+    "test:e2e": "vite test:e2e",
+    "lint": "vite lint"
   },
   "dependencies": {
     "axios": "^1.6.7",
     "element-plus": "^2.5.6",
-    "gojs": "^2.3.15",
+    "gojs": "^2.1.5",
     "pinia": "^2.1.7",
     "qs": "^6.12.0",
     "tsparticles": "^3.3.0",
