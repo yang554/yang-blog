@@ -1,18 +1,22 @@
 <template>
-  <div style="height: 100%;">
+  <div style="height: 95%;" v-loading="loading">
     <div style="height: 7%;">
-      <el-row style="margin-top: 10px;margin-bottom: 10px;">
+      <el-row style="margin-top: 5px;margin-left:5px;">
         <el-col :span="8">
-          <el-input placeholder="按用户名搜索" v-model="serachName" size="small"></el-input>
+          <el-input placeholder="按用户名搜索" v-model="serachName">
+            <template #prefix>
+              <el-icon class="el-input__icon"><search /></el-icon>
+            </template>
+          </el-input>
         </el-col>
         <el-col :span="1">
-          <el-button type="success" size="small" @click="serachByNameFun">
+          <el-button type="success" @click="serachByNameFun">
             <i class="el-icon-search"></i>
             搜索
           </el-button>
         </el-col>
         <el-col :span="1" :offset="1">
-          <el-button type="warning" size="small" @click="zoomToFitFun">总览</el-button>
+          <el-button type="warning" @click="zoomToFitFun">总览</el-button>
         </el-col>
       </el-row>
     </div>
@@ -77,7 +81,7 @@
                 <Connection />
               </el-icon>配偶
             </template>
-            <el-tag size="small"  v-for="(item,idx ) in selectUserMates.values">{{ item.userName }}</el-tag>
+            <el-tag size="small" v-for="(item,idx ) in selectUserMates.values">{{ item.userName }}</el-tag>
           </el-descriptions-item>
         </el-descriptions>
 
@@ -91,7 +95,7 @@
             {{ UserInfo.userEmil }}
           </el-descriptions-item>
 
-          <el-descriptions-item >
+          <el-descriptions-item>
             <template #label>
               <el-icon :style="iconStyle">
                 <Iphone />
@@ -109,7 +113,7 @@
             {{ UserInfo.userNote }}
           </el-descriptions-item>
 
-          <el-descriptions-item >
+          <el-descriptions-item>
             <template #label>
               <el-icon :style="iconStyle">
                 <Place />
@@ -418,13 +422,14 @@ class GenogramLayout extends go.LayeredDigraphLayout {
 } // end GenogramLayout class
 import { ref, onMounted, reactive, computed } from "vue";
 import { _getSourceAll } from "@/api/api";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElLoading } from "element-plus";
 import go from "gojs";
-const jsonarray = []; //数据
-const ManImg = "/static/defaultImg.png"; //默认男头
-const WmanImg = "/static/defaultW.png"; //默认女头
-let myDiagram = null;
 
+import ManImg from "../../../blog-end/public//static/defaultImg.png"; //默认男头
+import WmanImg from "../../../blog-end/public//static/defaultW.png"; //默认女头
+const jsonarray = []; //数据
+let myDiagram = null;
+const loading = ref(true);
 const myDiagramDiv = ref(null);
 const serachName = ref(""); //搜索人员关键词
 const panTitle = ref(""); //单击名片面板标题
@@ -921,17 +926,26 @@ function init() {
     if (res.status === 200) {
       let arrays = res.data;
       for (var i = 0; i < arrays.length; i++) {
-        let img = arrays[i].userImgUrl;
+        // let img = getAssetsImages(arrays[i].userImgUrl);
+
+        let img = ref("");
+        // import("../../../blog-end/public" + arrays[i].userImgUrl).then(res => {
+        //   console.log(res.default);
+        //   img.value = res.default;
+
+        // });
+
+        // console.log("这是头像", img);
         if (
-          (img == null || img == undefined || img == "") &&
+          (img == null || img == undefined || img.value == "") &&
           arrays[i].userSex == "男"
         ) {
-          img = ManImg;
+          img.value = ManImg;
         } else if (
-          (img == null || img == undefined || img == "") &&
+          (img == null || img == undefined || img.value == "") &&
           arrays[i].userSex == "女"
         ) {
-          img = WmanImg;
+          img.value = WmanImg;
         }
         let arr = {
           key: arrays[i].userId,
@@ -947,7 +961,7 @@ function init() {
           addressNew: arrays[i].userAddressNew,
           addressOld: arrays[i].userAddressOld,
           emil: arrays[i].userEmil,
-          img: img,
+          img: img.value,
           mateId: arrays[i].userMateId,
           note: arrays[i].userNote,
           love: arrays[i].userLove,
@@ -1116,7 +1130,8 @@ function nodeClick(e, obj) {
       }
       dialogUserInfo.value = true;
       panTitle.value = "姓名：" + pData.name + "-第" + pData.love + "代";
-      console.log(selectUserMates.values[0].userName)
+      // console.log(pData.img);
+      // console.log(selectUserMates.values[0].userName)
     } else {
       dialogUserInfo.value = false;
     }
@@ -1141,7 +1156,11 @@ function countAgeFun() {
 
 onMounted(() => {
   init();
+  loading.value = false
 });
 </script>
 <style lang="scss" scoped>
+.example-showcase .el-loading-mask {
+  z-index: 9;
+}
 </style>

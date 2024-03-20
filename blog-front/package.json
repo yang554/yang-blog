@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node removeWatermarkForGoJs && run-p  \"build-only {@}\" --",
+    "build": " run-p  \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
     "test:unit": "vite test:unit",
@@ -14,8 +14,12 @@
   },
   "dependencies": {
     "axios": "^1.6.7",
+    "chinese-lunar-calendar": "^1.0.1",
+    "echarts": "^5.5.0",
+    "echarts-wordcloud": "^2.1.0",
     "element-plus": "^2.5.6",
     "gojs": "^2.1.5",
+    "mavon-editor": "^3.0.1",
     "pinia": "^2.1.7",
     "qs": "^6.12.0",
     "tsparticles": "^3.3.0",

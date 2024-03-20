@@ -13,7 +13,7 @@
         >
           <TextScrollView class="block-left" />
           <div class="block-right">
-            <el-avatar :size="130" src="../assets/defaultImg.png" />
+            <el-avatar :size="130" :src="img" />
           </div>
         </div>
         <div
@@ -107,9 +107,9 @@
                 </el-menu>
               </el-header>
               <el-main :style="{ width: state.mainWidth + 'px', height: state.mainHeight + 'px' }">
-                <router-view :key="$route.fullPath" />
+                <router-view :key="$route.fullPath" :mainHeight="state.mainHeight" />
               </el-main>
-              <el-footer></el-footer>
+              <el-footer :style="{ height: state.footerHeight + 'px' }"></el-footer>
             </el-container>
           </div>
         </el-main>
@@ -120,6 +120,7 @@
 
 <script setup lang="ts">
 import { useRouter, useRoute } from "vue-router";
+import img from "../../../blog-end/public/static/defaultImg.png";
 import {
   ref,
   onMounted,
@@ -136,7 +137,7 @@ import LeftView from "@/components/LeftView.vue";
 
 const router = useRouter();
 const route = useRoute();
-
+// const img = require("../../../blog-end/public/static/defaultImg.png")
 const state = reactive({
   sidebarActiveIndex: "/home",
   arr: [],
@@ -153,7 +154,7 @@ const state = reactive({
   homeLeftWidth: document.documentElement.clientWidth * 0.14,
 
   mainWidth: document.documentElement.clientWidth * 0.86,
-  mainHeight: document.documentElement.clientHeight * 0.55,
+  mainHeight: document.documentElement.clientHeight * 0.58,
   homeLeftFooterHeight: document.documentElement.clientWidth * 0.08
 });
 
@@ -171,6 +172,7 @@ const menus = computed(() => {
     }
   });
   // console.log(state.arr)
+
   return menuList;
 });
 
@@ -187,7 +189,7 @@ const handleResize = () => {
   state.homeLeftHeight = document.documentElement.clientHeight * 0.78;
   state.homeLeftWidth = document.documentElement.clientWidth * 0.14;
 
-  state.mainHeight = document.documentElement.clientHeight * 0.55;
+  state.mainHeight = document.documentElement.clientHeight * 0.58;
   state.mainWidth = document.documentElement.clientWidth * 0.86;
   state.homeLeftFooterHeight = document.documentElement.clientHeight * 0.08;
 };
@@ -295,17 +297,18 @@ onUnmounted(() => {
   }
 
   .main-content {
-    // background-color: rgb(145, 6, 6);
-    // background-image: url('@/assets/main-bg.png');
-    // background-size: cover;
     padding: 0px 10px 0px 0px;
 
     .el-main {
-      overflow: hidden;
-      scrollbar-width: none;
-      padding: 0px 20px 0px 20px;
+      //overflow: hidden;
+      //scrollbar-width: none;
+      padding: 0px 0px 0px 0px;
     }
 
+    /* 隐藏滚动条的CSS */
+    .el-main::-webkit-scrollbar {
+      display: none;
+    }
     .router-content {
       overflow: auto;
     }

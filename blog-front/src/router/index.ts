@@ -18,6 +18,7 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       { path: "/BlogView", name: "BlogView", meta: { title: '文章' }, component: () => import('@/views/BlogView.vue') },
       { path: "/FamilySource", name: "FamilySource", meta: { title: '族谱' }, component: () => import('@/views/FamilySource.vue') },
+      { path: "/AuntDashBoard", name: "AuntDashBoard", meta: { title: '经期推测' }, component: () => import('@/views/AuntDashBoard.vue') },
     ]
   },
 ]
