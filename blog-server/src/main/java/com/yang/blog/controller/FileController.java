@@ -2,6 +2,7 @@ package com.yang.blog.controller;
 
 import com.yang.blog.service.FileService;
 import com.yang.blog.service.SysUserService;
+import com.yang.blog.service.TBlogService;
 import com.yang.blog.service.USourceService;
 import com.yang.blog.utils.RespBean;
 import org.apache.commons.io.FileUtils;
@@ -31,6 +32,8 @@ public class FileController {
     private SysUserService userService;
     @Autowired
     private USourceService sourceService;
+    @Autowired
+    private TBlogService blogService;
 
     @PostMapping("/upload")
     public RespBean upload(@RequestParam(value = "file") MultipartFile file) throws IOException {
@@ -40,9 +43,10 @@ public class FileController {
         String newFileName = UUID.randomUUID().toString().replace("-","") + fileType;//新文件名
         String filePath = new SimpleDateFormat("yyyy-MM-dd/").format(new Date());// 构建日期路径
         String path = "/MyItem/yang-blog/blog-end/public";
-        String url = "/static/" +  filePath + fileName;
-        String uploadUrl =  path +  url;// 文件上传的路径地址
+        String path1 = "/MyItem/yang-blog/blog-front/public";
 
+        String url = "/static/" +  filePath + newFileName;
+        String uploadUrl =  path +  url;// 文件上传的路径地址
         File f = new File(uploadUrl);
         if(!f.exists()){
             try {
@@ -60,13 +64,20 @@ public class FileController {
         String type = request.getParameter("type");
         String fileName = file.getOriginalFilename();//文件名
         String filePath = new SimpleDateFormat("yyyy-MM-dd/").format(new Date());// 构建日期路径
+        String suffix = fileName.substring(fileName.lastIndexOf("."));
+        // 使用UUID生成文件名
+        String filename = UUID.randomUUID() + suffix;
         String path = "/MyItem/yang-blog/blog-end/public";
-        String url = "/static/" +  filePath + fileName;
+        String path1 = "/MyItem/yang-blog/blog-front/public";
+        String url = "/static/" +  filePath + filename;
         String uploadUrl =  path +  url;// 文件上传的路径地址
+        String uploadUrl1 =  path1 +  url;// 文件上传的路径地址
         File f = new File(uploadUrl);
+        File f1 = new File(uploadUrl1);
         if(!f.exists()){
             try {
                 FileUtils.copyInputStreamToFile(file.getInputStream(),f);
+                FileUtils.copyInputStreamToFile(file.getInputStream(),f1);
             }catch (IOException e){
                 System.out.println(e.getMessage());
             }
@@ -75,6 +86,8 @@ public class FileController {
             return sourceService.updateImgByKey(url,id);
         }else if ("userAvatar".equals(type)){
             return userService.saveAvatar(url,id);
+        }else if("blogAvatar".equals(type)){
+            return blogService.saveBlogCover(url,id);
         }else {
             return RespBean.error("上传失败");
         }

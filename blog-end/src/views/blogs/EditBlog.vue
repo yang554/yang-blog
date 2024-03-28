@@ -16,8 +16,8 @@
                         :preview-src-list="[editForm.cover]">
                     </el-image>
                 </div>
-                <el-upload ref="cover" class="upload-demo" :show-file-list="false" action="/api/file/upload" :auto-upload="true"
-                    auto:true :on-change="handleChange" :on-success="handleFileSuccess" accept=".jpg,.png,.bmp,.jpeg,.gif">
+                <el-upload ref="cover" class="upload-demo" :show-file-list="false" :action="uploadAvatarUrl" :data="uploadAvatarParams" :auto-upload="true"
+                    auto:true :on-change="handleChange" :on-success="handleFileSuccess" :before-upload="beforeAvatarUpload" accept=".jpg,.png,.bmp,.jpeg,.gif">
                     <el-button size="small" type="primary">点击上传</el-button>
                 </el-upload>
             </el-form-item>
@@ -82,6 +82,11 @@ import { _getBlogById, _typeAll, _getTagAll, _saveBlog, _uploadImgs } from "@/ap
 export default {
     name: "EditBlog",
     components: {},
+    computed: {
+        uploadAvatarUrl() {
+            return '/api/file/upload/avatar';
+        },
+    },
     props: {},
     data() {
         return {
@@ -113,6 +118,10 @@ export default {
             },
             tagList: [],		//标签列表
             typeList: [],		//类型列表
+            uploadAvatarParams: {
+                "id": "",
+                "type":'blogAvatar',
+            },
         }
     },
     methods: {
@@ -187,6 +196,7 @@ export default {
         },
         handleFileSuccess(response, file, fileList) {
             if (response.status == 200) {
+                this.$message.success("头像上传成功");
                 this.editForm.cover = response.obj
             }
         },
@@ -194,11 +204,24 @@ export default {
             // this.multipartFile = new FormData();
             // this.multipartFile.append("file", file.raw);
             // this.editForm.cover = window.webkitURL.createObjectURL(file.raw);
-        }
+        },
+         /*上传头像*/
+         beforeAvatarUpload(file) {
+            const isJPG = file.type.startsWith("image");
+            const isLt10M = file.size / 1024 / 1024 < 10;
+            if (!isJPG) {
+                this.$message.error('上传头像图片只能是 JPG 格式!');
+            }
+            if (!isLt10M) {
+                this.$message.error('上传头像图片大小不能超过 10MB!');
+            }
+            return isJPG && isLt10M;
+        },
 
     },
     created() {
         this.bid = this.$route.params.id
+        this.uploadAvatarParams.id = this.$route.params.id
         this.initBlog();
     }
 }

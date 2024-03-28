@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 95%;" v-loading="loading">
+  <div style="height: 95%;width: 98%" v-loading="loading">
     <div style="height: 7%;">
       <el-row style="margin-top: 5px;margin-left:5px;">
         <el-col :span="8">
@@ -425,8 +425,8 @@ import { _getSourceAll } from "@/api/api";
 import { ElMessage, ElLoading } from "element-plus";
 import go from "gojs";
 
-import ManImg from "../../../blog-end/public//static/defaultImg.png"; //默认男头
-import WmanImg from "../../../blog-end/public//static/defaultW.png"; //默认女头
+import ManImg from "/static/defaultImg.png"; //默认男头
+import WmanImg from "/static/defaultW.png"; //默认女头
 const jsonarray = []; //数据
 let myDiagram = null;
 const loading = ref(true);
@@ -926,9 +926,9 @@ function init() {
     if (res.status === 200) {
       let arrays = res.data;
       for (var i = 0; i < arrays.length; i++) {
-        // let img = getAssetsImages(arrays[i].userImgUrl);
+        let img = arrays[i].userImgUrl;
 
-        let img = ref("");
+        // let img = ref("");
         // import("../../../blog-end/public" + arrays[i].userImgUrl).then(res => {
         //   console.log(res.default);
         //   img.value = res.default;
@@ -937,15 +937,15 @@ function init() {
 
         // console.log("这是头像", img);
         if (
-          (img == null || img == undefined || img.value == "") &&
+          (img == null || img == undefined || img == "") &&
           arrays[i].userSex == "男"
         ) {
-          img.value = ManImg;
+          img = ManImg;
         } else if (
-          (img == null || img == undefined || img.value == "") &&
+          (img == null || img == undefined || img == "") &&
           arrays[i].userSex == "女"
         ) {
-          img.value = WmanImg;
+          img = WmanImg;
         }
         let arr = {
           key: arrays[i].userId,
@@ -961,7 +961,7 @@ function init() {
           addressNew: arrays[i].userAddressNew,
           addressOld: arrays[i].userAddressOld,
           emil: arrays[i].userEmil,
-          img: img.value,
+          img: img,
           mateId: arrays[i].userMateId,
           note: arrays[i].userNote,
           love: arrays[i].userLove,

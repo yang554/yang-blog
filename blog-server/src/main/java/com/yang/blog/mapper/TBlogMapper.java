@@ -31,6 +31,8 @@ public interface TBlogMapper {
     int addBlog(TBlogEntity entity);
     //编辑博客
     int saveBlog(TBlogEntity entity);
+    //保存博客封面
+    int saveBlogCover(@Param(value = "cover") String cover,@Param(value = "id") String id);
     //删除博客(永久)
     int delBlog(String bID);
     //删除至回收站\还原

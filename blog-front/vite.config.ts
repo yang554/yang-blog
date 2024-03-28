@@ -21,8 +21,8 @@ export default defineConfig({
     // 代理配置
     proxy: {
       '/api': {
-        target: 'http://118.25.110.52:8090/',
-        // target: 'http://127.0.0.1:8090/',
+        // target: 'http://118.25.110.52:8090/',
+        target: 'http://127.0.0.1:8090/',
         changeOrigin: true,
         secure: false,  
         rewrite: (path) => path.replace(/^\/api/, '')

@@ -168,6 +168,16 @@ public class TBlogServiceImpl implements TBlogService {
     }
 
     @Override
+    public RespBean saveBlogCover(String cover, String id) {
+        int status = blogMapper.saveBlogCover(cover,id);
+        if(status > 0){
+            return RespBean.ok("头像上传成功",cover);
+        }else {
+            return RespBean.error("头像上传失败");
+        }
+    }
+
+    @Override
     public RespBean delBlog(String bID) {
         int status = blogMapper.delBlog(bID);
         if(status > 0){

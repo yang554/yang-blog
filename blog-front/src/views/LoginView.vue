@@ -92,7 +92,7 @@ export default defineComponent({
             })
             setTimeout(() => {
                 loading.close()
-                this.$router.replace('/home')
+                this.$router.replace('/BlogView')
 
             }, 3000)
         }

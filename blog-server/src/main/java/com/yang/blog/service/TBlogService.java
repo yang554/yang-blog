@@ -16,6 +16,8 @@ public interface TBlogService {
     RespBean addBlog(HashMap<String,Object> entity);
     //保存博客
     RespBean saveBlog(HashMap<String,Object> entity);
+    //保存博客封面图片
+    RespBean saveBlogCover(String cover,String id);
     //删除博客(永久)
     RespBean delBlog(String bID);
     //删除博客回收站\还原
