@@ -19,18 +19,14 @@
     <el-table
       v-loading="pagination.loading"
       :data="pagination.currentTableData"
-      style="width: 100%"
+      style="width: 98%"
       :height="state.tabHeight + 'px'"
     >
       <el-table-column style="width: 100%">
         <template #default="scope">
-          <el-card
-            style="cursor: pointer;"
-            class="box-card"
-            @click="handlePreviewContent(scope.$index, scope.row)"
-          >
+          <el-card style="cursor: pointer;" class="box-card">
             <el-row type="flex" :gutter="10">
-              <el-col :span="6">
+              <el-col :span="6" @click="handlePreviewContent(scope.$index, scope.row)">
                 <el-image
                   style="width: 100%;height: 180px;border: 1px solid #eee;"
                   :src="scope.row.cover"
@@ -39,19 +35,39 @@
               </el-col>
 
               <el-col :span="18">
-                <el-row style="font-size: 22px;margin: 10px">
+                <el-row
+                  style="font-size: 22px;margin: 10px"
+                  @click="handlePreviewContent(scope.$index, scope.row)"
+                >
                   <span style="font-weight: bold;">{{ scope.row.title }}</span>
                 </el-row>
-                <el-row style="font-size: 16px;margin: 10px">{{ scope.row.description }}</el-row>
+                <el-row
+                  style="font-size: 18px;margin: 10px"
+                  @click="handlePreviewContent(scope.$index, scope.row)"
+                >{{ scope.row.description }}</el-row>
 
-                <div style="margin-top: 15px;margin: 10px;font-size: 10px;">
+                <div style="margin-top: 15px;margin: 10px;font-size: 14px;">
                   <div style="margin-right: 20px;">
-                    <i style="margin: 5px;" class="iconfont icon-zuozhe">{{ scope.row.uName }}</i>
-                    <i style="margin: 5px;" class="iconfont icon-shuben1">{{ scope.row.tName }}</i>
-                    <i
-                      style="margin: 5px;"
-                      class="iconfont icon-31shijian"
-                    >{{ scope.row.createtime }}</i>
+                    <svg class="icon" aria-hidden="true">
+                      <use xlink:href="#icon-yonghu" />
+                    </svg>
+                    {{ scope.row.uName }}
+                    <svg
+                      style="margin-left: 10px;"
+                      class="icon"
+                      aria-hidden="true"
+                    >
+                      <use xlink:href="#icon-shuben-" />
+                    </svg>
+                    {{ scope.row.tName }}
+                    <svg
+                      style="margin-left: 10px;"
+                      class="icon"
+                      aria-hidden="true"
+                    >
+                      <use xlink:href="#icon-shijian2" />
+                    </svg>
+                    {{  fortTime(scope.row.createtime) }}
                   </div>
                 </div>
 
@@ -73,15 +89,24 @@
                 </div>
                 <div style="margin-top: 15px;margin: 10px;display:flex" class="my-flex">
                   <div style="margin-right: 20px;">
-                    <i style="margin: 5px;" class="iconfont icon-yanjing_xianshi">
+                    <svg class="icon" aria-hidden="true">
+                      <use xlink:href="#icon-yanjing_xianshi" />
+                    </svg>
+                    <i class="iconfont icon-yanjing_xianshi">
                       {{
                       scope.row.browsecount }}
                     </i>
                   </div>
                   <div style="margin-right: 20px;">
-                    <i class="iconfont icon-dianzan_huaban">{{ scope.row.likes }}</i>
+                    <svg class="icon" aria-hidden="true">
+                      <use xlink:href="#icon-dianzan1" />
+                    </svg>
+                    <i class="iconfont icon-shoucang1">{{ scope.row.likes }}</i>
                   </div>
                   <div style="margin-right: 20px;">
+                    <svg class="icon" aria-hidden="true">
+                      <use xlink:href="#icon-shoucang1" />
+                    </svg>
                     <i class="iconfont icon-31shoucang">{{ scope.row.collection }}</i>
                   </div>
                   <div class="my-flex-span1" style="margin-right: 20px;"></div>
@@ -177,15 +202,13 @@ function initBlogs() {
 function handlePreviewContent(index, row) {
   currentBlog = row;
   previewBlogDialogVisible.value = true;
-
-  console.log(currentBlog.content);
 }
 /* 根据标题栏搜索*/
 function searchByTitle() {
   //根据博客标题关键字搜索
   _getBlogByTile(baseLikeUrl.value + "&title=" + inputSearchKeyWord.value).then(
     res => {
-        console.log(res)
+      console.log(res);
       if (res.data.status === 200) {
         pagination.totalBlogs = Number(res.data.obj.length);
         pagination.listData = res.data.obj;
@@ -224,6 +247,10 @@ function handleSizeChange(val) {
     pagination.currentPage,
     pagination.pageSize
   );
+}
+/*时间格式化*/
+function fortTime(val) {
+  return formatDate(val);
 }
 
 function handleCurrentChange(val) {

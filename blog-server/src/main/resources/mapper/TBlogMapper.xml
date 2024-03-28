@@ -148,6 +148,10 @@
         WHERE id = #{id}
     </update>
 
+    <update id="saveBlogCover" >
+        UPDATE t_blog SET cover=#{cover} WHERE id=#{id}
+    </update>
+
     <update id="delBlogH" >
         UPDATE t_blog SET isdel = #{isdel} WHERE id = #{bID}
     </update>

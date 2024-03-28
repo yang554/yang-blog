@@ -161,7 +161,6 @@ export default {
     },
     created() {
         _getUserByNameLike(this.$route.query.username).then(res => {
-            console.log(res)
             if (res.data.status === 200) {
                 this.editForm.id = res.data.obj.id,
                 this.editForm.username = res.data.obj.username,
