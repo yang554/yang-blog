@@ -105,13 +105,27 @@ export const constantRoutes = [
       { path: "/home/family/FamilyEditRank", name: "FamilyEditRank", meta: { title: '编辑家族成员信息' }, component: () => import('@/views/family/FamilyEditRank.vue'), hidden: true },
     ]
   }, {
-    path: '/test',
-    name: '其他模块',
+    path: '/home/nutrition',
+    name: '营养管理',
     component: HomeView,
-    meta: { title: '其他模块' },
+    meta: { title: '营养管理' },
     hidden: false,
-    myIcon: "el-icon-setting",
+    myIcon: "el-icon-fork-spoon",
     children: [
+      { path: "/home/nutrition/BodyComposition", name: "BodyComposition", meta: { title: '体成分分析' }, component: () => import('@/views/nutrition/BodyComposition.vue'), myIcon: "el-icon-first-aid-kit" },
+      { path: "/home/nutrition/AddBodyComposition", name: "AddBodyComposition", meta: { title: '新增体成分' }, component: () => import('@/views/nutrition/OpBodyComposition.vue'), hidden: true },
+      { path: '/home/nutrition/EditBodyComposition/:id', name: 'EditBodyComposition', meta: { title: '编辑体成分' }, component: () => import('@/views/nutrition/OpBodyComposition.vue'), props: true, hidden: true },
+      { path: "/home/nutrition/FoodNutrition", name: "FoodNutrition", meta: { title: '食物营养' }, component: () => import('@/views/nutrition/FoodNutrition.vue'), myIcon: "el-icon-food" },
+      { path: "/home/nutrition/AddFoodNutrition", name: "AddFoodNutrition", meta: { title: '新增食物' }, component: () => import('@/views/nutrition/OpFoodNutrition.vue'), hidden: true },
+      { path: '/home/nutrition/EditFoodNutrition/:id', name: 'EditFoodNutrition', meta: { title: '编辑食物' }, component: () => import('@/views/nutrition/OpFoodNutrition.vue'), props: true, hidden: true },
+      { path: "/home/nutrition/NutritionalRecipe", name: "NutritionalRecipe", meta: { title: '营养菜谱' }, component: () => import('@/views/nutrition/NutritionalRecipe.vue'), myIcon: "el-icon-dish" },
+      { path: "/home/nutrition/AddNutritionRecipes", name: "AddNutritionRecipes", meta: { title: '新增菜谱' }, component: () => import('@/views/nutrition/OpNutritionRecipes.vue'), hidden: true },
+      { path: '/home/nutrition/EditNutritionRecipes/:id', name: 'EditNutritionRecipes', meta: { title: '编辑菜谱' }, component: () => import('@/views/nutrition/OpNutritionRecipes.vue'), props: true, hidden: true },
+      { path: "/home/nutrition/NutritionalRecipes", name: "NutritionalRecipes", meta: { title: '营养食谱' }, component: () => import('@/views/nutrition/NutritionalRecipes.vue'), myIcon: "el-icon-dish-1" },
+      { path: "/home/nutrition/NutritionalAssessment", name: "NutritionalAssessment", meta: { title: '营养评估' }, component: () => import('@/views/nutrition/NutritionalAssessment.vue'), myIcon: "el-icon-edit-outline" },
+      { path: "/home/nutrition/NutritionalDynamics", name: "NutritionalDynamics", meta: { title: '营养动态' }, component: () => import('@/views/nutrition/NutritionalDynamics.vue'), myIcon: "el-icon-odometer" },
+      { path: "/home/nutrition/NutritionalKnowledge", name: "NutritionalKnowledge", meta: { title: '营养知识' }, component: () => import('@/views/nutrition/NutritionalKnowledge.vue'), myIcon: "el-icon-notebook-1" },
+      { path: "/home/nutrition/FoodSafety", name: "FoodSafety", meta: { title: '食品安全' }, component: () => import('@/views/nutrition/FoodSafety.vue'), myIcon: "el-icon-knife-fork" },
     ]
   }
 ]

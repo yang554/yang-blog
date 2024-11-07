@@ -13,7 +13,7 @@
             </el-col>
             <el-col :span="1" :offset="1">
                 <el-button type="warning" @click="$router.push('/home/user/add')">
-                    <i class="el-icon-plus"></i>增加
+                    <i class="el-icon-plus"></i>新增
                 </el-button>
             </el-col>
         </el-row>
@@ -31,13 +31,18 @@
                 </template>
             </el-table-column>
             <el-table-column label="用户名" width="100px" align='center'>
-                <template slot-scope="scope" style="">
+                <template slot-scope="scope">
                     {{ scope.row.username }}
                 </template>
             </el-table-column>
             <el-table-column label="昵称">
                 <template slot-scope="scope">
                     {{ scope.row.nickname }}
+                </template>
+            </el-table-column>
+            <el-table-column label="身份证号" width="120px" align='center'>
+                <template slot-scope="scope">
+                    {{ scope.row.ext02 }}
                 </template>
             </el-table-column>
             <el-table-column label="邮箱" width="200px">
@@ -50,7 +55,17 @@
                     {{ scope.row.phone }}
                 </template>
             </el-table-column>
-            <el-table-column label="个人签名">
+            <el-table-column label="地址" width="120px" align='center'>
+                <template slot-scope="scope">
+                    {{ scope.row.address }}
+                </template>
+            </el-table-column>
+            <el-table-column label="职业" width="120px" align='center'>
+                <template slot-scope="scope">
+                    {{ scope.row.ext01 }}
+                </template>
+            </el-table-column>
+            <el-table-column label="描述" align='center'>
                 <template slot-scope="scope">
                     {{ scope.row.description | tableTile }}
                 </template>

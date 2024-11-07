@@ -14,8 +14,8 @@ import java.util.List;
 public interface SysUserMapper extends BaseMapper {
     //查询所有用户信息
     List<SysUserEntity> findAll();
-    //根据用户名查询
-    SysUserEntity selectRolesByUsername(String username);
+    //根据身份证号查找用户
+    SysUserEntity selectRolesByUsername(String ext02);
     //根据用户名模糊查询
     List<SysUserEntity> selectByUsername(String username);
     //用户注册

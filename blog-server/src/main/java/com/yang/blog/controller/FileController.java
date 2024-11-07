@@ -42,8 +42,8 @@ public class FileController {
         String fileType = fileName.substring(fileName.lastIndexOf("."));//文件后缀
         String newFileName = UUID.randomUUID().toString().replace("-","") + fileType;//新文件名
         String filePath = new SimpleDateFormat("yyyy-MM-dd/").format(new Date());// 构建日期路径
-        String path = "/MyItem/yang-blog/blog-end/public";
-        String path1 = "/MyItem/yang-blog/blog-front/public";
+        String path = "/MyProject/yang-blog/blog-end/public";
+        String path1 = "/MyProject/yang-blog/blog-front/public";
 
         String url = "/static/" +  filePath + newFileName;
         String uploadUrl =  path +  url;// 文件上传的路径地址
@@ -67,8 +67,8 @@ public class FileController {
         String suffix = fileName.substring(fileName.lastIndexOf("."));
         // 使用UUID生成文件名
         String filename = UUID.randomUUID() + suffix;
-        String path = "/MyItem/yang-blog/blog-end/public";
-        String path1 = "/MyItem/yang-blog/blog-front/public";
+        String path = "/MyProject/yang-blog/blog-end/public";
+        String path1 = "/MyProject/yang-blog/blog-front/public";
         String url = "/static/" +  filePath + filename;
         String uploadUrl =  path +  url;// 文件上传的路径地址
         String uploadUrl1 =  path1 +  url;// 文件上传的路径地址

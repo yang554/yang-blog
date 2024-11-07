@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.FoodNutritionMapper">
+    <resultMap id="map" type="com.yang.blog.entity.FoodNutritionEntity">
+        <id column="f_id" property="fID"/>
+        <result column="f_img" property="fImg"/>
+        <result column="f_type" property="fType"/>
+        <result column="f_name" property="fName"/>
+        <result column="f_edible_section" property="fEdibleSection"/>
+        <result column="f_energy" property="fEnergy"/>
+        <result column="f_carbon_water" property="fCarbonWater"/>
+        <result column="f_fat" property="fFat"/>
+        <result column="f_protein" property="fProtein"/>
+        <result column="f_dietary_fiber" property="fDietaryFiber"/>
+        <result column="f_vitaminA" property="fVitaminA"/>
+        <result column="f_vitaminC" property="fVitaminC"/>
+        <result column="f_vitaminD" property="fVitaminD"/>
+        <result column="f_vitaminE" property="fVitaminE"/>
+        <result column="f_vitaminK" property="fVitaminK"/>
+        <result column="f_vitaminB1" property="fVitaminB1"/>
+        <result column="f_vitaminB2" property="fVitaminB2"/>
+        <result column="f_vitaminB3" property="fVitaminB3"/>
+        <result column="f_vitaminB6" property="fVitaminB6"/>
+        <result column="f_vitaminB9" property="fVitaminB9"/>
+        <result column="f_vitaminB12" property="fVitaminB12"/>
+        <result column="f_K" property="fK"/>
+        <result column="f_Na" property="fNa"/>
+        <result column="f_Ca" property="fCa"/>
+        <result column="f_Zn" property="fZn"/>
+        <result column="f_Se" property="fSe"/>
+        <result column="f_Fe" property="fFe"/>
+        <result column="f_role" property="fRole"/>
+        <result column="f_create_time" property="fCreateTime"/>
+        <result column="f_update_time" property="fUpdateTime"/>
+        <result column="f_note" property="fNote"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="map">
+        SELECT * FROM food_nutrition ORDER BY f_update_time DESC
+    </select>
+
+    <select id="findByFactor" resultMap="map">
+        SELECT * FROM food_nutrition
+        <where>
+            <if test="param != null">
+                and f_type LIKE CONCAT('%',#{param},'%')
+            </if>
+            <if test="param != null ">
+                OR f_name LIKE CONCAT('%',#{param},'%')
+            </if>
+            <if test="param != null ">
+                OR f_id LIKE CONCAT('%',#{param},'%')
+            </if>
+        </where>
+        ORDER BY f_update_time DESC
+    </select>
+
+    <insert id="addFood" useGeneratedKeys="true" keyProperty="id" parameterType="com.yang.blog.entity.NutritionBodyCompositionEntity">
+      INSERT INTO food_nutrition (f_id,f_img,f_type,f_name,f_edible_section,f_energy,f_carbon_water,f_fat,
+      f_protein,f_dietary_fiber,f_vitaminA,f_vitaminC,f_vitaminD,f_vitaminE,f_vitaminK,f_vitaminB1,f_vitaminB2,f_vitaminB3,
+      f_vitaminB6,f_vitaminB9,f_vitaminB12,f_K,f_Na,f_Ca,f_Zn,f_Se,f_Fe,f_role,f_create_time,f_update_time,f_note)
+      VALUES(#{fID,jdbcType=VARCHAR},#{fImg,jdbcType=VARCHAR},#{fType,jdbcType=VARCHAR},#{fName,jdbcType=VARCHAR},
+      #{fEdibleSection,jdbcType=VARCHAR},#{fEnergy,jdbcType=VARCHAR},#{fCarbonWater,jdbcType=VARCHAR},#{fFat,jdbcType=VARCHAR},
+      #{fProtein,jdbcType=VARCHAR},#{fDietaryFiber,jdbcType=VARCHAR},#{fVitaminA,jdbcType=VARCHAR},#{fVitaminC,jdbcType=VARCHAR},
+      #{fVitaminD,jdbcType=VARCHAR},#{fVitaminE,jdbcType=VARCHAR},#{fVitaminK,jdbcType=VARCHAR},#{fVitaminB1,jdbcType=VARCHAR},
+      #{fVitaminB2,jdbcType=VARCHAR},#{fVitaminB3,jdbcType=VARCHAR},#{fVitaminB6,jdbcType=VARCHAR},#{fVitaminB9,jdbcType=VARCHAR},
+      #{fVitaminB12,jdbcType=VARCHAR},#{fK,jdbcType=VARCHAR},#{fNa,jdbcType=VARCHAR},#{fCa,jdbcType=VARCHAR},
+      #{fZn,jdbcType=VARCHAR},#{fSe,jdbcType=VARCHAR},#{fFe,jdbcType=VARCHAR},#{fRole,jdbcType=VARCHAR},
+      #{fCreateTime,jdbcType=VARCHAR},#{fUpdateTime,jdbcType=VARCHAR},#{fNote,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="updFood" parameterType="com.yang.blog.entity.NutritionBodyCompositionEntity">
+        UPDATE food_nutrition SET f_img = #{fImg},f_type = #{fType},f_name = #{fName},
+        f_edible_section = #{fEdibleSection},f_energy = #{fEnergy},f_carbon_water = #{fCarbonWater},f_fat = #{fFat},
+        f_protein = #{fProtein},f_dietary_fiber = #{fDietaryFiber},f_vitaminA = #{fVitaminA},f_vitaminC = #{fVitaminC},f_vitaminD = #{fVitaminD},
+        f_vitaminE = #{fVitaminE},f_vitaminK = #{fVitaminK},f_vitaminB1 = #{fVitaminB1},
+        f_vitaminB2 = #{fVitaminB2},f_vitaminB3 = #{fVitaminB3},f_vitaminB6 = #{fVitaminB6},f_vitaminB9 = #{fVitaminB9},
+        f_vitaminB12 = #{fVitaminB12},f_K = #{fK},f_Na = #{fNa},f_Ca = #{fCa},f_Zn = #{fZn},f_Se = #{fSe},f_Fe = #{fFe},
+        f_role = #{fRole},f_create_time = #{fCreateTime},f_update_time = #{fUpdateTime},f_note = #{fNote}
+        WHERE f_id=#{fID}
+    </update>
+
+    <delete id="delFood">
+        DELETE FROM food_nutrition WHERE f_id = #{fID}
+    </delete>
+</mapper>

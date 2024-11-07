@@ -96,7 +96,7 @@ public class UAuntServiceImpl implements UAuntService {
     public RespBean addAunt(HashMap<String,Object> entity) {
         UAuntEntity auntEntity = new UAuntEntity();
         auntEntity.setId(CommonDate.getStamp());
-        auntEntity.setuName((String) entity.get("name"));
+        auntEntity.setuID(Long.valueOf(String.valueOf(entity.get("uID"))));
         if("".equals(entity.get("startDate"))){
             auntEntity.setStartDate(null);
         }else {

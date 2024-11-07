@@ -17,9 +17,9 @@
                     </el-dropdown-menu>
                 </el-dropdown>
                 <span class="span-txt">&emsp; 事件标题：</span>
-                <el-input size="small" style="width: 200px;" placeholder="按事件标题模糊搜索" v-model="params.eTitle"></el-input>
-                <span class="span-txt">&emsp;当事人：</span>
-                <el-input size="small" style="width: 200px;" placeholder="按事件当事人搜索" v-model="params.uName"></el-input>
+                <el-input size="small" style="width: 200px;" placeholder="输入事件标题模糊搜索" v-model="params.eTitle"></el-input>
+                <span class="span-txt">&emsp;相关人：</span>
+                <el-input size="small" style="width: 200px;" placeholder="输入当事人" v-model="params.uName"></el-input>
             </el-col>
             <el-col :span="1">
                 <el-button size="small" type="success" @click="handleSearchEvent">
@@ -52,7 +52,7 @@
                     {{ scope.row.e_type }}
                 </template>
             </el-table-column>
-            <el-table-column label="当事人" width="100px" align='center'>
+            <el-table-column label="相关人员" width="100px" align='center'>
                 <template slot-scope="scope">
                     {{ scope.row.e_name }}
                 </template>

@@ -22,4 +22,8 @@
         DELETE FROM sys_user_role WHERE id = #{id}
     </delete>
 
+    <delete id="delUserRole">
+        DELETE FROM sys_user_role WHERE userid = #{userid}
+    </delete>
+
 </mapper>

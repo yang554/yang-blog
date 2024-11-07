@@ -23,7 +23,7 @@
             </el-form-item>
 
             <el-form-item label="文章标签">
-                <el-tag style="margin-left: 5px;" v-for="tag in editForm.blogTags" :type="tag.color">{{
+                <el-tag style="margin-left: 5px;" v-for="(tag,index) in editForm.blogTags" :type="tag.color" :key="index">{{
                     tag.name }}</el-tag>
                 <el-select :multiple-limit="3" v-model="editForm.tags" multiple placeholder="请选择Tag标签">
                     <el-option v-for="(item, index) in tagList" :key="index" :label="item.name" :value="item.id">

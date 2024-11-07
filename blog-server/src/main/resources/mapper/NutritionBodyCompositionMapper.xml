@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.NutritionBodyCompositionMapper">
+    <resultMap id="map" type="com.yang.blog.entity.NutritionBodyCompositionEntity">
+        <id column="b_id" property="id"/>
+        <result column="b_age" property="age"/>
+        <result column="b_sex" property="sex"/>
+        <result column="b_height" property="height"/>
+        <result column="b_weight" property="weight"/>
+        <result column="b_food_intake" property="foodIntake"/>
+        <result column="b_basal_metabolism" property="basalMetabolism"/>
+        <result column="b_bmi" property="BMI"/>
+        <result column="b_fat" property="fat"/>
+        <result column="b_visceral_fat" property="visceralFat"/>
+        <result column="b_muscle" property="muscle"/>
+        <result column="b_skeletal_muscle" property="skeletalMuscle"/>
+        <result column="b_bone_mass" property="boneMass"/>
+        <result column="b_water_content" property="waterContent"/>
+        <result column="b_protein" property="protein"/>
+        <result column="b_fat_free_body_weight" property="fatFreeBodyWeight"/>
+        <result column="b_muscle_mass" property="muscleMass"/>
+        <result column="b_water_content_1" property="waterContent_1"/>
+        <result column="b_fat_mass" property="fatMass"/>
+        <result column="b_subcutaneous_fat_percentage" property="subcutaneousFatPercentage"/>
+        <result column="b_weight_control_amount" property="weightControlAmount"/>
+        <result column="b_fat_control_amount" property="fatControlAmount"/>
+        <result column="b_muscle_control_volume" property="muscleControlVolume"/>
+        <result column="b_obesity_level" property="obesityLevel"/>
+        <result column="b_standard_weight" property="standardWeight"/>
+        <result column="b_Ideal_weight" property="IdealWeight"/>
+        <result column="b_physiological_age" property="physiologicalAge"/>
+        <result column="b_create_time" property="createTime"/>
+        <result column="b_update_time" property="updateTime"/>
+        <result column="b_record_time" property="recordTime"/>
+        <result column="b_note" property="note"/>
+        <result column="u_id" property="uID"/>
+        <result column="u_name" property="uName"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="map">
+        SELECT n.*,u.username as u_name FROM nutrition_body_composition n
+        LEFT JOIN sys_user u ON n.u_id=u.id
+        ORDER BY n.b_update_time DESC
+    </select>
+
+    <select id="findById" resultMap="map">
+        SELECT n.*,u.username as u_name FROM nutrition_body_composition n
+        LEFT JOIN sys_user u ON n.u_id=u.id
+        WHERE b_id = #{id}
+    </select>
+
+    <select id="findByUser" resultMap="map">
+        SELECT n.*,u.username as u_name FROM nutrition_body_composition n
+        LEFT JOIN sys_user u ON n.u_id=u.id
+        WHERE u_id = #{id}
+    </select>
+
+    <insert id="addNBC" useGeneratedKeys="true" keyProperty="id" parameterType="com.yang.blog.entity.NutritionBodyCompositionEntity">
+      INSERT INTO nutrition_body_composition (b_id,b_age,b_sex,b_height,b_weight,b_food_intake,b_basal_metabolism,b_bmi,
+      b_fat,b_visceral_fat,b_muscle,b_water_content,b_protein,b_fat_free_body_weight,b_muscle_mass,b_skeletal_muscle,b_bone_mass,b_water_content_1,
+      b_fat_mass,b_subcutaneous_fat_percentage,b_weight_control_amount,b_fat_control_amount,b_muscle_control_volume,b_obesity_level,b_standard_weight,
+      b_Ideal_weight,b_physiological_age,b_create_time,b_update_time,b_record_time,b_note,u_id)
+      VALUES(#{id,jdbcType=VARCHAR},#{age,jdbcType=VARCHAR},#{sex,jdbcType=VARCHAR},#{height,jdbcType=VARCHAR},
+      #{weight,jdbcType=VARCHAR},#{foodIntake,jdbcType=VARCHAR},#{basalMetabolism,jdbcType=VARCHAR},#{BMI,jdbcType=VARCHAR},
+      #{fat,jdbcType=VARCHAR},#{visceralFat,jdbcType=VARCHAR},#{muscle,jdbcType=VARCHAR},#{waterContent,jdbcType=VARCHAR},
+      #{protein,jdbcType=VARCHAR},#{fatFreeBodyWeight,jdbcType=VARCHAR},#{muscleMass,jdbcType=VARCHAR},#{skeletalMuscle,jdbcType=VARCHAR},
+      #{boneMass,jdbcType=VARCHAR},#{waterContent_1,jdbcType=VARCHAR},#{fatMass,jdbcType=VARCHAR},#{subcutaneousFatPercentage,jdbcType=VARCHAR},
+      #{weightControlAmount,jdbcType=VARCHAR},#{fatControlAmount,jdbcType=VARCHAR},#{muscleControlVolume,jdbcType=VARCHAR},#{obesityLevel,jdbcType=VARCHAR},
+      #{standardWeight,jdbcType=VARCHAR},#{IdealWeight,jdbcType=VARCHAR},#{physiologicalAge,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR},
+      #{updateTime,jdbcType=VARCHAR},#{recordTime,jdbcType=VARCHAR},#{note,jdbcType=VARCHAR},#{uID,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="updNBC" parameterType="com.yang.blog.entity.NutritionBodyCompositionEntity">
+        UPDATE nutrition_body_composition SET b_age = #{age},b_sex = #{sex},b_height = #{height},
+        b_weight = #{weight},b_food_intake = #{foodIntake},b_basal_metabolism = #{basalMetabolism},b_bmi = #{BMI},
+        b_fat = #{fat},b_visceral_fat = #{visceralFat},b_muscle = #{muscle},b_water_content = #{waterContent},b_protein = #{protein},
+        b_fat_free_body_weight = #{fatFreeBodyWeight},b_muscle_mass = #{muscleMass},b_skeletal_muscle = #{skeletalMuscle},
+        b_bone_mass = #{boneMass},b_water_content_1 = #{waterContent_1},b_fat_mass = #{fatMass},b_subcutaneous_fat_percentage = #{subcutaneousFatPercentage},
+        b_weight_control_amount = #{weightControlAmount},b_fat_control_amount = #{fatControlAmount},
+        b_muscle_control_volume = #{muscleControlVolume},b_obesity_level = #{obesityLevel},b_standard_weight = #{standardWeight},
+        b_Ideal_weight = #{IdealWeight},b_physiological_age = #{physiologicalAge},
+        b_update_time = #{updateTime},b_record_time = #{recordTime},b_note = #{note},u_id = #{uID}
+        WHERE b_id=#{id}
+    </update>
+
+    <delete id="delNBC">
+        DELETE FROM nutrition_body_composition WHERE b_id = #{id}
+    </delete>
+</mapper>

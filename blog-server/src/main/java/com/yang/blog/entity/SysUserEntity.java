@@ -51,9 +51,9 @@ public class SysUserEntity implements Serializable {
     @ApiModelProperty(value = "备注")
     private String note;
     @ApiModelProperty(value = "备用字段1")
-    private String etx01;
+    private String ext01;
     @ApiModelProperty(value = "备用字段2")
-    private String etx02;
+    private String ext02;
     //定义角色的集合
     @TableField(exist = false)
     private List<SysRoleEntity> roles;
@@ -162,20 +162,20 @@ public class SysUserEntity implements Serializable {
         this.note = note;
     }
 
-    public String getEtx01() {
-        return etx01;
+    public String getExt01() {
+        return ext01;
     }
 
-    public void setEtx01(String etx01) {
-        this.etx01 = etx01;
+    public void setExt01(String etx01) {
+        this.ext01 = etx01;
     }
 
-    public String getEtx02() {
-        return etx02;
+    public String getExt02() {
+        return ext02;
     }
 
-    public void setEtx02(String etx02) {
-        this.etx02 = etx02;
+    public void setExt02(String etx02) {
+        this.ext02 = etx02;
     }
 
     public List<SysRoleEntity> getRoles() {

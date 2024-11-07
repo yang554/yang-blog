@@ -41,6 +41,7 @@ public class SysUserController {
         //1、用户名密码登录
         String username = params.get("username");
         String password = params.get("password");
+        String ext02 = params.get("ext02"); //身份证号
         String verify_code = params.get("verify_code");
         if(StringUtils.hasText(username) && StringUtils.hasText(password)){
             try {
@@ -91,11 +92,11 @@ public class SysUserController {
             return RespBean.error("创建失败",e.getMessage());
         }
     }
-    //根据账号查找用户
+    //根据身份证号查找用户
     @PostMapping("findUser")
     public RespBean findUser(@RequestBody HashMap<String,String> params){
-        String username = params.get("username").trim();
-        boolean isTrue = userService.findUser(username);
+        String ext02 = params.get("ext02").trim();
+        boolean isTrue = userService.findUser(ext02);
         if(isTrue){
             return RespBean.error("error",isTrue);
         }else {
@@ -113,8 +114,10 @@ public class SysUserController {
         String email = params.get("email").trim();
         String phone = params.get("phone").trim();
         String address = params.get("address").trim();
-        String description = params.get("description").trim();
-        String role = params.get("role").trim();
+        String description = params.get("role").trim();
+        String note = params.get("note").trim();
+        String ext01 = params.get("ext01").trim();
+        String ext02 = params.get("ext02").trim();
 
         userEntity.setUsername(username);
         userEntity.setPassword(password);
@@ -124,7 +127,9 @@ public class SysUserController {
         userEntity.setPhone(phone);
         userEntity.setAddress(address);
         userEntity.setDescription(description);
-        userEntity.setEtx01(role);
+        userEntity.setNote(note);
+        userEntity.setExt01(ext01);
+        userEntity.setExt02(ext02);
 
 
         return userService.addUser(userEntity);

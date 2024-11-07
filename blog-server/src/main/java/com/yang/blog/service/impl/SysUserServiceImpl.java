@@ -1,7 +1,6 @@
 package com.yang.blog.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yang.blog.entity.RoleListEntity;
 import com.yang.blog.entity.SysRoleEntity;
 import com.yang.blog.entity.SysUserEntity;
@@ -12,11 +11,11 @@ import com.yang.blog.mapper.SysUserRoleMapper;
 import com.yang.blog.service.SysUserService;
 import com.yang.blog.utils.CommonDate;
 import com.yang.blog.utils.RespBean;
-import lombok.AccessLevel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.HashMap;
@@ -64,8 +63,8 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public SysUserEntity selectRolesByUsername(String username) {
-        return userMapper.selectRolesByUsername(username);
+    public SysUserEntity selectRolesByUsername(String ext02) {
+        return userMapper.selectRolesByUsername(ext02);
     }
 
     @Override
@@ -86,7 +85,6 @@ public class SysUserServiceImpl implements SysUserService {
         user.setPassword(md5Hash.toHex());
 
         int insert = userMapper.register(user);
-        System.out.println(user);
         if(insert >=0){
             SysUserRoleEntity userRoleEntity = new SysUserRoleEntity();
             userRoleEntity.setId(CommonDate.getStamp());
@@ -100,20 +98,28 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public RespBean addUser(SysUserEntity user) {
-        user = getUser(user);
         user.setId(CommonDate.getStamp());
         user.setCreateTime(CommonDate.getTime24());
+        //产生随机盐
+        String ss = RandomUtil.randomString(6);
+        user.setSalt(ss);
+        Md5Hash md5Hash = new Md5Hash(user.getPassword(), ss, 1024);
+        user.setPassword(md5Hash.toHex());
+
+        int role = Integer.parseInt(user.getDescription());
+        user.setDescription(user.getNote());
         int insert = userMapper.addUser(user);
         if(insert >=0){
             SysUserRoleEntity userRoleEntity = new SysUserRoleEntity();
             userRoleEntity.setId(CommonDate.getStamp());
             userRoleEntity.setUserid(user.getId());
-            if("".equals(user.getEtx01())){
+            if (role>0)
+                userRoleEntity.setRoleid(role);
+            else
                 userRoleEntity.setRoleid(4);
-            }else{
-                userRoleEntity.setRoleid(Integer.valueOf(user.getEtx01()));
-            }
+
             userRoleMapper.add(userRoleEntity);//添加用户权限
             return RespBean.ok("用户创建成功username="+user.getUsername(),user);
         }else{
@@ -140,6 +146,9 @@ public class SysUserServiceImpl implements SysUserService {
         String email = (String) userEntity.get("email");
         String phone = (String) userEntity.get("phone");
         String description = (String) userEntity.get("description");
+        String ext02 = (String) userEntity.get("ext02");
+        String address = (String) userEntity.get("address");
+        String ext01 = (String) userEntity.get("ext01");
 
         user.setId(Long.valueOf(id));
         user.setUsername(name);
@@ -148,6 +157,9 @@ public class SysUserServiceImpl implements SysUserService {
         user.setPhone(phone);
         user.setDescription(description);
         user.setUpdateTime(CommonDate.getTime24());
+        user.setAddress(address);
+        user.setExt01(ext01);
+        user.setExt02(ext02);
 
         int status = userMapper.editUser(user);
         if(status > 0){
@@ -188,8 +200,11 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public RespBean delUser(String id) {
         int status = userMapper.delUser(id);
+        userRoleMapper.delUserRole(id);
+
         if(status > 0){
             return RespBean.ok("删除成功");
         }else {

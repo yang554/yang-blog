@@ -178,3 +178,48 @@ export const _saveSource = (data) => {
 export const _delSource = (data) => {
     return postRequest("/source/delSource",data);
 }
+//营养管理-体成分分析
+export const _getNutritionAll = () => {
+    return getRequest("/nutrition/all")
+}
+export const _getNutritionById = (data) => {
+    return getRequest("/nutrition/findById?id="+data)
+}
+export const _getNutritionByUser = (data) => {
+    return getRequest("/nutrition/findByUser?uID=+"+data)
+}
+export const _operationNBC = (data) => {
+    return postRequest("/nutrition/operationNBC",data);
+}
+export const _delNutritionById = (data) => {
+    return deleteRequest("/nutrition/delNBC?id="+data);
+}
+//营养管理-食物营养
+export const _getFoodNutritionAll = () => {
+    return getRequest("/foodNutrition/all")
+}
+export const _getFoodNutritionByFactor = (data) => {
+    return getRequest("/foodNutrition/findByFactor?param="+data)
+}
+export const _operationFoodNutrition = (data) => {
+    return postRequest("/foodNutrition/operationFood",data);
+}
+export const _delFoodNutritionById = (data) => {
+    return deleteRequest("/foodNutrition/delFood?id="+data);
+}
+//营养管理-食物菜谱
+export const _getNutritionalRecipeAll = () => {
+    return getRequest("/NutritionalRecipe/all")
+}
+export const _getNutritionalRecipeByFactor = (name,type) => {
+    return getRequest("/NutritionalRecipe/findByFactor?name="+name+"&type="+type)
+}
+export const _getNutritionalRecipeById = (data) => {
+    return getRequest("/NutritionalRecipe/findById?id="+data)
+}
+export const _operationNutritionalRecipe = (data) => {
+    return postRequest("/NutritionalRecipe/operationRecipe",data);
+}
+export const _delNutritionalRecipe = (data) => {
+    return deleteRequest("/NutritionalRecipe/delRecipe?id="+data);
+}

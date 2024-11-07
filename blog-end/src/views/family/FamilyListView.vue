@@ -63,7 +63,7 @@
             </el-table-column>
             <el-table-column label="配偶" width="100px" align='center'>
                 <template slot-scope="scope">
-                    <div v-for=" item in scope.row.list">{{ item.userName }}</div>
+                    <div v-for=" (item,index) in scope.row.list" :key="index">{{ item.userName }}</div>
 
                 </template>
             </el-table-column>
