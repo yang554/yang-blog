@@ -14,6 +14,7 @@ public class UAuntEntity {
     private String symptom;
     private String note;
     private String uStatus;
+    private Long uID;
 
     public Long getId() {
         return id;
@@ -93,5 +94,13 @@ public class UAuntEntity {
 
     public void setuStatus(String uStatus) {
         this.uStatus = uStatus;
+    }
+
+    public Long getuID() {
+        return uID;
+    }
+
+    public void setuID(Long uID) {
+        this.uID = uID;
     }
 }

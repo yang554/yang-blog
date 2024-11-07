@@ -1,9 +1,9 @@
 <template>
     <el-form :model="auntForm" :rules="rules" ref="auntForm" label-width="100px" class="demo-auntForm">
-        <el-form-item label="姓名" prop="name">
+        <el-form-item label="姓名" prop="uID">
             <!-- <el-input v-model="auntForm.name" style="width: 30%;"></el-input> -->
-            <el-select v-model="auntForm.name" filterable placeholder="请选择用户">
-                <el-option v-for="item in uNameAll" :label="item.username" :value="item.username">
+            <el-select v-model="auntForm.uID" filterable placeholder="请选择用户">
+                <el-option v-for="(item,index) in uNameAll" :key="index" :label="item.username" :value="item.id">
                 </el-option>
             </el-select>
         </el-form-item>
@@ -57,7 +57,7 @@ export default {
     data() {
         return {
             auntForm: {
-                name: '',
+                uID: '',
                 auntDate: '',  //日期
                 startDate: '',   //开始日期
                 endDate: '',     //结束日期
@@ -74,7 +74,7 @@ export default {
                 },
             },
             rules: {
-                name: [
+                uID: [
                     { required: true, message: '请输入姓名', trigger: 'blur' },
                 ],
                 auntDate: [

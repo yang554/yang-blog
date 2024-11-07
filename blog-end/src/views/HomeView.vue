@@ -4,7 +4,7 @@
       <div class="logo">
         <img src='@/assets/images/logo.png' alt='' width='30px' height='30px'>
       </div>
-      <div class="title">杨柳博客后台管理</div>
+      <div class="title">Yangliu Blog Backend Management</div>
       <div class="right">
         <div>
           <el-dropdown class="userinfo-dropdown" @command="handleCommand">

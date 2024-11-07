@@ -6,8 +6,8 @@
         <el-col :xs="24" :sm="24" :lg="24" class="card-panel-col">
           <el-row style="margin-top: 10px;margin-bottom: 10px;">
             <el-col :span="8">
-              <el-select size="small" v-model="uName" filterable placeholder="请选择用户">
-                <el-option v-for="item in uNameAll" :label="item.uName" :value="item.uName">
+              <el-select size="small" v-model="uID" filterable placeholder="请选择用户">
+                <el-option v-for="(item,index) in uNameAll" :key="index" :label="item.uName" :value="item.uID">
                 </el-option>
               </el-select>
               <el-button type="primary" size="small" @click="selectByNameAllFun">
@@ -47,7 +47,7 @@
               <template slot="extra">
                 <el-button type="primary" @click="dialogFunction" size="small">编辑</el-button>
               </template>
-              <el-descriptions-item label="姓名">{{ auntForm.name }}</el-descriptions-item>
+              <el-descriptions-item label="姓名">{{ realAuntForm.name }}</el-descriptions-item>
               <el-descriptions-item label="周期长度">{{ realAuntForm.cycle }}</el-descriptions-item>
               <el-descriptions-item label="开始日期">{{ realAuntForm.startDate }}</el-descriptions-item>
               <el-descriptions-item label="结束日期">{{ realAuntForm.endDate }}</el-descriptions-item>
@@ -205,6 +205,7 @@ export default {
       moveIndex: [], // 两个，第一个是起始，第二个是结束
       canMove: false, // 当moveIndex数组有一个值时，可以触发滑动
       auntForm: {
+        id:'',
         name: '',
         startDate: '',   //开始日期
         endDate: '',     //结束日期
@@ -216,6 +217,7 @@ export default {
       realAuntForm: {
         id: '',
         name: '',
+        uID:'',
         startDate: '',   //开始日期
         endDate: '',     //结束日期
         duration: '',    //持续时间
@@ -233,7 +235,8 @@ export default {
         nextPeriodStartDate: ''  //下次开始时间
       },
       uNameAll: [],    //所有用户
-      uName: '',   //查询的用户
+      uName: '',   //查询的用户名称
+      uID:'', //查询的用户ID
       value: new Date(),
 
       xData: [], //横坐标
@@ -265,14 +268,21 @@ export default {
       //获取所有登记用户名字
       _getAuntNameAll().then(res => {
         this.uNameAll = res.data.obj
+        for (let i = 0; i < this.uNameAll.length; i++) {
+        const element = this.uNameAll[i];
+        this.uNameAll.forEach(key => {
+          if(key.uID == this.$store.state.login_user.id){
+            this.uName = key.uName
+            this.uID = key.uID
+            this.selectByNameAllFun()
+          }
+        })
+      }
       })
-      this.uName = this.$store.state.login_user.username
-
-      // this.selectByNameAllFun()
     },
     //根据名字查询所有记录
     selectByNameAllFun() {
-      if (this.uName === "") {
+      if (this.uID === "") {
         const num = 1000 * 3600 * 24 * 35
         const d = Date.now() - num
         this.$notify.error({
@@ -283,8 +293,7 @@ export default {
       }
       this.xData = []
       this.yData = []
-      _getAuntByNameAll(this.uName, 0).then(res => { //历史记录
-
+      _getAuntByNameAll(this.uID, 0).then(res => { //历史记录
         if (res.data == "") {
           this.isEmpty = true
         } else {
@@ -312,12 +321,21 @@ export default {
 
       })
 
-      _getAuntByNameAll(this.uName, 1).then(res => { //实际记录
+      _getAuntByNameAll(this.uID, 1).then(res => { //实际记录
         if (res.data === "") {
-          this.realAuntForm.name = this.uName
+          this.realAuntForm.id = ''
+          this.realAuntForm.uID = this.uID
+          this.realAuntForm.name = this.auntForm.name
+          this.realAuntForm.startDate = ''
+          this.realAuntForm.endDate = ''
+          this.realAuntForm.duration = ''
+          this.realAuntForm.cycle = ''
+          this.realAuntForm.bloodVolume = ''
+          this.realAuntForm.symptom = ''
+          this.realAuntForm.note = ''
         } else {
           this.realAuntForm.id = res.data.auntList[0].id
-          this.realAuntForm.name = this.uName
+          this.realAuntForm.name = res.data.auntList[0].uName
           this.realAuntForm.startDate = res.data.auntList[0].startDate
           this.realAuntForm.endDate = res.data.auntList[0].endDate
           this.realAuntForm.duration = res.data.auntList[0].duration
@@ -393,7 +411,7 @@ export default {
         this.chkIndex_j = this.curIndex_j
       }
       const day = this.res[this.chkIndex_i][this.chkIndex_j].date
-      const aa = { "name": this.uName, "date": day }
+      const aa = { "name": this.uID, "date": day }
       this.$router.push("/home/aunt/CreateEven/" + JSON.stringify(aa))
     },
     //日期点击事件
@@ -601,9 +619,6 @@ export default {
     this.yearOptions = handleCreateDatePicker().years;
 
     if (localStorage.selectedDates) this.selectedDates = JSON.parse(localStorage.selectedDates);
-
-
-
   },
   created() {
     this.init();

@@ -6,7 +6,7 @@
 <mapper namespace="com.yang.blog.mapper.UAuntMapper">
     <resultMap id="map" type="com.yang.blog.entity.UAuntEntity">
         <id column="id" property="id"/>
-        <result column="uName" property="uName"/>
+        <result column="uID" property="uID"/>
         <result column="startDate" property="startDate"/>
         <result column="endDate" property="endDate"/>
         <result column="cycle" property="cycle"/>
@@ -15,27 +15,35 @@
         <result column="symptom" property="symptom"/>
         <result column="note" property="note"/>
         <result column="uStatus" property="uStatus"/>
+        <result column="uName" property="uName"/>
     </resultMap>
 
     <select id="getByALL"  resultMap="map">
-        SELECT * FROM u_aunt ORDER BY endDate DESC
+        SELECT a.*,u.username as uName FROM (SELECT * FROM u_aunt ORDER BY endDate DESC) a
+        LEFT JOIN sys_user u ON a.uID = u.id
+        ORDER BY a.endDate DESC
     </select>
 
     <select id="findNameAll" resultMap="map">
-        SELECT uName FROM u_aunt GROUP BY uName
+        SELECT a.*,u.username as uName FROM (SELECT uID FROM u_aunt GROUP BY uID ) a
+        LEFT JOIN sys_user u ON a.uID = u.id
     </select>
 
     <select id="selectByName" resultMap="map">
-        SELECT * FROM u_aunt WHERE uName LIKE CONCAT('%',#{uName},'%') ORDER BY endDate DESC
+        SELECT a.*,u.username as uName FROM (SELECT * FROM u_aunt WHERE uID LIKE CONCAT('%',#{uName},'%') ORDER BY endDate DESC) a
+        LEFT JOIN sys_user u ON a.uID = u.id
+        ORDER BY a.endDate DESC
     </select>
 
     <select id="selectByNameAll" resultMap="map">
-        SELECT * FROM u_aunt WHERE uName=#{uName} AND uStatus=#{uStatus} ORDER BY endDate DESC
+        SELECT a.*,u.username as uName FROM (SELECT * FROM u_aunt WHERE uID=#{uName} AND uStatus=#{uStatus} ORDER BY endDate DESC) a
+        LEFT JOIN sys_user u ON a.uID = u.id
+        ORDER BY a.endDate DESC
     </select>
 
     <insert id="addAunt" parameterType="com.yang.blog.entity.UAuntEntity">
-        INSERT INTO u_aunt (id,uName,startDate,endDate,cycle,duration,bloodVolume,symptom,note,uStatus)
-        VALUES (#{id,jdbcType=VARCHAR},#{uName,jdbcType=VARCHAR},#{startDate,jdbcType=VARCHAR},#{endDate,jdbcType=VARCHAR}
+        INSERT INTO u_aunt (id,uID,startDate,endDate,cycle,duration,bloodVolume,symptom,note,uStatus)
+        VALUES (#{id,jdbcType=VARCHAR},#{uID,jdbcType=VARCHAR},#{startDate,jdbcType=VARCHAR},#{endDate,jdbcType=VARCHAR}
         ,#{cycle,jdbcType=VARCHAR},#{duration,jdbcType=VARCHAR},#{bloodVolume,jdbcType=VARCHAR},#{symptom,jdbcType=VARCHAR}
         ,#{note,jdbcType=VARCHAR},#{uStatus,jdbcType=VARCHAR})
     </insert>

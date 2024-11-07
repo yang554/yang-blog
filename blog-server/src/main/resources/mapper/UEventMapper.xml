@@ -31,7 +31,7 @@
                 and e_title LIKE CONCAT('%',#{eTitle},'%')
             </if>
             <if test="uName != null ">
-                and e_name = #{uName,jdbcType=VARCHAR}
+                and e_name LIKE CONCAT('%',#{uName},'%')
             </if>
             <if test="createName != null ">
                 and e_createName = #{createName,jdbcType=VARCHAR}

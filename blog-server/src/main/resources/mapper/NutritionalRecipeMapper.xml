@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.NutritionalRecipeMapper">
+    <resultMap id="map" type="com.yang.blog.entity.NutritionalRecipeEntity">
+        <id column="f_id" property="fID"/>
+        <result column="f_img" property="fImg"/>
+        <result column="f_name" property="fName"/>
+        <result column="f_intro" property="fIntro"/>
+        <result column="f_type" property="fType"/>
+        <result column="f_batching" property="fBatching"/>
+        <result column="f_seasoning" property="fSeasoning"/>
+        <result column="f_made" property="fMade"/>
+        <result column="f_tips" property="fTips"/>
+        <result column="f_create_time" property="fCreateTime"/>
+        <result column="f_update_time" property="fUpdateTime"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="map">
+        SELECT * FROM nutritional_recipe ORDER BY f_update_time DESC
+    </select>
+
+    <select id="findByFactor" resultMap="map">
+        SELECT * FROM nutritional_recipe
+        <where>
+            <if test="name != null">
+                and f_name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="type != null ">
+                AND f_type LIKE CONCAT('%',#{type},'%')
+            </if>
+        </where>
+        ORDER BY f_update_time DESC
+    </select>
+
+    <select id="findById" resultMap="map">
+        SELECT * FROM nutritional_recipe
+        WHERE f_id = #{id}
+    </select>
+
+    <insert id="addRecipe" useGeneratedKeys="true" keyProperty="id" parameterType="com.yang.blog.entity.NutritionalRecipeEntity">
+      INSERT INTO nutritional_recipe (f_id,f_img,f_name,f_intro,f_type,f_batching,f_seasoning,
+      f_made,f_tips,f_create_time,f_update_time)
+      VALUES(#{fID,jdbcType=VARCHAR},#{fImg,jdbcType=VARCHAR},#{fName,jdbcType=VARCHAR},
+      #{fIntro,jdbcType=VARCHAR},#{fType,jdbcType=VARCHAR},#{fBatching,jdbcType=VARCHAR},#{fSeasoning,jdbcType=VARCHAR},
+      #{fMade,jdbcType=VARCHAR},#{fTips,jdbcType=VARCHAR},#{fCreateTime,jdbcType=VARCHAR},#{fUpdateTime,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="updRecipe" parameterType="com.yang.blog.entity.NutritionalRecipeEntity">
+        UPDATE nutritional_recipe SET f_img = #{fImg},f_name = #{fName},
+        f_intro = #{fIntro},f_type = #{fType},f_batching = #{fBatching},f_seasoning = #{fSeasoning},
+        f_made = #{fMade},f_tips = #{fTips},f_update_time = #{fUpdateTime}
+        WHERE f_id=#{fID}
+    </update>
+
+    <delete id="delRecipe">
+        DELETE FROM nutritional_recipe WHERE f_id = #{fID}
+    </delete>
+</mapper>

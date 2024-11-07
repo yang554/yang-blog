@@ -1,6 +1,6 @@
 <template>
     <div class="write-blog-view">
-        <el-form ref="editForm" status-icon label-width="80px" label-position="left" :model="editForm" :rules="rules1">
+        <el-form ref="editForm" status-icon label-width="80px" label-position="left" :model="editForm" :rules="rules1" @submit.prevent>
             <el-form-item label="标题" prop="title">
                 <el-input v-model="editForm.title"></el-input>
             </el-form-item>

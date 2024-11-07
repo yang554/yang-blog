@@ -60,7 +60,7 @@
                                             scope.row.isoriginal }}</el-tag>
 
                                         <i class="iconfont icon-biaoqian" style="margin: 5px;">
-                                            <el-tag style="margin-left: 5px;" v-for="tag in scope.row.blogTags.t"
+                                            <el-tag style="margin-left: 5px;" v-for="(tag,index) in scope.row.blogTags.t" :key="index"
                                                 size="mini" :type="tag.color">{{ tag.name }}</el-tag>
                                         </i>
 

@@ -4,7 +4,7 @@
             <div slot='header' class='clearfix logo-title'>
                 <div class='logo-image'><img src='@/assets/images/logo.png' alt='' width='50px' height='50px'></div>
                 <div style="font-size: 26px;font-weight: bold;height: 50px;line-height: 50px;margin-left: 10px">
-                    杨柳博客后台管理</div>
+                    Yangliu Blog Management</div>
             </div>
 
             <el-form :model='userForm' :rules='rules' ref='userForm' label-width='100px' label-position='left'

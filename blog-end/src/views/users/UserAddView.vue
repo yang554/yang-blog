@@ -13,6 +13,9 @@
                     <el-form-item label="账户" prop="username">
                         <el-input v-model="userForm.username" placeholder="请输入用户名"></el-input>
                     </el-form-item>
+                    <el-form-item label="身份证号" prop="ext02">
+                        <el-input v-model="userForm.ext02" placeholder="请输入身份证号"></el-input>
+                    </el-form-item>
                     <el-form-item label="密码" prop="password">
                         <el-input placeholder="请输入密码" show-password v-model="userForm.password"></el-input>
                     </el-form-item>
@@ -44,14 +47,9 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-
-                    <el-form-item label="描述/个签">
-                        <el-input type="textarea" :rows="5" placeholder="请输入用户描述信息" v-model="userForm.description">
-                        </el-input>
+                    <el-form-item label="职业">
+                        <el-input v-model="userForm.ext01"></el-input>
                     </el-form-item>
-                    <!-- <el-form-item label="备注">
-                        <el-input v-model="userForm.note"></el-input>
-                    </el-form-item> -->
 
                     <el-form-item label="头像">
                         <el-upload class="avatar-uploader" action="/api/file/upload" :show-file-list="false"
@@ -71,11 +69,13 @@
                         </div>
                         <div class="info">
                             <p class="user-title"><b>账户：</b>{{ this.userForm.username }}</p>
+                            <p class="user-title"><b>身份证号：</b>{{ this.userForm.ext02 }}</p>
                             <p class="user-title"><b>昵称：</b>{{ this.userForm.nickname }}</p>
+                            <p class="user-title"><b>职业：</b>{{ this.userForm.ext01 }}</p>
                             <p class="user-title"><b>邮箱：</b>{{ this.userForm.email }}</p>
                             <p class="user-title"><b>电话：</b>{{ this.userForm.phone }}</p>
                             <p class="user-title"><b>地址：</b>{{ this.userForm.address }}</p>
-                            <p class="user-title"><b>个签：</b>{{ this.userForm.description }}</p>
+                            <p class="user-title"><b>角色：</b>{{ this.userForm.note }}</p>
                         </div>
                     </div>
                 </el-card>
@@ -116,6 +116,18 @@ export default {
                 }
             }
         };
+        var ext02 = (rule, value, callback) => {
+            const reg = /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
+            if (value == '' || value == undefined || value == null) {
+                callback(new Error('请输入正确的二代身份证号'));
+            } else {
+                if (!reg.test(value)) {
+                    callback(new Error('请输入正确的二代身份证号'));
+                } else {
+                    callback();
+                }
+            }
+        };
         return {
             dialogAvatarUrl: '',
             dialogAvatarVisible: false,
@@ -135,6 +147,9 @@ export default {
                 ],
                 email: [
                     { validator: email, trigger: 'blur' }
+                ],
+                ext02: [
+                    { validator: ext02, required: true, message: '请输入身份证号',  trigger: 'blur' }
                 ]
             },
             //用户信息
@@ -146,9 +161,11 @@ export default {
                 address: "",
                 avatar: "",
                 email: "",
-                role: "",
+                role: "4",
                 description: "",
                 note: "",
+                ext01:"",
+                ext02:"",
             },
         }
     },
@@ -213,9 +230,9 @@ export default {
             if (this.active === 1) {
                 this.$refs.userForm1.validate((valid) => {
                     let self = this;
-                    console.log(this.userForm)
                     if (valid) {
                         // self.active++;
+                        this.userForm.note = this.rolesList[parseInt(this.userForm.role)-1].nameZh
                         _addUser(this.userForm).then(res => {
                             if (res.data.status === 200) {
                                 this.$notify.success(res.data.msg);

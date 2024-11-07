@@ -27,6 +27,9 @@
                 <el-date-picker v-model="scheduleForm.endDate" @change="handleDateChange(scheduleForm.endDate,'ed')" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="选择结束时间">
                 </el-date-picker>
             </el-form-item>
+            <el-form-item label="相关人员">
+                <el-input type="textarea" v-model="scheduleForm.name"></el-input>
+            </el-form-item>
             <el-form-item label="事件内容">
                 <el-input type="textarea" v-model="scheduleForm.content"></el-input>
             </el-form-item>
@@ -120,8 +123,8 @@ export default {
                 this.isOtherTab = true //其他
             }
         },
-        submitForm(formName) {
-            this.$refs[formName].validate((valid) => {
+        submitForm(scheduleForm) {
+            this.$refs[scheduleForm].validate((valid) => {
                 if (valid) {
                     if(this.scheduleForm.isNotice){
                         this.scheduleForm.isNotice = "1"
@@ -131,7 +134,7 @@ export default {
                     _addEvent(this.scheduleForm).then(res => {
                         if(res.status == 200){
                             this.$message.success("创建成功!");
-                            this.$router.push("/home/aunt/AuntDashBoard")
+                            this.$router.push("/home/aunt/EvenList")
                         }else{
                             this.$message.error(res.data.msg);
                         }
@@ -141,8 +144,8 @@ export default {
                 }
             });
         },
-        resetForm(formName) {
-            this.$refs[formName].resetFields();
+        resetForm(scheduleForm) {
+            this.$refs[scheduleForm].resetFields();
         },
         handleDateChange(val,type){
             if(type === 'bg') this.scheduleForm.startDate = parseTime(val)
@@ -152,7 +155,7 @@ export default {
     created(){
         const data = JSON.parse(this.$route.params.data)
         this.scheduleForm.createNameID = this.$store.state.login_user.id //获取登录用户ID
-        this.scheduleForm.name = data.name //获取当事人名称
+        // this.scheduleForm.name = data.name //获取当事人名称
         this.scheduleForm.startDate = parseTime(data.date)
         this.scheduleForm.endDate = parseTime(data.date)
     }
