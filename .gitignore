@@ -1,2 +1,6 @@
-dist/
-bloge-end/dist.rar
+blog-front/dist/
+blog-front/*.rar
+blog-end/dist/
+blog-end/*.rar
+node_modules/
+.env
