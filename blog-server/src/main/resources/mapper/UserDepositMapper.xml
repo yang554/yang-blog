@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.UserDepositMapper">
+    <resultMap id="map" type="com.yang.blog.entity.UserDepositEntity">
+        <id column="user_id" property="userId"/>
+        <result column="username" property="username"/>
+        <result column="total_deposit" property="totalDeposit"/>
+        <result column="created_at" property="createdAT"/>
+        <result column="updated_at" property="updatedAT"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="map">
+        SELECT * FROM user_deposit
+    </select>
+
+    <select id="findByUserId" resultMap="map">
+        SELECT * FROM user_deposit
+        WHERE user_id = #{id}
+    </select>
+
+    <select id="findByName" resultMap="map">
+        SELECT * FROM user_deposit
+        WHERE username LIKE CONCAT('%',#{name},'%') ORDER BY user_id DESC
+    </select>
+
+    <insert id="addUserDeposit" parameterType="com.yang.blog.entity.UserDepositEntity">
+        INSERT INTO user_deposit (user_id,username,total_deposit) VALUES(#{userId,jdbcType=VARCHAR},#{username,jdbcType=VARCHAR},#{totalDeposit,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="updUserNameById">
+        UPDATE user_deposit SET username=#{userName,jdbcType=VARCHAR}
+        WHERE user_id=#{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updUserDepositById">
+        UPDATE user_deposit SET total_deposit=#{deposit,jdbcType=VARCHAR}
+        WHERE user_id=#{id,jdbcType=VARCHAR}
+    </update>
+
+</mapper>

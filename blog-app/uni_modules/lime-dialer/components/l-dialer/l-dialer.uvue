@@ -1,0 +1,316 @@
+<template>
+	<view class="l-dialer" :style="rootStyles">
+		<view class="l-dialer__inner" :style="innerStyle">
+			<view class="l-dialer__inner-border" v-if="$slots['border'] != null">
+				<slot name="border" />
+			</view>
+			<view class="l-dialer__inner-wrap" ref="drawbleRef" :style="wrapStyle">
+				<view 
+					class="l-dialer__inner-item" 
+					v-for="(item, index) in prizeList" :key="index"
+					:style="itemStyle(index)">
+					<view class="l-dialer__inner-content" :style="contentStyle(index)">
+						<slot name="prize" :item="item" :even="index % 2">
+							<text class="l-dialer__inner-name" :style="nameStyle">{{ item['name'] }}</text>
+							<image class="l-dialer__inner-img" :src="item['img']"></image>
+						</slot>
+					</view>
+				</view>
+			</view>
+		</view>
+		<view ref="pointerRef" class="l-dialer__pointer" :style="pointerStyle">
+			<slot name="pointer" >
+				<image 
+					:class="!isTurnIng ? 'heart' : ''" 
+					src="/uni_modules/lime-dialer/static/turnable_btn.png"
+					style="width: 100%" 
+					mode="widthFix" 
+					@tap="$emit('click')" />
+			</slot>
+		</view>
+	</view>
+</template>
+<script lang="uts" setup>
+	/**
+	 * Dialer 转盘抽奖组件
+	 * @description 用于实现大转盘抽奖效果的交互组件
+	 * <br> 插件类型：LDialerComponentPublicInstance 
+	 * @tutorial https://ext.dcloud.net.cn/plugin?name=lime-dialer
+	 * 
+	 * @property {(String|Number)} size 组件整体尺寸（支持px/rpx单位）
+	 * @property {UTSJSONObject[]} prizeList 奖项配置数组
+	 * @property {Number} turns 默认旋转圈数
+	 * @property {Number} duration 单次抽奖持续时间（单位：秒）
+	 * @property {UTSJSONObject} styleOpt 样式配置对象
+	 * @property {String} [customStyle] 自定义组件根节点样式类名
+	 * @property {String} [dialStyle] 转盘容器样式类名
+	 * @property {String} [pointerStyle] 指针内联样式（支持CSS字符串）
+	 * @event {Function} click 点击触发
+	 * @event {Function} done 完成时触发
+	 */
+	
+	const emits = defineEmits(['click', 'done'])
+	const slots = defineSlots<{
+		prize : {
+			item : UTSJSONObject,
+			even : number
+		}
+	}>()
+	const props = defineProps({
+		size: {
+			type: [String, Number],
+			default: 300
+		},
+		prizeList: {
+			type: Array as PropType<UTSJSONObject[]>,
+			default: () : UTSJSONObject[] => []
+		},
+		turns: {
+			type: Number,
+			default: 10
+		},
+		duration: {
+			type: Number,
+			default: 3
+		},
+		styleOpt: {
+			type: Object as PropType<UTSJSONObject>,
+			default: () : UTSJSONObject => ({
+				// 每一块扇形的背景色,默认值,可通过父组件来改变
+				prizeBgColors: ['#fff0a3', '#fffce6'],
+				// 每一块扇形的外边框颜色,默认值,可通过父组件来改变
+				borderColor: '#ffd752',
+			} as UTSJSONObject)
+		},
+		customStyle: {
+			type: String,
+		},
+		dialStyle: {
+			type: String,
+		},
+		pointerStyle: {
+			type: String,
+			default: `width: 30%`
+		}
+	})
+
+	const drawbleRef = ref<UniElement | null>(null)
+	const pointerRef = ref<UniElement | null>(null)
+	const startRotateDegree = ref(0)
+	const rotateAngle = ref('rotate(0deg)')
+	const rotateTransition = ref('')
+	const isTurnIng = ref(false)
+
+
+	const getStyleOpt = computed(() : UTSJSONObject => {
+		const style = {
+			// 每一块扇形的背景色,默认值,可通过父组件来改变
+			prizeBgColors: ['#fff0a3', '#fffce6'],
+			// 每一块扇形的外边框颜色,默认值,可通过父组件来改变
+			borderColor: '#ffd752',
+		}
+		return UTSJSONObject.assign(style, props.styleOpt)
+	})
+	const rootStyles = computed(() : string => {
+		const size = /\d$/.test(`${props.size}`) ? `${props.size}px` : props.size;
+		return `width: ${size}; height: ${size}; ${props.customStyle}`
+	})
+
+	const innerStyle = computed(() : string => {
+		// const style = new Map<string, string>()
+		let style = ''
+		const padding = getStyleOpt.value['padding'] ?? 0
+
+		style += `padding: ${padding};`
+		style += `transform: ${rotateAngle.value};`
+		style += `${rotateTransition.value};`//`transition: ${rotateTransition.value};`
+		style += `${props.dialStyle};`
+
+		return style
+	})
+
+	const wrapStyle = computed(() : string => {
+		// #ifndef APP
+		const borderColor = getStyleOpt.value['borderColor']
+		if (borderColor != null) {
+			return `border: 1rpx solid ${borderColor}`
+		}
+		// #endif
+		return ''
+	})
+
+	const itemStyle = computed(() : ((index : number) => Map<string, any>) => {
+		return (index : number) : Map<string, any> => {
+			const length = props.prizeList.length;
+			const prizeBgColors : string[] = (getStyleOpt.value['prizeBgColors'] ?? [] as string[]) as string[]
+			const prizeBgColorsLength = prizeBgColors.length;
+			const borderColor = getStyleOpt.value['borderColor']
+			const style = new Map<string, any>();
+			// #ifndef APP
+			if (length == 2) {
+				// style['transform'] = index == 0 ? 0 : `rotate(270deg)` 
+				style.set('transform', index == 0 ? `rotate(0deg)` : `rotate(270deg)`)
+				style.set('top', 0)
+			} else {
+				style.set('transform', `rotate(${(360 / length) * index}deg) skewX(0deg) skewY(${360 / length - 90}deg)`);
+			}
+			if (prizeBgColorsLength > 0) {
+				style.set('backgroundColor', `${prizeBgColors[index % prizeBgColorsLength]}`)
+			}
+			// if (borderColor != null) {
+			// 	style.set('border', `1rpx solid ${borderColor}`)
+			// }
+			// #endif
+			// #ifdef APP
+			if (length == 2) {
+				style.set('backgroundColor', `${prizeBgColors[index % prizeBgColorsLength]}`)
+				style.set('transform', index == 0 ? `rotate(0deg)` : `rotate(270deg)`);
+				style.set('top', 0)
+				if (borderColor != null) {
+					style.set('border', `1rpx solid ${borderColor}`)
+				}
+			} else{
+				style.set('transform', `rotate(${(360 / length) * index}deg)`);
+			}
+			// #endif
+			return style
+		}
+	})
+
+	const contentStyle = computed(() : ((index : number) => string) => {
+		return (index : number) : string => {
+			// #ifndef APP
+			if (props.prizeList.length != 2) {
+				return `transform: skewY(${90 - 360 / props.prizeList.length}deg) skewX(0deg) rotate(${180 / props.prizeList.length}deg)`
+			} else {
+				return index == 0
+					? `transform: rotate(90deg); bottom: 0`
+					: `transform: rotate(0deg); bottom: -50%; left: 0`
+			}
+
+			// #endif
+			
+			if (props.prizeList.length != 2) {
+				return `transform: rotate(${180 / props.prizeList.length}deg)`
+			} else {
+				return index == 0
+					? `transform: rotate(90deg); bottom: 0`
+					: `transform: rotate(0deg); bottom: -50%; left: 0`
+			}
+			// #ifdef APP
+			// #endif
+		}
+
+	})
+
+	const nameStyle = computed(() : Map<string, any> => {
+		const fontSize = getStyleOpt.value['fontSize']
+		const color = getStyleOpt.value['color']
+		const style = new Map<string, any>()
+
+		if (fontSize != null) {
+			style.set('fontSize', fontSize)
+		}
+		if (color != null) {
+			style.set('color', color)
+		}
+		return style
+	})
+
+
+	const run = (index : number) => {
+		if (isTurnIng.value) return
+		const duration = props.duration;
+		const length = props.prizeList.length;
+
+		const _rotateAngle = startRotateDegree.value + props.turns * 360 + 360 - (180 / length + (360 / length) * index) - (startRotateDegree.value % 360);
+		
+		rotateTransition.value = `transition-duration: ${duration}s`;
+		// 鸿蒙需要设置时间后 再设置旋转才能触发动画
+		nextTick(()=>{
+			startRotateDegree.value = _rotateAngle;
+			rotateAngle.value = `rotate(${_rotateAngle}deg)`;
+			isTurnIng.value = true
+			
+			setTimeout(() => {
+				emits('done', index);
+				isTurnIng.value = false
+			}, duration * 1000 + 500);
+		})
+		
+	}
+	// #ifdef APP
+	onMounted(() => {
+		nextTick(() => {
+			
+			if(pointerRef.value != null) {
+				pointerRef.value?.getBoundingClientRectAsync()?.then(res => {
+					const x = res.width / 2;
+					const y = res.height / 2;
+					
+					const translate = `translate(-${x}px, -${y}px)`
+					const keyframes = [
+						{transform: `${translate} scale(1)`},
+						{transform: `${translate} scale(1.05)`},
+						{transform: `${translate} scale(1)`},
+					]
+					// pointerRef.value?.animate(keyframes, {
+					// 	duration: 1000,
+					// 	easing: 'cubic-bezier(0.250, 0.460, 0.455, 0.995)',
+					// 	iterations: Infinity,
+					// })
+				})
+				
+			}
+			if (drawbleRef.value == null) return;
+			const ctx = drawbleRef.value!.getDrawableContext()!;
+			const size = drawbleRef.value!.offsetWidth;
+			watch(props.prizeList, () => {
+				ctx.reset()
+				const length = props.prizeList.length;
+				if (length == 2) return
+				const prizeBgColors : string[] = (getStyleOpt.value['prizeBgColors'] ?? [] as string[]) as string[]
+				const prizeBgColorsLength = prizeBgColors.length;
+				const borderColor = getStyleOpt.value['borderColor'] as string | null
+
+				const centerX = size / 2;
+				const centerY = size / 2;
+				const radius = size / 2;
+
+				// const angle = (2 * Math.PI) / length;
+				const angleStep = (2 * Math.PI) / length
+				// 添加270度偏移（转换为弧度：270° = 3π/2）
+				const startOffset = 3 * Math.PI / 2
+				for (let i = 0; i < length; i++) {
+					ctx.beginPath();
+					ctx.moveTo(centerX, centerY);
+					
+					// 调整起始和结束角度
+					const startAngle = startOffset + i * angleStep
+					const endAngle = startOffset + (i + 1) * angleStep
+						
+					ctx.arc(centerX, centerY, radius,startAngle, endAngle);
+					
+					// ctx.arc(centerX, centerY, radius, i * angle, (i + 1) * angle);
+					ctx.lineTo(centerX, centerY);
+					ctx.closePath();
+					ctx.fillStyle = prizeBgColors[i % prizeBgColorsLength];
+					if (borderColor != null) {
+						ctx.lineWidth = 2
+						ctx.strokeStyle = borderColor;
+						ctx.stroke()
+					}
+					ctx.fill();
+				}
+				ctx.update()
+			}, { immediate: true })
+		})
+	})
+	// #endif
+	defineExpose({
+		run
+	})
+</script>
+<style lang="scss" scoped>
+	@import './index';
+</style>

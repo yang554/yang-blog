@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.NuReColMapper">
+    <resultMap id="map" type="com.yang.blog.entity.NuReColEntity">
+        <id column="id" property="Id"/>
+        <result column="uID" property="uID"/>
+        <result column="fID" property="fID"/>
+        <result column="time" property="createTime"/>
+    </resultMap>
+
+    <select id="isUserCol" resultType="map">
+        SELECT * FROM nutritional_recipe_collection WHERE uID = #{uID}) AND fID =  #{fID}
+    </select>
+    <insert id="insertBatch">
+        INSERT IGNORE INTO nutritional_recipe_collection (id,fID,uID)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.Id}, #{item.fID}, #{item.uID})
+        </foreach>
+    </insert>
+
+    <delete id="deleteBatch">
+        DELETE FROM nutritional_recipe_collection WHERE
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            uID = ${item.uID} AND fID = ${item.fID}
+        </foreach>
+    </delete>
+
+</mapper>

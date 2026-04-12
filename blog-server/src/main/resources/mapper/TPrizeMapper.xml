@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.TPrizeMapper">
+    <resultMap id="map" type="com.yang.blog.entity.TPrizeEntity">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="number" property="number"/>
+        <result column="weight" property="weight"/>
+        <result column="calc" property="calc"/>
+    </resultMap>
+
+    <select id="getAll" resultMap="map">
+        SELECT * FROM t_prize ORDER BY id DESC
+    </select>
+    <select id="findByID" parameterType="string" resultMap="map">
+        SELECT * FROM t_prize WHERE id = #{id}
+    </select>
+
+    <insert id="addPrize">
+        INSERT INTO t_prize (id,`name`,`number`,weight,calc)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id}, #{item.name}, #{item.number}, #{item.weight}, #{item.calc})
+        </foreach>
+    </insert>
+
+    <update id="updPrize">
+        UPDATE t_prize
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="name =case" suffix="end,">
+                <foreach collection="list" item="item">
+                    when id = #{item.id} then #{item.name}
+                </foreach>
+            </trim>
+            <trim prefix="number =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.number!=null">
+                        when id = #{item.id} then #{item.number}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="weight =case" suffix="end,">
+                <foreach collection="list" item="item">
+                    <if test="item.weight!=null">
+                        when id = #{item.id} then #{item.weight}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="calc =case" suffix="end,">
+                <foreach collection="list" item="item">
+                    <if test="item.calc!=null">
+                        when id = #{item.id} then #{item.calc}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            ${item.id}
+        </foreach>
+    </update>
+    <update id="updNumberByID">
+        UPDATE t_prize SET `number` = #{number}
+        WHERE id=#{id}
+    </update>
+
+
+    <delete id="delPrize">
+        DELETE FROM t_prize WHERE id IN
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            ${item.id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.NutritionalRecipesMapper">
+    <resultMap id="map" type="com.yang.blog.entity.NutritionalRecipesEntity">
+        <id column="f_id" property="fID"/>
+        <result column="f_name" property="fName"/>
+        <result column="f_intro" property="fIntro"/>
+        <result column="f_type" property="fType"/>
+        <result column="z_meal" property="zMeal"/>
+        <result column="z_snack" property="zSnack"/>
+        <result column="a_meal" property="aMeal"/>
+        <result column="a_snack" property="aSnack"/>
+        <result column="n_meal" property="nMeal"/>
+        <result column="n_snack" property="nSnack"/>
+        <result column="f_target" property="fTarget"/>
+        <result column="u_id" property="uID"/>
+        <result column="u_name" property="uName"/>
+        <result column="f_create_time" property="fCreateTime"/>
+        <result column="f_update_time" property="fUpdateTime"/>
+        <result column="f_note" property="fNote"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="map">
+        SELECT n.*,u.username as u_name FROM nutritional_recipes n
+        LEFT JOIN sys_user u ON n.u_id = u.id
+        ORDER BY f_update_time DESC
+    </select>
+
+    <select id="findByFactor" resultMap="map">
+        SELECT n.*,u.username as u_name FROM nutritional_recipes n
+        LEFT JOIN sys_user u ON n.u_id = u.id
+        <where>
+            <if test="name != null">
+                AND f_name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="type != null ">
+                AND f_type LIKE CONCAT('%',#{type},'%')
+            </if>
+            <if test="target != null ">
+                AND f_target LIKE CONCAT('%',#{target},'%')
+            </if>
+        </where>
+        ORDER BY f_update_time DESC
+    </select>
+
+    <select id="findById" resultMap="map">
+        SELECT n.*,u.username as u_name FROM nutritional_recipes n
+        LEFT JOIN sys_user u ON n.u_id = u.id
+        WHERE f_id = #{id}
+    </select>
+
+    <insert id="addRecipes" useGeneratedKeys="true" keyProperty="id" parameterType="com.yang.blog.entity.NutritionalRecipesEntity">
+      INSERT INTO nutritional_recipes (f_id,f_name,f_intro,f_type,z_meal,z_snack,
+      a_meal,a_snack,n_meal,n_snack,f_target,u_id,f_create_time,f_update_time,f_note)
+      VALUES(#{fID,jdbcType=VARCHAR},#{fName,jdbcType=VARCHAR},#{fIntro,jdbcType=VARCHAR},#{fType,jdbcType=VARCHAR},
+      #{zMeal,jdbcType=VARCHAR},#{zSnack,jdbcType=VARCHAR},#{aMeal,jdbcType=VARCHAR},#{aSnack,jdbcType=VARCHAR},
+      #{nMeal,jdbcType=VARCHAR},#{nSnack,jdbcType=VARCHAR},#{fTarget,jdbcType=VARCHAR},
+      #{uID,jdbcType=VARCHAR},#{fCreateTime,jdbcType=VARCHAR},#{fUpdateTime,jdbcType=VARCHAR},#{fNote,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="updRecipes" parameterType="com.yang.blog.entity.NutritionalRecipesEntity">
+        UPDATE nutritional_recipes SET f_name = #{fName},f_intro = #{fIntro},f_type = #{fType},z_meal = #{zMeal},
+        z_snack = #{zSnack},a_meal = #{aMeal},a_snack = #{aSnack},n_meal = #{nMeal},n_snack = #{nSnack},
+        f_target = #{fTarget},f_update_time = #{fUpdateTime},f_note = #{fNote}
+        WHERE f_id=#{fID}
+    </update>
+
+    <delete id="delRecipes">
+        DELETE FROM nutritional_recipes WHERE f_id = #{fID}
+    </delete>
+</mapper>

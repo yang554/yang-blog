@@ -1,0 +1,120 @@
+.user-list-view {
+    padding: 15px;
+    background-color: #f5f7fa;
+}
+
+.search-card {
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.search-card .el-card__body {
+    padding: 15px 20px;
+}
+
+.search-container {
+    padding: 10px;
+    background: #f8fafc;
+    border-radius: 8px;
+    margin-bottom: 1px;
+}
+
+.search-container .search-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.search-container .search-item .el-select,
+.el-input,
+.el-date-editor {
+    flex: 1;
+}
+
+.search-container .search-item .search-label {
+    min-width: 68px;
+    font-size: 13px;
+    color: #5a6d86;
+    text-align: right;
+    padding-right: 8px;
+    flex-shrink: 0;
+}
+
+.search-container .amount-range {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-container .amount-range .el-input {
+    flex: 1;
+}
+
+.search-container .amount-range .range-separator {
+    color: #97a8be;
+    font-size: 13px;
+}
+
+.search-container .action-buttons {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.search-container .action-buttons .el-button {
+    min-width: 80px;
+}
+
+/* 表格内容div */
+.table-container {
+    /* border: 1px solid #e6ebf5; */
+    overflow: hidden;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.table-container .el-table {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.table-container .el-table::before {
+    height: 0;
+    /* 去除el-table默认的底部线 */
+}
+
+.table-container .el-table th {
+    background-color: #f0f7ff !important;
+    color: #1f2d3d;
+    font-weight: 600;
+    font-size: 14px;
+    height: 52px;
+}
+
+.table-container .el-table td {
+    padding: 12px 0;
+    font-size: 14px;
+}
+
+.table-container .el-table .cell {
+    padding: 0 16px;
+}
+
+.table-container .el-table--striped .el-table__body tr.el-table__row--striped td {
+    background: #fafbfc;
+}
+
+.table-container .el-table__empty-block {
+    background: #fafbfc;
+    border-radius: 0 0 10px 10px;
+}
+
+/* 分页 */
+.pagination-container {
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    border-top: 1px solid #ebeef5;
+}

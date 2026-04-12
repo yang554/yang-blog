@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.NutritionRecipeFoodMapper">
+    <resultMap id="map" type="com.yang.blog.entity.NutritionRecipeFoodEntity">
+        <id column="id" property="ID"/>
+        <result column="food_id" property="foodId"/>
+        <result column="recipe_id" property="recipeId"/>
+        <result column="user_id" property="userId"/>
+        <result column="weight" property="weight"/>
+        <result column="createTime" property="createTime"/>
+
+        <!--食材信息-->
+        <collection property="ingredient" ofType="com.yang.blog.entity.FoodNutritionEntity">
+            <id column="f_id" property="fID"/>
+            <result column="f_img" property="fImg"/>
+            <result column="f_type" property="fType"/>
+            <result column="f_name" property="fName"/>
+            <result column="f_edible_section" property="fEdibleSection"/>
+            <result column="f_energy" property="fEnergy"/>
+            <result column="f_carbon_water" property="fCarbonWater"/>
+            <result column="f_fat" property="fFat"/>
+            <result column="f_protein" property="fProtein"/>
+            <result column="f_dietary_fiber" property="fDietaryFiber"/>
+            <result column="f_vitaminA" property="fVitaminA"/>
+            <result column="f_vitaminC" property="fVitaminC"/>
+            <result column="f_vitaminD" property="fVitaminD"/>
+            <result column="f_vitaminE" property="fVitaminE"/>
+            <result column="f_vitaminK" property="fVitaminK"/>
+            <result column="f_vitaminB1" property="fVitaminB1"/>
+            <result column="f_vitaminB2" property="fVitaminB2"/>
+            <result column="f_vitaminB3" property="fVitaminB3"/>
+            <result column="f_vitaminB6" property="fVitaminB6"/>
+            <result column="f_vitaminB9" property="fVitaminB9"/>
+            <result column="f_vitaminB12" property="fVitaminB12"/>
+            <result column="f_K" property="fK"/>
+            <result column="f_Na" property="fNa"/>
+            <result column="f_Ca" property="fCa"/>
+            <result column="f_Zn" property="fZn"/>
+            <result column="f_Se" property="fSe"/>
+            <result column="f_Fe" property="fFe"/>
+            <result column="f_role" property="fRole"/>
+            <result column="f_create_time" property="fCreateTime"/>
+            <result column="f_update_time" property="fUpdateTime"/>
+            <result column="f_note" property="fNote"/>
+        </collection>
+    </resultMap>
+
+    <select id="getByRecipeId" parameterType="string" resultMap="map">
+        SELECT * FROM (SELECT * FROM nutrition_recipe_food WHERE recipe_id = #{recipeId}) rf
+        LEFT JOIN food_nutrition f ON rf.food_id = f.f_id
+    </select>
+
+
+    <insert id="insertBatch">
+        INSERT IGNORE INTO nutrition_recipe_food (id,food_id,recipe_id,weight)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.ID}, #{item.foodId}, #{item.recipeId}, #{item.weight})
+        </foreach>
+    </insert>
+
+    <delete id="deleteBatch">
+        DELETE FROM nutrition_recipe_food WHERE
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            food_id = ${item.foodId} AND recipe_id = ${item.recipeId} AND user_id = ${item.userId}
+        </foreach>
+    </delete>
+
+    <delete id="delBatchByRecipeId">
+        DELETE FROM nutrition_recipe_food WHERE recipe_id IN
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            ${item.recipeId}
+        </foreach>
+    </delete>
+
+    <delete id="delByRecipeId" parameterType="String">
+        DELETE FROM nutrition_recipe_food WHERE recipe_id=#{recipeId,jdbcType=VARCHAR}
+    </delete>
+</mapper>

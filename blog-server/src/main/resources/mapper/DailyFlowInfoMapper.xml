@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.DailyFlowInfoMapper">
+    <resultMap id="map" type="com.yang.blog.entity.DailyFlowInfoEntity">
+        <id column="id" property="id"/>
+        <result column="purpose" property="purpose"/>
+        <result column="cost" property="cost"/>
+        <result column="type" property="type"/>
+        <result column="note" property="note"/>
+        <result column="daily_flow_id" property="fID"/>
+        <result column="type_tag_id" property="typeTagID"/>
+        <result column="uName" property="uName"/>
+    </resultMap>
+
+    <select id="findAll" parameterType="string" resultMap="map">
+        SELECT d.type,d.record_time AS note,df.purpose,df.cost,df.type_tag_id,u.username as uName FROM u_daily_flow d
+        LEFT JOIN u_daily_flow_info df ON d.id = df.daily_flow_id
+        LEFT JOIN sys_user u ON d.made = u.id
+        ORDER BY note DESC
+    </select>
+
+    <select id="findByFactor" parameterType="string" resultMap="map">
+        SELECT * FROM u_daily_flow_info WHERE daily_flow_id = #{fID}
+    </select>
+
+    <select id="findByID" parameterType="string" resultMap="map">
+        SELECT * FROM u_daily_flow_info WHERE id = #{id}
+    </select>
+
+    <select id="findByFactorInfo" parameterType="string" resultMap="map">
+        SELECT d.made,d.type,d.record_time AS note,df.purpose,df.cost,df.type_tag_id,u.username as uName FROM
+        (SELECT * FROM u_daily_flow
+        <where>
+            <if test="id != '' ">
+                AND made = #{id}
+            </if>
+        </where>
+        ) d
+        INNER JOIN u_daily_flow_info df ON d.id = df.daily_flow_id
+        LEFT JOIN sys_user u ON d.made = u.id
+        <where>
+            <if test="searchTypeTag != '' ">
+                AND df.type_tag_id = #{searchTypeTag}
+            </if>
+            <if test="searchDate1 != ''">
+                AND  DATE_FORMAT(d.record_time, '%Y-%m-%d') BETWEEN #{searchDate1} AND #{searchDate2}
+            </if>
+            <if test="searchType != '' ">
+                AND d.`type` = #{searchType}
+            </if>
+            <if test="minCost != null and minCost != '' ">
+                AND df.`cost` >= #{minCost}
+            </if>
+            <if test="maxCost != null and maxCost != ''">
+                AND df.`cost` &lt;= #{maxCost}  <!-- 注意小于号转义 -->
+            </if>
+        </where>
+        ORDER BY note DESC
+    </select>
+
+    <insert id="insertBatch">
+        INSERT INTO u_daily_flow_info (id,purpose,cost,`type`,note,daily_flow_id,type_tag_id)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id}, #{item.purpose}, #{item.cost}, #{item.type}, #{item.note}, #{item.fID}, #{item.typeTagID})
+        </foreach>
+    </insert>
+
+    <insert id="addFlowInfo" parameterType="com.yang.blog.entity.DailyFlowInfoEntity">
+        INSERT INTO u_daily_flow_info (id,purpose,cost,`type`,note,daily_flow_id,type_tag_id)
+        VALUES(#{id},#{purpose},#{cost},#{type},#{note},#{daily_flow_id}, #{item.typeTagID})
+    </insert>
+
+    <update id="updFlowInfo">
+        UPDATE u_daily_flow_info
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="purpose =case" suffix="end,">
+                <foreach collection="list" item="item">
+                    when id = #{item.id} then #{item.purpose}
+                </foreach>
+            </trim>
+            <trim prefix="cost =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.cost!=null">
+                        when id = #{item.id} then #{item.cost}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="type =case" suffix="end,">
+                <foreach collection="list" item="item">
+                    <if test="item.type!=null">
+                        when id = #{item.id} then #{item.type}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="note =case" suffix="end,">
+                <foreach collection="list" item="item">
+                    <if test="item.note!=null">
+                        when id = #{item.id} then #{item.note}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="type_tag_id =case" suffix="end,">
+                <foreach collection="list" item="item">
+                    <if test="item.typeTagID!=null">
+                        when id = #{item.id} then #{item.typeTagID}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            ${item.id}
+        </foreach>
+    </update>
+
+    <delete id="delFlowInfoBatch">
+        DELETE FROM u_daily_flow_info WHERE id IN
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            ${item.id}
+        </foreach>
+    </delete>
+
+    <delete id="delFlowInfo">
+        DELETE FROM u_daily_flow_info WHERE daily_flow_id = #{fID}
+    </delete>
+
+</mapper>

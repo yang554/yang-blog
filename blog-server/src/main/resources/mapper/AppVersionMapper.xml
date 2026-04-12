@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.AppVersionMapper">
+    <resultMap id="map" type="com.yang.blog.entity.AppVersionEntity">
+        <id column="id" property="id"/>
+        <result column="appName" property="appName"/>
+        <result column="versionCode" property="versionCode"/>
+        <result column="versionName" property="versionName"/>
+        <result column="downloadUrl" property="downloadUrl"/>
+        <result column="updateTitle" property="updateTitle"/>
+        <result column="updateContent" property="updateContent"/>
+        <result column="forceUpdate" property="forceUpdate"/>
+        <result column="fileSize" property="fileSize"/>
+        <result column="publishTime" property="publishTime"/>
+        <result column="fileUpdateSize" property="fileUpdateSize"/>
+        <result column="note" property="note"/>
+    </resultMap>
+
+    <select id="getRawData" parameterType="string" resultMap="map">
+        SELECT * FROM t_app_version
+        WHERE
+        1=1
+        <choose>
+            <!-- 版本号 -->
+            <when test="versionCode != null and versionCode != ''">
+                AND versionCode=#{versionCode}
+            </when>
+            <!-- app名称 -->
+            <when test="appName != null and appName != ''">
+                AND appName=#{appName}
+            </when>
+            <!-- 上传日期范围-->
+            <when test="startTime != '' and endTime != ''">
+                AND publishTime BETWEEN #{startTime} AND #{endTime}
+            </when>
+        </choose>
+        ORDER BY versionCode ASC
+    </select>
+
+    <insert id="insert" parameterType="com.yang.blog.entity.AppVersionEntity">
+        INSERT INTO t_app_version (
+          id,appName,versionCode,versionName,downloadUrl,updateTitle,updateContent,forceUpdate,fileSize,publishTime,fileUpdateSize,note)
+        VALUES(#{id},#{appName},#{versionCode},#{versionName},#{downloadUrl},#{updateTitle},
+          #{updateContent},#{forceUpdate},#{fileSize},#{publishTime},#{fileUpdateSize},#{note})
+    </insert>
+
+    <update id="update" parameterType="com.yang.blog.entity.AppVersionEntity">
+        UPDATE t_app_version SET downloadUrl = #{type},updateTitle = #{cost},updateContent = #{recordTime},
+        forceUpdate = #{forceUpdate},note = #{note}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM t_app_version WHERE id = #{id}
+    </delete>
+
+</mapper>

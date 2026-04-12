@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.ClassFeeMapper">
+    <resultMap id="map" type="com.yang.blog.entity.ClassFeeEntity">
+        <id column="id" property="id"/>
+        <result column="teacherLevel" property="teacherLevel"/>
+        <result column="grade" property="grade"/>
+        <result column="classType" property="classType"/>
+        <result column="studentCount" property="studentCount"/>
+        <result column="classCategory" property="classCategory"/>
+        <result column="fee" property="fee"/>
+        <result column="note" property="note"/>
+    </resultMap>
+
+    <select id="getByALL"  resultMap="map">
+        SELECT a.*,u.username as uName FROM (SELECT * FROM u_aunt ORDER BY endDate DESC) a
+        LEFT JOIN sys_user u ON a.uID = u.id
+        ORDER BY a.endDate DESC
+    </select>
+
+    <select id="findNameAll" resultMap="map">
+        SELECT a.*,u.username as uName FROM (SELECT uID FROM u_aunt GROUP BY uID ) a
+        LEFT JOIN sys_user u ON a.uID = u.id
+    </select>
+
+    <select id="selectByName" resultMap="map">
+        SELECT a.*,u.username as uName FROM (SELECT * FROM u_aunt WHERE uID LIKE CONCAT('%',#{uName},'%') ORDER BY endDate DESC) a
+        LEFT JOIN sys_user u ON a.uID = u.id
+        ORDER BY a.endDate DESC
+    </select>
+
+    <select id="selectByNameAll" resultMap="map">
+        SELECT a.*,u.username as uName FROM (SELECT * FROM u_aunt WHERE uID=#{uName} AND uStatus=#{uStatus} ORDER BY endDate DESC) a
+        LEFT JOIN sys_user u ON a.uID = u.id
+        ORDER BY a.endDate DESC
+    </select>
+
+    <insert id="addAunt" parameterType="com.yang.blog.entity.UAuntEntity">
+        INSERT INTO u_aunt (id,uID,startDate,endDate,cycle,duration,bloodVolume,symptom,note,uStatus)
+        VALUES (#{id,jdbcType=VARCHAR},#{uID,jdbcType=VARCHAR},#{startDate,jdbcType=VARCHAR},#{endDate,jdbcType=VARCHAR}
+        ,#{cycle,jdbcType=VARCHAR},#{duration,jdbcType=VARCHAR},#{bloodVolume,jdbcType=VARCHAR},#{symptom,jdbcType=VARCHAR}
+        ,#{note,jdbcType=VARCHAR},#{uStatus,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="updAunt" parameterType="com.yang.blog.entity.UAuntEntity">
+        UPDATE u_aunt SET startDate=#{startDate,jdbcType=VARCHAR},endDate=#{endDate,jdbcType=VARCHAR},
+        cycle=#{cycle,jdbcType=VARCHAR},duration=#{duration,jdbcType=VARCHAR},bloodVolume=#{bloodVolume,jdbcType=VARCHAR},
+        symptom=#{symptom,jdbcType=VARCHAR},note=#{note,jdbcType=VARCHAR},uStatus=#{uStatus,jdbcType=VARCHAR}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delAunt" parameterType="String">
+        DELETE FROM u_aunt WHERE id=#{id,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

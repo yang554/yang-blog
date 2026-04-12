@@ -1,0 +1,40 @@
+// 颜色工具类
+@each $name, $color in $theme-colors {
+  .text-#{$name} {
+    color: $color !important;
+  }
+  
+  .bg-#{$name} {
+    background-color: $color !important;
+  }
+  
+  .border-#{$name} {
+    border-color: $color !important;
+  }
+}
+
+// 字体大小工具类
+@each $name, $size in $font-sizes {
+  .text-#{$name} {
+    font-size: $size !important;
+  }
+}
+
+// 间距工具类
+@each $name, $spacing in $spacings {
+  .m-#{$name} { margin: $spacing !important; }
+  .mt-#{$name} { margin-top: $spacing !important; }
+  .mr-#{$name} { margin-right: $spacing !important; }
+  .mb-#{$name} { margin-bottom: $spacing !important; }
+  .ml-#{$name} { margin-left: $spacing !important; }
+  .mx-#{$name} { margin-left: $spacing !important; margin-right: $spacing !important; }
+  .my-#{$name} { margin-top: $spacing !important; margin-bottom: $spacing !important; }
+  
+  .p-#{$name} { padding: $spacing !important; }
+  .pt-#{$name} { padding-top: $spacing !important; }
+  .pr-#{$name} { padding-right: $spacing !important; }
+  .pb-#{$name} { padding-bottom: $spacing !important; }
+  .pl-#{$name} { padding-left: $spacing !important; }
+  .px-#{$name} { padding-left: $spacing !important; padding-right: $spacing !important; }
+  .py-#{$name} { padding-top: $spacing !important; padding-bottom: $spacing !important; }
+}
