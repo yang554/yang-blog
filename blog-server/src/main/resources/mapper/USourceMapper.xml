@@ -7,6 +7,8 @@
         <result column="S_PIN_YIN" jdbcType="VARCHAR" property="UserPinYin" />
         <result column="S_BIRTHDAY" jdbcType="VARCHAR" property="UserBirthDay" />
         <result column="S_SEX" jdbcType="VARCHAR" property="UserSex" />
+        <result column="S_ADDRESS_NEW_CODE" jdbcType="VARCHAR" property="UserAddressNewCode" />
+        <result column="S_ADDRESS_OLD_CODE" jdbcType="VARCHAR" property="UserAddressOldCode" />
         <result column="S_ADDRESS_NEW" jdbcType="VARCHAR" property="UserAddressNew" />
         <result column="S_ADDRESS_OLD" jdbcType="VARCHAR" property="UserAddressOld" />
         <result column="S_PHONE" jdbcType="VARCHAR" property="UserPhone" />
@@ -19,6 +21,7 @@
         <result column="S_DIE_DAY" jdbcType="VARCHAR" property="UserDieDay" />
         <result column="S_MATE_ID" jdbcType="VARCHAR" property="UserMateId" />
         <result column="S_NOTE" jdbcType="VARCHAR" property="UserNote" />
+        <result column="P_Tree" jdbcType="VARCHAR" property="pTree" />
 
         <result column="pName" jdbcType="VARCHAR" property="pName" />
         <result column="mName" jdbcType="VARCHAR" property="mName" />
@@ -33,6 +36,11 @@
         SELECT b.S_NAME as pName,c.S_NAME as mName,'' as mateName,a.* FROM u_source a
         LEFT JOIN (SELECT s_id,s_name FROM u_source) b on a.S_FID=b.S_ID
         LEFT JOIN (SELECT s_id,s_name FROM u_source) c on a.S_MID=c.S_ID
+        <where>
+            <if test="pTree != '' and pTree != null">
+                AND a.p_Tree = #{pTree}
+            </if>
+        </where>
         ORDER BY a.S_BIRTHDAY ASC
     </select>
     <!--根据name查询用户-->
@@ -40,7 +48,14 @@
         SELECT b.S_NAME as pName,c.S_NAME as mName,'' as mateName,a.* FROM u_source a
         LEFT JOIN (SELECT s_id,s_name FROM u_source) b on a.S_FID=b.S_ID
         LEFT JOIN (SELECT s_id,s_name FROM u_source) c on a.S_MID=c.S_ID
-        WHERE a.S_NAME LIKE CONCAT('%',#{s_name},'%')
+        <where>
+            <if test="pTree != '' and pTree != null">
+                AND a.p_Tree = #{pTree}
+            </if>
+            <if test="s_name != '' and s_name != null">
+                AND a.S_NAME LIKE CONCAT('%',#{s_name},'%')
+            </if>
+        </where>
         ORDER BY a.S_BIRTHDAY ASC
     </select>
     <!--根据key查询用户姓名-->
@@ -64,11 +79,22 @@
     </select>
     <!--根据代系获取人口数量-->
     <select id="getUserCountByLove" resultMap="map">
-        SELECT S_LOVE as `name`,count(*) as `value` FROM u_source  GROUP BY S_LOVE ORDER BY name
+        SELECT
+          S_LOVE as `name`,
+          count(*) as `value`
+        FROM u_source
+        WHERE p_Tree = #{pTree}
+        GROUP BY S_LOVE ORDER BY CAST(S_LOVE AS UNSIGNED) asc
     </select>
     <!--根据代系获取男女比例-->
     <select id="getUserCountByLoveAndSex" resultMap="map">
-        SELECT S_LOVE as `id`,S_SEX as `name`,count(*) as `value` FROM u_source  GROUP BY S_LOVE,S_SEX ORDER BY S_LOVE
+        SELECT
+          S_LOVE as `id`,
+          S_SEX as `name`,
+          count(*) as `value`
+        FROM u_source
+        WHERE p_Tree = #{pTree}
+        GROUP BY S_LOVE,S_SEX ORDER BY CAST(S_LOVE AS UNSIGNED) asc
     </select>
     <!--分页查询所有信息-->
     <select id="selectSourceAllFY" resultMap="BaseResultMap" >
@@ -85,14 +111,14 @@
     <!--添加用户-->
     <insert id="insertUserSource" useGeneratedKeys="true" keyProperty="UserId" parameterType="com.yang.blog.entity.USourceEntity">
         INSERT INTO u_source(S_ID,S_NAME,S_PIN_YIN,S_BIRTHDAY,S_SEX,S_ADDRESS_NEW,S_ADDRESS_OLD,S_PHONE,
-          S_EMIL,S_LOVE,S_IS_SURVIVAL,S_DIE_DAY,S_NOTE,S_MATE_ID,S_FID,S_MID)
+          S_EMIL,S_LOVE,S_IS_SURVIVAL,S_DIE_DAY,S_NOTE,S_MATE_ID,S_FID,S_MID,P_Tree,S_ADDRESS_NEW_CODE,S_ADDRESS_OLD_CODE)
         VALUES(
           #{UserId,jdbcType=VARCHAR},#{UserName,jdbcType=VARCHAR},#{UserPinYin,jdbcType=VARCHAR},
           #{UserBirthDay,jdbcType=VARCHAR},#{UserSex,jdbcType=VARCHAR},#{UserAddressNew,jdbcType=VARCHAR},
           #{UserAddressOld,jdbcType=VARCHAR},#{UserPhone,jdbcType=VARCHAR},#{UserEmil,jdbcType=VARCHAR},
           #{UserLove,jdbcType=VARCHAR},#{IsSurvival,jdbcType=INTEGER},#{UserDieDay,jdbcType=INTEGER},
           #{UserNote,jdbcType=VARCHAR},#{UserMateId,jdbcType=VARCHAR},#{UserPId,jdbcType=VARCHAR},
-          #{UserMID,jdbcType=VARCHAR})
+          #{UserMID,jdbcType=VARCHAR},#{pTree,jdbcType=VARCHAR},#{UserAddressNewCode,jdbcType=VARCHAR},#{UserAddressOldCode,jdbcType=VARCHAR})
     </insert>
     <!--根据用户KEY修改PID-->
     <update id="updatePidByKey">
@@ -123,8 +149,20 @@
           S_ADDRESS_NEW=#{UserAddressNew,jdbcType=VARCHAR},S_ADDRESS_OLD=#{UserAddressOld,jdbcType=VARCHAR},
           S_PHONE=#{UserPhone,jdbcType=INTEGER},S_EMIL=#{UserEmil,jdbcType=VARCHAR},
           S_IS_SURVIVAL=#{IsSurvival,jdbcType=VARCHAR},S_DIE_DAY=#{UserDieDay,jdbcType=INTEGER},
-          S_NOTE=#{UserNote,jdbcType=VARCHAR}
+          S_NOTE=#{UserNote,jdbcType=VARCHAR},S_ADDRESS_NEW_CODE=#{UserAddressNewCode,jdbcType=VARCHAR},
+          S_ADDRESS_OLD_CODE=#{UserAddressOldCode,jdbcType=VARCHAR}
         WHERE S_ID=#{UserId,jdbcType=INTEGER}
+    </update>
+    <update id="updateMateIdByList" parameterType="java.util.List">
+        UPDATE u_source
+        SET S_MATE_ID =
+        <foreach collection="list" item="item" open="REPLACE(" close=", '')" separator=", '', '')">
+            REPLACE(S_MATE_ID, #{item}
+        </foreach>
+        WHERE
+        <foreach collection="list" item="item" open="(" close=")" separator=" OR ">
+            INSTR(S_MATE_ID, #{item}) > 0
+        </foreach>
     </update>
     <!--根据ID删除成员-->
     <delete id="deleteUserByKey" parameterType="java.util.List">
@@ -132,5 +170,9 @@
         <foreach collection="list" item="label" open="(" close=")" separator=",">
             #{label}
         </foreach>
+    </delete>
+    <!--根据ID删除成员-->
+    <delete id="deleteUserByTreeId">
+        DELETE FROM u_source WHERE p_Tree = #{pTree}
     </delete>
 </mapper>

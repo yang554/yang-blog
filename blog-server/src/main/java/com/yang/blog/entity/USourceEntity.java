@@ -20,6 +20,9 @@ public class USourceEntity {
     private String UserDieDay;  //死亡日期
     private String UserMateId;     //配偶ID
     private String UserNote;     //座右铭
+    private Long pTree;     //族谱ID
+    private String UserAddressNewCode;         //现地址编码
+    private String UserAddressOldCode;         //户口地址编码
 
     private String pName;   //父亲姓名
     private String mName;   //母亲姓名
@@ -202,5 +205,29 @@ public class USourceEntity {
 
     public void setmName(String mName) {
         this.mName = mName;
+    }
+
+    public Long getpTree() {
+        return pTree;
+    }
+
+    public void setpTree(Long pTree) {
+        this.pTree = pTree;
+    }
+
+    public String getUserAddressNewCode() {
+        return UserAddressNewCode;
+    }
+
+    public void setUserAddressNewCode(String userAddressNewCode) {
+        UserAddressNewCode = userAddressNewCode;
+    }
+
+    public String getUserAddressOldCode() {
+        return UserAddressOldCode;
+    }
+
+    public void setUserAddressOldCode(String userAddressOldCode) {
+        UserAddressOldCode = userAddressOldCode;
     }
 }

@@ -1,13 +1,11 @@
 package com.yang.blog.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
-import com.yang.blog.entity.RoleListEntity;
-import com.yang.blog.entity.SysRoleEntity;
-import com.yang.blog.entity.SysUserEntity;
-import com.yang.blog.entity.SysUserRoleEntity;
+import com.yang.blog.entity.*;
 import com.yang.blog.mapper.SysRoleMapper;
 import com.yang.blog.mapper.SysUserMapper;
 import com.yang.blog.mapper.SysUserRoleMapper;
+import com.yang.blog.mapper.UserDepositMapper;
 import com.yang.blog.service.SysUserService;
 import com.yang.blog.utils.CommonDate;
 import com.yang.blog.utils.RespBean;
@@ -33,6 +31,8 @@ public class SysUserServiceImpl implements SysUserService {
     private SysRoleMapper roleMapper;
     @Autowired
     private SysUserRoleMapper userRoleMapper;
+    @Autowired
+    private UserDepositMapper depositMapper;
 
     private SysUserEntity getUser(SysUserEntity user){
         //1、先检查用户名是否已存在
@@ -50,8 +50,8 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public boolean findUser(String name) {
-        if(ObjectUtils.isEmpty(this.selectRolesByUsername(name))){
+    public boolean findUser(String name,String userName) {
+        if(ObjectUtils.isEmpty(this.selectRolesByUsername(name)) && ObjectUtils.isEmpty(this.selectByUsername(userName)) ){
             return true;
         }
         return false;
@@ -112,6 +112,11 @@ public class SysUserServiceImpl implements SysUserService {
         user.setDescription(user.getNote());
         int insert = userMapper.addUser(user);
         if(insert >=0){
+            UserDepositEntity depositEntity = new UserDepositEntity();
+            depositEntity.setUserId(user.getId());
+            depositEntity.setUsername(user.getUsername());
+            depositEntity.setTotalDeposit("0.00");
+            depositMapper.addUserDeposit(depositEntity);
             SysUserRoleEntity userRoleEntity = new SysUserRoleEntity();
             userRoleEntity.setId(CommonDate.getStamp());
             userRoleEntity.setUserid(user.getId());
@@ -163,6 +168,7 @@ public class SysUserServiceImpl implements SysUserService {
 
         int status = userMapper.editUser(user);
         if(status > 0){
+            depositMapper.updUserNameById(id,name);
             return RespBean.ok("保存成功");
         }else {
             return RespBean.error("保存失败");

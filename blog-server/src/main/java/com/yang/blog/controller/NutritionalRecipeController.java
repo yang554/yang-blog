@@ -23,6 +23,18 @@ public class NutritionalRecipeController {
         return service.findAll();
     }
 
+    //获取所有记录
+    @GetMapping("/findAllByUserCol")
+    public List<NutritionalRecipeEntity> findAllByUserCol(@RequestParam(value = "uID") String uID){
+        return service.findAllByUserCol(uID);
+    }
+
+    //获取所有食谱类型
+    @GetMapping("/getFoodType")
+    public List<String> getFoodType(){
+        return service.getFoodType();
+    }
+
     //根据条件获取记录
     @GetMapping("/findByFactor")
     public List<NutritionalRecipeEntity> findByFactor(@RequestParam(value = "name") String name,@RequestParam(value = "type") String type){

@@ -1,6 +1,5 @@
 package com.yang.blog.config.shiro;
 
-import com.yang.blog.service.SysUserService;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
@@ -10,60 +9,89 @@ import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.SimpleCookie;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import javax.servlet.Filter;
 
 @Configuration
 public class ShiroConfig {
-    //创建shiroFilter负责拦截所有请求
-    @Bean(name = "shiroFilterFactoryBean")
-    public ShiroFilterFactoryBean shiroFilter() {
-        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-        //给filter设置安全管理器
-        shiroFilterFactoryBean.setSecurityManager(defaultWebSecurityManager());
-        //配置系统受限资源
-        //配置系统公共资源
-        Map<String, String> map = new LinkedHashMap<>();
-        map.put("/admin/**", "anon");      //测试专用
-        map.put("/blog/**", "anon");      //测试专用
-        map.put("/comment/**", "anon");      //测试专用
-        map.put("/classpath/**", "anon");      //测试专用
-        map.put("/user/**", "anon"); //anon 设置为公共资源  放行资源放在下面
-        map.put("/file/**", "anon"); //anon 设置为公共资源  放行资源放在下面
-        // 放行swagger2相关访问
-        map.put("/swagger-ui.html", "anon");
-        map.put("/webjars/springfox-swagger-ui/**", "anon");
-        map.put("/swagger-resources/**", "anon");
-        map.put("/v2/api-docs", "anon");
-//        map.put("/**", "authc");//authc 请求这个资源需要认证和授权
-        //默认认证界面路径---当认证不通过时跳转
-        shiroFilterFactoryBean.setLoginUrl("/user/login");
-        shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
+    @Bean
+    public DefaultWebSessionManager sessionManager() {
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        // 会话超时设置（30分钟）
+        sessionManager.setGlobalSessionTimeout(TimeUnit.MINUTES.toMillis(30));
+        sessionManager.setSessionValidationSchedulerEnabled(true);
+        sessionManager.setSessionValidationInterval(TimeUnit.MINUTES.toMillis(15));
+        // 删除无效 Session
+        sessionManager.setDeleteInvalidSessions(true);
 
-        return shiroFilterFactoryBean;
+        // 会话Cookie配置
+        SimpleCookie sessionIdCookie = new SimpleCookie("JSESSIONID");
+        sessionIdCookie.setHttpOnly(true);
+        sessionIdCookie.setPath("/");
+        sessionIdCookie.setMaxAge(-1); // 浏览器关闭时失效
+        sessionManager.setSessionIdCookie(sessionIdCookie);
+        sessionManager.setSessionIdCookieEnabled(true);
+
+        // 防止URL中携带JSESSIONID
+        sessionManager.setSessionIdUrlRewritingEnabled(false);
+
+        return sessionManager;
     }
-    //2.创建安全管理器
-    @Bean("myDefaultWebSecurityManager")
-    public DefaultWebSecurityManager defaultWebSecurityManager() {
-        DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
-        defaultWebSecurityManager.setAuthenticator(modularRealmAuthenticator());
 
-        List<Realm> realms = new ArrayList<>();
-        //添加多个Realm
-        realms.add(getCustomerRealm());
+    /**
+     * * 设置cookie 记住我生成cookie
+     */
+    @Bean("rememberMeManager")
+    public CookieRememberMeManager rememberMeManager() {
+        CookieRememberMeManager rememberMeManager = new CookieRememberMeManager();
+        SimpleCookie rememberMeCookie = new SimpleCookie("rememberMe");
+        rememberMeCookie.setHttpOnly(true);
+        rememberMeCookie.setMaxAge(259200); // 30天
+        rememberMeCookie.setPath("/");
 
-        //给安全管理器设置
-        defaultWebSecurityManager.setRealms(realms);
-        // 记住我
-        defaultWebSecurityManager.setRememberMeManager(cookieRememberMeManager());
+        rememberMeManager.setCookie(rememberMeCookie);
+        // 设置加密密钥
+        rememberMeManager.setCipherKey(Base64.getDecoder().decode("Z3VucwAAAAAAAAAAAAAAAA=="));
 
-        return defaultWebSecurityManager;
+        return rememberMeManager;
+    }
+
+    //3.创建自定义realm
+    @Bean("userRealm")
+    public Realm userRealm() {
+        CustomRealm userRealm = new CustomRealm();
+        //加盐
+        // 密码匹配器
+        HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
+        credentialsMatcher.setHashAlgorithmName("MD5");
+        credentialsMatcher.setHashIterations(1024);
+        credentialsMatcher.setStoredCredentialsHexEncoded(true);
+        userRealm.setCredentialsMatcher(credentialsMatcher);
+
+        //开启缓存管理器
+        userRealm.setCachingEnabled(true);
+        userRealm.setAuthenticationCachingEnabled(true);
+        userRealm.setAuthorizationCachingEnabled(true);
+        userRealm.setAuthenticationCacheName("authenticationCache");
+        userRealm.setAuthorizationCacheName("authorizationCache");
+        userRealm.setCacheManager(new EhCacheManager());
+
+        return userRealm;
+    }
+
+    /**
+     * 微信Realm
+     */
+    @Bean("wxRealm")
+    public Realm wxRealm() {
+        WxRealm wxRealm = new WxRealm();
+        // 可以根据需要为微信Realm配置特定的认证器
+        return wxRealm;
     }
 
     /**
@@ -77,47 +105,80 @@ public class ShiroConfig {
         return modularRealmAuthenticator;
     }
 
-    //3.创建自定义realm
-    @Bean("myCustomerRealm")
-    public Realm getCustomerRealm() {
-        CustomRealm customerRealm = new CustomRealm();
-        //加盐
-        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
-        hashedCredentialsMatcher.setHashAlgorithmName("md5");
-        hashedCredentialsMatcher.setHashIterations(1024);
-        customerRealm.setCredentialsMatcher(hashedCredentialsMatcher);
+    //创建安全管理器
+    @Bean
+    public DefaultWebSecurityManager securityManager() {
+        DefaultWebSecurityManager securityManager  = new DefaultWebSecurityManager();
 
-        //开启缓存管理器
-        customerRealm.setCachingEnabled(true);
-        customerRealm.setCacheManager(new EhCacheManager());
-        customerRealm.setAuthorizationCachingEnabled(true);
-        customerRealm.setAuthenticationCacheName("AuthenticationCache");      //也可以不设置 有默认值 包名.authenticationCache
-        customerRealm.setAuthorizationCachingEnabled(true);
-        customerRealm.setAuthorizationCacheName("AuthorizationCache");
+        // 设置多Realm
+//        List<Realm> realms = new ArrayList<>();
+//        realms.add(userRealm());
+//        realms.add(wxRealm());
+//        securityManager.setRealms(realms);
+        securityManager.setRealm(userRealm()); // 使用单个Realm
+        // 设置认证器
+//        securityManager.setAuthenticator(modularRealmAuthenticator());
 
-        return customerRealm;
+        // 设置会话管理器
+        securityManager.setSessionManager(sessionManager());
+
+        // 设置记住我管理器
+        securityManager.setRememberMeManager(rememberMeManager());
+
+        return securityManager;
     }
 
-    /**
-     * * 设置cookie 记住我生成cookie
-     */
-    @Bean("myCookieRememberMeManager")
-    public CookieRememberMeManager cookieRememberMeManager() {
-        CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();
-        cookieRememberMeManager.setCookie(rememberMeCookie());
-        return cookieRememberMeManager;
-    }
+    //创建shiroFilter负责拦截所有请求
+    @Bean
+    public ShiroFilterFactoryBean shiroFilterFactoryBean() {
+        ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
+        //给filter设置安全管理器
+        shiroFilter.setSecurityManager(securityManager());
 
-    /**
-     * 设置cookie有效时间
-     */
-    @Bean("mySimpleCookie")
-    public SimpleCookie rememberMeCookie() {
-        /*这个参数是cookie的名称，对应前端页面的checkbox的name=remremberMe*/
-        SimpleCookie simpleCookie = new SimpleCookie("rememberMe");
-        /*cookie的有效时间为30天，单位秒*/
-        simpleCookie.setMaxAge(259200);
-        return simpleCookie;
+        // 自定义过滤器
+        Map<String, Filter> filters = new HashMap<>();
+        filters.put("authc", new CustomShiroAuthcFilter());
+        filters.put("jwt", new JwtFilter());
+        shiroFilter.setFilters(filters);
+
+        // 拦截规则配置（按顺序）
+        Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
+
+        //静态资源放行
+        filterChainDefinitionMap.put("/static/**", "anon");
+        filterChainDefinitionMap.put("/css/**", "anon");
+        filterChainDefinitionMap.put("/js/**", "anon");
+        filterChainDefinitionMap.put("/images/**", "anon");
+        filterChainDefinitionMap.put("/favicon.ico", "anon");
+
+        //公开接口放行
+        filterChainDefinitionMap.put("/wx/user/login", "anon");
+        filterChainDefinitionMap.put("/wx/user/register", "anon");
+        filterChainDefinitionMap.put("/user/login", "anon");
+        filterChainDefinitionMap.put("/user/register", "anon");
+        filterChainDefinitionMap.put("/user/getCaptcha", "anon");
+        filterChainDefinitionMap.put("/api/user/getCaptcha", "anon");
+        filterChainDefinitionMap.put("/file/**", "anon");
+
+        //API文档放行
+        filterChainDefinitionMap.put("/swagger-ui.html", "anon");
+        filterChainDefinitionMap.put("/swagger-ui/**", "anon");
+        filterChainDefinitionMap.put("/webjars/**", "anon");
+        filterChainDefinitionMap.put("/swagger-resources/**", "anon");
+        filterChainDefinitionMap.put("/v3/api-docs", "anon");
+        filterChainDefinitionMap.put("/v3/api-docs/**", "anon");
+
+        //配置系统受限资源
+        filterChainDefinitionMap.put("/api/**", "jwt");
+        filterChainDefinitionMap.put("/wx/**", "jwt");
+
+//        filterChainDefinitionMap.put("/api/**", "authc");// Web 页面使用传统 Session 认证
+
+        //默认页面
+        filterChainDefinitionMap.put("/", "anon");
+        shiroFilter.setFilterChainDefinitionMap(filterChainDefinitionMap);
+
+        return shiroFilter;
     }
 
 }

@@ -13,9 +13,9 @@ import java.util.Map;
 @Transactional
 public interface USourceMapper {
     //查询所有用户
-    List<USourceEntity> selectSourceAll();
+    List<USourceEntity> selectSourceAll(@Param(value = "pTree")Long pTree);
     //根据name查询用户
-    List<USourceEntity> selectUserByName(@Param(value = "s_name")String s_name);
+    List<USourceEntity> selectUserByName(@Param(value = "pTree")Long pTree,@Param(value = "s_name")String s_name);
     //根据key查询用户姓名
     String selectUserByKey(@Param(value = "key")String key);
     //根据keys查询用户
@@ -27,9 +27,9 @@ public interface USourceMapper {
     //根据性别查询男女比例（嫡系）
     List<Map<String,Integer>> getUserCountBySexDX();
     //根据代系获取人口数量
-    List<Map<String,Integer>> getUserCountByLove();
+    List<Map<String,Integer>> getUserCountByLove(@Param(value = "pTree")Long pTree);
     //根据代系获取男女比例
-    List<Map<String,Integer>> getUserCountByLoveAndSex();
+    List<Map<String,Integer>> getUserCountByLoveAndSex(@Param(value = "pTree")Long pTree);
     //条件过滤后的数量
     int selectRecordsFiltered(@Param(value = "search") String search);
     //查询总数量
@@ -48,6 +48,11 @@ public interface USourceMapper {
     int updateParentsByKey(@Param(value = "key") String key,@Param(value = "Pid") String Pid,@Param(value = "Mid") String Mid);
     //根据key修改用户MATE
     int updateMateByKey(@Param(value = "id") String id,@Param(value = "key") String key);
+    //根据key批量修改配偶
+    int updateMateIdByList(List<String> list);
     //根据KEY删除用户
     int deleteUserByKey(List<String> list);
+    //根据族谱ID删除成员
+    int deleteUserByTreeId(@Param(value = "pTree")Long pTree);
+
 }

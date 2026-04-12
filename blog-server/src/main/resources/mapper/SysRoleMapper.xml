@@ -11,7 +11,7 @@
     </resultMap>
 
     <select id="getRoleAll" resultMap="map">
-        SELECT * FROM sys_role
+        SELECT * FROM sys_role WHERE `name` != 'root'
     </select>
 
     <select id="getUserRoleAll" resultType="map">

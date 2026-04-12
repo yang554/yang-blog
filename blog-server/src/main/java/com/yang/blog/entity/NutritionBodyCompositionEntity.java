@@ -1,5 +1,6 @@
 package com.yang.blog.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 
 import java.time.LocalDateTime;
@@ -34,7 +35,9 @@ public class NutritionBodyCompositionEntity {
     private String standardWeight;  //标准体重
     private String IdealWeight; //理想体重
     private String physiologicalAge;   //生理年龄
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;  //创建时间
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;  //最后一次修改时间
     private String recordTime;   //记录时间
     private String note;    //建议

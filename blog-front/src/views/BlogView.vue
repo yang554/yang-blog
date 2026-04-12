@@ -16,35 +16,23 @@
       </el-col>
     </el-row>
 
-    <el-table
-      v-loading="pagination.loading"
-      :data="pagination.currentTableData"
-      style="width: 98%"
-      :height="state.tabHeight + 'px'"
-    >
+    <el-table v-loading="pagination.loading" :data="pagination.currentTableData" style="width: 98%"
+      :height="state.tabHeight + 'px'">
       <el-table-column style="width: 100%">
         <template #default="scope">
           <el-card style="cursor: pointer;" class="box-card">
             <el-row type="flex" :gutter="10">
               <el-col :span="6" @click="handlePreviewContent(scope.$index, scope.row)">
-                <el-image
-                  style="width: 100%;height: 180px;border: 1px solid #eee;"
-                  :src="scope.row.cover"
-                  fit="cover"
-                ></el-image>
+                <el-image style="width: 100%;height: 180px;border: 1px solid #eee;" :src="scope.row.cover"
+                  fit="cover"></el-image>
               </el-col>
 
               <el-col :span="18">
-                <el-row
-                  style="font-size: 22px;margin: 10px"
-                  @click="handlePreviewContent(scope.$index, scope.row)"
-                >
+                <el-row style="font-size: 22px;margin: 10px" @click="handlePreviewContent(scope.$index, scope.row)">
                   <span style="font-weight: bold;">{{ scope.row.title }}</span>
                 </el-row>
-                <el-row
-                  style="font-size: 18px;margin: 10px"
-                  @click="handlePreviewContent(scope.$index, scope.row)"
-                >{{ scope.row.description }}</el-row>
+                <el-row style="font-size: 18px;margin: 10px" @click="handlePreviewContent(scope.$index, scope.row)">{{
+                  scope.row.description }}</el-row>
 
                 <div style="margin-top: 15px;margin: 10px;font-size: 14px;">
                   <div style="margin-right: 20px;">
@@ -52,22 +40,14 @@
                       <use xlink:href="#icon-yonghu" />
                     </svg>
                     {{ scope.row.uName }}
-                    <svg
-                      style="margin-left: 10px;"
-                      class="icon"
-                      aria-hidden="true"
-                    >
+                    <svg style="margin-left: 10px;" class="icon" aria-hidden="true">
                       <use xlink:href="#icon-shuben-" />
                     </svg>
                     {{ scope.row.tName }}
-                    <svg
-                      style="margin-left: 10px;"
-                      class="icon"
-                      aria-hidden="true"
-                    >
+                    <svg style="margin-left: 10px;" class="icon" aria-hidden="true">
                       <use xlink:href="#icon-shijian2" />
                     </svg>
-                    {{  fortTime(scope.row.createtime) }}
+                    {{ fortTime(scope.row.createtime) }}
                   </div>
                 </div>
 
@@ -75,15 +55,12 @@
                   <div style="margin-right: 10px;">
                     <el-tag style="margin: 5px;" v-if="scope.row.issue">
                       {{
-                      scope.row.isoriginal }}
+                        scope.row.isoriginal }}
                     </el-tag>
 
                     <i class="iconfont" style="margin: 5px;">
-                      <el-tag
-                        style="margin-left: 5px;"
-                        v-for="tag in scope.row.blogTags.t"
-                        :type="tag.color"
-                      >{{ tag.name }}</el-tag>
+                      <el-tag style="margin-left: 5px;" v-for="tag in scope.row.blogTags.t" :type="tag.color">{{ tag.name
+                      }}</el-tag>
                     </i>
                   </div>
                 </div>
@@ -94,7 +71,7 @@
                     </svg>
                     <i class="iconfont icon-yanjing_xianshi">
                       {{
-                      scope.row.browsecount }}
+                        scope.row.browsecount }}
                     </i>
                   </div>
                   <div style="margin-right: 20px;">
@@ -120,33 +97,20 @@
 
     <!--dialog预览博客内容-->
     <el-dialog :title="currentBlog.title" v-model="previewBlogDialogVisible">
-      <mavon-editor
-        v-model="currentBlog.content"
-        defaultOpen="preview"
-        :boxShadow="false"
-        style="z-index:1;height:70vh"
-        :editable="false"
-        :subfield="false"
-        :toolbarsFlag="false"
-      ></mavon-editor>
+      <mavon-editor v-model="currentBlog.content" defaultOpen="preview" :boxShadow="false" style="z-index:1;height:70vh"
+        :editable="false" :subfield="false" :toolbarsFlag="false"></mavon-editor>
     </el-dialog>
 
     <!-- 分页 -->
     <div style="margin-top: 5px;margin-left:5px;" class="my-pagination">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="pagination.currentPage"
-        :page-sizes="pagination.pageSizes"
-        :page-size="pagination.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="pagination.totalBlogs"
-      ></el-pagination>
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+        :current-page="pagination.currentPage" :page-sizes="pagination.pageSizes" :page-size="pagination.pageSize"
+        layout="total, sizes, prev, pager, next, jumper" :total="pagination.totalBlogs"></el-pagination>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { _getBlog, _delBlog, _delBlogH, _getBlogByTile } from "@/api/api.js";
+import { _getBlog, _delBlog, _delBlogH, _getBlogByTile, _addBlogBrowseCount } from "@/api/api.js";
 import { ref, onMounted, defineProps, reactive, onUnmounted } from "vue";
 import { formatDate } from "@/utils/formatDate";
 const props = defineProps({
@@ -202,6 +166,9 @@ function initBlogs() {
 function handlePreviewContent(index, row) {
   currentBlog = row;
   previewBlogDialogVisible.value = true;
+  _addBlogBrowseCount(row.bid).then(res => {
+    // console.log(res)
+  })
 }
 /* 根据标题栏搜索*/
 function searchByTitle() {

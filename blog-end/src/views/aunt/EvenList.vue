@@ -1,93 +1,107 @@
 <template>
     <div class="user-list-view">
         <!--搜索-->
-        <el-row style="margin-top: 10px;margin-bottom: 10px;">
-            <el-col :span="12">
-                <el-dropdown>
-                    <span class="span-txt">
-                        事件类型：<i class="el-icon-arrow-down el-icon--right"></i>
-                    </span>
-                    <el-input disabled size="small" style="width: 80px;" placeholder="事件类型"
-                        v-model="params.type"></el-input>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item @click.native="selectClickEvent('普通')">普通</el-dropdown-item>
-                        <el-dropdown-item @click.native="selectClickEvent('生日')">生日</el-dropdown-item>
-                        <el-dropdown-item @click.native="selectClickEvent('纪念日')">纪念日</el-dropdown-item>
-                        <el-dropdown-item disabled>其他</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-                <span class="span-txt">&emsp; 事件标题：</span>
-                <el-input size="small" style="width: 200px;" placeholder="输入事件标题模糊搜索" v-model="params.eTitle"></el-input>
-                <span class="span-txt">&emsp;相关人：</span>
-                <el-input size="small" style="width: 200px;" placeholder="输入当事人" v-model="params.uName"></el-input>
-            </el-col>
-            <el-col :span="1">
-                <el-button size="small" type="success" @click="handleSearchEvent">
-                    <i class="el-icon-search"></i>
-                    搜索
-                </el-button>
-            </el-col>
-            <el-col :span="1">
-                <el-button size="small" @click="handleReset">
-                    <i class="el-icon-refresh"></i>
-                    重置
-                </el-button>
-            </el-col>
-        </el-row>
+        <div class="search-container">
+            <el-row :gutter="20">
+                <el-col :span="3">
+                    <div class="search-item">
+                        <el-dropdown>
+                            <span class="search-label">
+                                事件类型：<i class="el-icon-arrow-down el-icon--right"></i>
+                            </span>
+                            <el-input disabled size="small" style="width: 80px;" placeholder="事件类型"
+                                v-model="params.type"></el-input>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item @click.native="selectClickEvent('普通')">普通</el-dropdown-item>
+                                <el-dropdown-item @click.native="selectClickEvent('生日')">生日</el-dropdown-item>
+                                <el-dropdown-item @click.native="selectClickEvent('纪念日')">纪念日</el-dropdown-item>
+                                <el-dropdown-item disabled>其他</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </div>
+                </el-col>
+                <el-col :span="3">
+                    <div class="search-item">
+                        <span class="search-label">事件标题：</span>
+                        <el-input size="small" style="width: 200px;" placeholder="输入事件标题模糊搜索"
+                            v-model="params.eTitle"></el-input>
+                    </div>
+                </el-col>
+                <el-col :span="3">
+                    <div class="search-item">
+                        <span class="search-label">相关人：</span>
+                        <el-input size="small" style="width: 200px;" placeholder="输入当事人" v-model="params.uName"></el-input>
+                    </div>
+                </el-col>
+                <el-col :span="4">
+                    <el-button size="small" type="success" @click="handleSearchEvent">
+                        <i class="el-icon-search"></i>
+                        搜索
+                    </el-button>
+                    <el-button size="small" @click="handleReset">
+                        <i class="el-icon-refresh"></i>
+                        重置
+                    </el-button>
+                </el-col>
+            </el-row>
+        </div>
 
-        <el-table v-loading="pagination.loading" border :data="pagination.currentTableData"
-            :header-cell-style="{ 'text-align': 'center' }" style="width: 100%">
-            <el-table-column label="编码" width="130px" align='center'>
-                <template slot-scope="scope">
-                    {{ scope.row.e_id }}
-                </template>
-            </el-table-column>
-            <el-table-column label="事件标题">
-                <template slot-scope="scope">
-                    {{ scope.row.e_title | tableTile }}
-                </template>
-            </el-table-column>
-            <el-table-column label="事件类型" width="100px" align='center'>
-                <template slot-scope="scope">
-                    {{ scope.row.e_type }}
-                </template>
-            </el-table-column>
-            <el-table-column label="相关人员" width="100px" align='center'>
-                <template slot-scope="scope">
-                    {{ scope.row.e_name }}
-                </template>
-            </el-table-column>
-            <el-table-column label="开始时间" width="180px" align='center'>
-                <template slot-scope="scope">
-                    {{ scope.row.e_startDate | dateFormat }}
-                </template>
-            </el-table-column>
-            <el-table-column label="结束时间" width="180px" align='center'>
-                <template slot-scope="scope">
-                    {{ scope.row.e_endDate | dateFormat }}
-                </template>
-            </el-table-column>
-            <el-table-column label="创建时间" width="180px" align='center'>
-                <template slot-scope="scope">
-                    {{ scope.row.e_createDate | dateFormat }}
-                </template>
-            </el-table-column>
-            <el-table-column label="创建人" width="100px" align='center'>
-                <template slot-scope="scope">
-                    {{ scope.row.e_createName }}
-                </template>
-            </el-table-column>
-            <el-table-column label="操作" width="210" align='center'>
-                <template slot-scope="scope">
-                    <el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row)">查看\编辑
-                    </el-button>
-                    <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除
-                    </el-button>
-                </template>
-            </el-table-column>
-        </el-table>
+        <div class="table-container">
+            <el-table v-loading="pagination.loading" border :data="pagination.currentTableData"
+                :max-height="this.screenHeight" :header-cell-style="{ 'text-align': 'center' }" style="width: 100%">
+                <el-table-column label="编码" width="130px" align='center'>
+                    <template slot-scope="scope">
+                        {{ scope.row.id }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="事件标题">
+                    <template slot-scope="scope">
+                        {{ scope.row.title | tableTile }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="事件类型" width="100px" align='center'>
+                    <template slot-scope="scope">
+                        {{ scope.row.type }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="相关人员" width="100px" align='center'>
+                    <template slot-scope="scope">
+                        {{ scope.row.name }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="开始时间" width="180px" align='center'>
+                    <template slot-scope="scope">
+                        {{ scope.row.startDate }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="结束时间" width="180px" align='center'>
+                    <template slot-scope="scope">
+                        {{ scope.row.endDate }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="创建时间" width="180px" align='center'>
+                    <template slot-scope="scope">
+                        {{ scope.row.createDate }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="创建人" width="100px" align='center'>
+                    <template slot-scope="scope">
+                        {{ scope.row.createName }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" width="210" align='center'>
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row)">查看\编辑
+                        </el-button>
+                        <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+
         <!-- 分页 -->
-        <div style="margin-top: 20px;" class="my-border-padding">
+        <div class="pagination-container">
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
                 :current-page="pagination.currentPage" :page-sizes="pagination.pageSizes" :page-size="pagination.pageSize"
                 layout="total, sizes, prev, pager, next, jumper" :total="pagination.total">
@@ -136,14 +150,15 @@
 </template>
   
 <script>
-import { _getUserAll, _delUserById, _getEventAll, _updEvent, _delEventById} from "@/api/api.js";
+import { _getUserAll, _delUserById, _getEventAll, _updEvent, _delEventById } from "@/api/api.js";
 import { parseTime } from '../../utils/formatDate';
 export default {
     name: "UserListView",
     data() {
         return {
             dialogFormVisible: false,
-            baseUrl: '/event/getEventAll?1=1',
+            screenHeight: 950,
+            baseUrl: "",
             inputKeyWord: "",
             inputNewTypeName: "",
             postNewTypeLoading: false,
@@ -152,7 +167,7 @@ export default {
                 listData: null,  //总data
                 currentPage: 1, //当前页
                 pageSizes: [5, 10, 15, 20],
-                pageSize: 10,    //每页显示条数
+                pageSize: 20,    //每页显示条数
                 totalPage: 1,		//总页数
                 currentTableData: [],		//当前页data
                 total: 0,  //总数量
@@ -169,7 +184,7 @@ export default {
                 name: ""
             },		//当前编辑的user
             scheduleForm: {
-                id:"",  //时间编码
+                id: "",  //时间编码
                 type: '',   //事件类型
                 scheduleTitle: '',  //事件标题
                 scheduleAddress: '',    //事件地址
@@ -201,19 +216,37 @@ export default {
             }
             return value
         },
-        dateFormat(val){
+        dateFormat(val) {
             if (!val) return ''
             else return parseTime(val)
         }
     },
+    beforeDestroy() {
+        window.removeEventListener("resize", this.updateScreenHeight); // 组件销毁前移除事件监听
+    },
+    mounted() {
+        this.updateScreenHeight(); // 组件挂载时获取屏幕高度
+        window.addEventListener("resize", this.updateScreenHeight); // 监听窗口大小变化
+    },
     methods: {
+        updateScreenHeight() {
+            this.screenHeight = window.innerHeight - 300; // 更新屏幕高度
+        },
         //初始化
         init() {
+            if (this.$store.state.login_user.roles[0].name === 'root') {
+                this.params.createName = '';
+            } else {
+                this.params.createName = this.$store.state.login_user.username;
+            }
+
+            this.baseUrl = `/event/getEventAll?type=${this.params.type}&eTitle=${this.params.eTitle}&uName=${this.params.uName}&createName=${this.params.createName}`
+
             _getEventAll(this.baseUrl).then(res => {
                 if (res.status === 200) {
-                    if (res.data.obj != '') {
-                        this.pagination.listData = res.data.obj;
-                        this.pagination.total = res.data.obj.length;
+                    if (res.data.data != '') {
+                        this.pagination.listData = res.data.data;
+                        this.pagination.total = res.data.data.length;
 
                         this.pagination.totalPage = Math.ceil(this.pagination.listData.length / this.pagination.pageSize);
                         this.pagination.totalPage = this.pagination.totalPage == 0 ? 1 : this.pagination.totalPage;
@@ -223,7 +256,6 @@ export default {
                     } else {
 
                     }
-
                 }
             })
         },
@@ -244,7 +276,7 @@ export default {
                 type: 'warning'
             }).then(() => {
                 //网络请求
-                _delEventById(row.e_id).then(res => {
+                _delEventById(row.id).then(res => {
                     if (res.data.status === 200) {
                         this.init();
                         this.$message.success('删除成功!');
@@ -260,41 +292,45 @@ export default {
 
         //表格操作-编辑
         handleEdit(index, row) {
-            this.scheduleForm.id = row.e_id
-            this.scheduleForm.type = row.e_type
-            this.scheduleForm.scheduleTitle = row.e_title
-            this.scheduleForm.scheduleAddress = row.e_address
-            this.scheduleForm.startDate = row.e_startDate
-            this.scheduleForm.endDate = row.e_endDate
-            this.scheduleForm.content = row.e_content
+            this.scheduleForm.id = row.id
+            this.scheduleForm.type = row.type
+            this.scheduleForm.scheduleTitle = row.title
+            this.scheduleForm.scheduleAddress = row.address
+            this.scheduleForm.startDate = row.startDate
+            this.scheduleForm.endDate = row.endDate
+            this.scheduleForm.content = row.content
 
-            if(row.isNotice == "1"){
+            if (row.isNotice == "1") {
                 this.scheduleForm.isNotice = true
-            }else{
+            } else {
                 this.scheduleForm.isNotice = false
             }
-            this.scheduleForm.note = row.e_note
-            this.scheduleForm.name = row.e_name
-            this.scheduleForm.createNameID = row.e_createNameID
-            this.scheduleForm.createDate = parseTime(row.e_createDate)
+            this.scheduleForm.note = row.note
+            this.scheduleForm.name = row.name
+            this.scheduleForm.createNameID = row.createNameID
+            this.scheduleForm.createDate = parseTime(row.createDate)
 
             this.dialogFormVisible = true
         },
         // 保存
         handleEditAunt() {
-            if(this.scheduleForm.isNotice == true){
+            if (this.scheduleForm.isNotice == true) {
                 this.scheduleForm.isNotice = "1"
-            }else{
+            } else {
                 this.scheduleForm.isNotice = "0"
             }
             this.scheduleForm.startDate = parseTime(this.scheduleForm.startDate)
             this.scheduleForm.endDate = parseTime(this.scheduleForm.endDate)
 
             _updEvent(this.scheduleForm).then(res => {
-                this.$message.success("编辑成功!");
-                this.dialogFormVisible = false
+                if (res.data.status === 200) {
+                    this.$message.success("编辑成功!");
+                    this.init();
+                    this.dialogFormVisible = false
+                }
+
             })
-            this.$store.state.date = new Date().getTime()
+            // this.$store.state.date = new Date().getTime()
         },
         /*搜索*/
         handleSearchEvent() {
@@ -318,8 +354,8 @@ export default {
             _getEventAll(this.baseUrl).then(res => {
                 if (res.data.status === 200) {
                     this.baseUrl = '/event/getEventAll?1=1'
-                    this.pagination.listData = res.data.obj;
-                    this.pagination.total = res.data.obj.length;
+                    this.pagination.listData = res.data.data;
+                    this.pagination.total = res.data.data.length;
 
                     this.pagination.totalPage = Math.ceil(this.pagination.listData.length / this.pagination.pageSize);
                     this.pagination.totalPage = this.pagination.totalPage == 0 ? 1 : this.pagination.totalPage;
@@ -353,8 +389,8 @@ export default {
         selectClickEvent(val) {
             this.params.type = val
         },
-        handleDateChange(val,type){
-            if(type === 'bg') this.scheduleForm.startDate = parseTime(val)
+        handleDateChange(val, type) {
+            if (type === 'bg') this.scheduleForm.startDate = parseTime(val)
             else this.scheduleForm.endDate = parseTime(val)
         }
     },
@@ -365,9 +401,6 @@ export default {
 </script>
   
 <style  lang="less" scoped>
-.span-txt {
-    font-size: 14px;
-    color: black;
-}
+@import '@/assets/table-container.css';
 </style>
   

@@ -1,23 +1,23 @@
 <template>
-    <div class="category-blog-view">
+    <div class="user-list-view">
         <!--搜索-->
-        <el-row style="margin-top: 10px;margin-bottom: 10px;">
-            <el-col :span="8">
-                <el-input placeholder="输入需要搜素\新增的分类名称" v-model="tNameInput"></el-input>
-            </el-col>
-            <el-col :span="1">
-                <el-button type="success" @click="searchByName">
-                    <i class="el-icon-search"></i>
-                    搜索
-                </el-button>
-            </el-col>
-            <el-col :span="1" :offset="1">
-                <el-button type="primary" @click="addTypeBten">
-                    <i class="el-icon-plus"></i>
-                    增加
-                </el-button>
-            </el-col>
-        </el-row>
+        <div class="search-container">
+            <el-row :gutter="20">
+                <el-col :span="8">
+                    <el-input size="small" placeholder="输入需要搜素\新增的分类名称" v-model="tNameInput"></el-input>
+                </el-col>
+                <el-col :span="4">
+                    <el-button size="small" type="success" @click="searchByName">
+                        <i class="el-icon-search"></i>
+                        搜索
+                    </el-button>
+                    <el-button size="small" type="primary" @click="addTypeBten">
+                        <i class="el-icon-plus"></i>
+                        增加
+                    </el-button>
+                </el-col>
+            </el-row>
+        </div>
 
         <!--修改分类的对话框-->
         <el-dialog title="编辑分类专栏" :visible.sync="updateTypeDialogFormVisible">
@@ -38,37 +38,38 @@
             </div>
         </el-dialog>
 
+        <div class="table-container">
+            <el-table v-loading="pagination.listLoading" :data="pagination.currentPageData" border stripe
+                :max-height="this.screenHeight" style="width: 100%">
+                <el-table-column label="编码">
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.id }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="名称">
+                    <template slot-scope="scope">
+                        <el-tag type="success">{{ scope.row.name }}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="说明">
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.note }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="warning"  size="small" @click="handleEdit(scope.$index, scope.row)">编辑
+                        </el-button>
+                        <el-button type="danger"  size="small" @click="handleDelete(scope.$index, scope.row)">删除
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
 
-        <el-table v-loading="pagination.listLoading" :data="pagination.currentPageData" border stripe height="700"
-            style="width: 100%">
-            <el-table-column label="编码">
-                <template slot-scope="scope">
-                    <span style="margin-left: 10px">{{ scope.row.id }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column label="名称">
-                <template slot-scope="scope">
-                    <el-tag type="success">{{ scope.row.name }}</el-tag>
-                </template>
-            </el-table-column>
-            <el-table-column label="说明">
-                <template slot-scope="scope">
-                    <span style="margin-left: 10px">{{ scope.row.note }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column label="操作">
-                <template slot-scope="scope">
-                    <el-button type="warning" @click="handleEdit(scope.$index, scope.row)">编辑
-                    </el-button>
-                    <el-button type="danger" @click="handleDelete(scope.$index, scope.row)">删除
-                    </el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-        <div class="block">
+        <div class="pagination-container">
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper"
-                :total="pagination.total">
+                :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="pagination.total">
             </el-pagination>
         </div>
     </div>
@@ -82,6 +83,7 @@ export default {
     components: {},
     data() {
         return {
+            screenHeight: 950,
             tNameInput: "",
             updateTypeDialogFormVisible: false, //编辑type对话框是否显示
             typeData: {
@@ -100,7 +102,17 @@ export default {
             }
         }
     },
+    beforeDestroy() {
+        window.removeEventListener("resize", this.updateScreenHeight); // 组件销毁前移除事件监听
+    },
+    mounted() {
+        this.updateScreenHeight(); // 组件挂载时获取屏幕高度
+        window.addEventListener("resize", this.updateScreenHeight); // 监听窗口大小变化
+    },
     methods: {
+        updateScreenHeight() {
+            this.screenHeight = window.innerHeight - 300; // 更新屏幕高度
+        },
         getCurrentPageData(currentPage, pageSize) {
             let begin = (currentPage - 1) * pageSize;
             let end = currentPage * pageSize;
@@ -122,7 +134,7 @@ export default {
         getTypeAll() {
             _typeAll().then(res => {
                 if (res.data.status === 200) {
-                    this.pagination.list = res.data.obj
+                    this.pagination.list = res.data.data
                     this.pagination.listLoading = false
                     this.pagination.total = this.pagination.list.length
 
@@ -180,7 +192,7 @@ export default {
                 let tmp = decodeURI(this.tNameInput);
                 _typeByName(tmp).then(res => {
                     if (res.data.status === 200) {
-                        this.pagination.list = res.data.obj
+                        this.pagination.list = res.data.data
                         this.pagination.listLoading = false
                         this.pagination.total = this.pagination.list.length
 
@@ -188,7 +200,7 @@ export default {
                         this.pagination.totalPage = this.pagination.totalPage == 0 ? 1 : this.pagination.totalPage;
                         this.getCurrentPageData(this.pagination.currentPage, this.pagination.pageSize);
                     } else {
-                        this.$message.warning(res.data.obj);
+                        this.$message.warning(res.data.data);
                     }
                 })
             }
@@ -227,7 +239,5 @@ export default {
 </script>
 
 <style>
-    .block{
-        margin-top: 20px;
-    }
+@import '@/assets/table-container.css';
 </style>

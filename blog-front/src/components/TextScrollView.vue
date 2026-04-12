@@ -1,8 +1,8 @@
 <template>
     <div class='login-view'>
         <div id="marquee">
-            <div> <span>杨柳博客</span> </div>
-            <div aria-hidden="true"> <span>杨柳博客</span> </div>
+            <div> <span>枫萱悦宁</span> </div>
+            <div aria-hidden="true"> <span>枫萱悦宁</span> </div>
         </div>
     </div>
 </template>

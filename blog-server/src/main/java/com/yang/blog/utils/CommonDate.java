@@ -29,6 +29,17 @@ public class CommonDate {
         return d0;
     }
 
+    /**
+     * 获取当前时间
+     * @return
+     */
+    public static String getDateTimeFormat(){
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = dateFormat.format(date);
+        return time;
+    }
+
     //获取当前时间 LocalDateTime d0 = LocalDateTime.now();
     // System.out.println(DataConvertUtil.localDateTimeToStr(d0, "yyyy-MM-dd HH:mm:ss"));
     // 输入年月日时分秒实例化新的时间对象

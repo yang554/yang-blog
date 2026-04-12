@@ -25,6 +25,12 @@ public class TypeServiceImpl implements TypeService {
     }
 
     @Override
+    public RespBean getTypeByUserId(String userId) {
+        List<TypeEntity> typeEntities = typeMapper.getTypeByUserId(userId);
+        return RespBean.ok("ok",typeEntities);
+    }
+
+    @Override
     public RespBean getTypeByPage(Integer currentPage, Integer pageSize) {
         Page<TypeEntity> pager = new Page<>(currentPage, pageSize);
         IPage<TypeEntity> tTypeIPage = null;

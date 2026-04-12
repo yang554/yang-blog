@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,23 +23,30 @@ public class UEventServiceImpl implements UEventService {
 
     @Override
     public RespBean getEventByPage(String type, String eTitle, String uName, String createName) {
-        List<Map<String,Object>> tBlogPage = eventMapper.getEvenByPage(type,eTitle,uName,createName);
-        return RespBean.ok("ok",tBlogPage);
+        List<UEventEntity> list = eventMapper.getEvenByPage(type,eTitle,uName,createName);
+        return RespBean.ok("ok",list);
     }
 
     @Override
     public RespBean addEvent(HashMap<String, Object> entity) {
         UEventEntity eventEntity = new UEventEntity();
         eventEntity.setId(CommonDate.getStamp());
-        eventEntity.seteTitle((String) entity.get("scheduleTitle"));
-        eventEntity.seteContent((String) entity.get("content"));
-        eventEntity.setStartDate((String) entity.get("startDate"));
-        eventEntity.setEndDate((String) entity.get("endDate"));
-        eventEntity.seteAddress((String) entity.get("scheduleAddress"));
-        eventEntity.setNote((String) entity.get("note"));
-        eventEntity.setuName((String) entity.get("name"));
+        eventEntity.setTitle((String) entity.get("scheduleTitle"));
+        eventEntity.setContent((String) entity.get("content"));
+        // 创建 DateTimeFormatter
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        // 解析字符串为 LocalDateTime
+        LocalDateTime startDate = LocalDateTime.parse(String.valueOf(entity.get("startDate")), formatter);
+        eventEntity.setStartDate(startDate);
 
-        eventEntity.setCreateDate((String) entity.get("createDate"));
+        LocalDateTime endDate = LocalDateTime.parse(String.valueOf(entity.get("endDate")), formatter);
+        eventEntity.setEndDate(endDate);
+
+        eventEntity.setAddress((String) entity.get("scheduleAddress"));
+        eventEntity.setNote((String) entity.get("note"));
+        eventEntity.setName((String) entity.get("name"));
+
+        eventEntity.setCreateDate(CommonDate.getTime24());
         eventEntity.setCreateNameID((String) entity.get("createNameID"));
         eventEntity.setIsNotice((String) entity.get("isNotice"));
         eventEntity.setType((String) entity.get("type"));
@@ -54,11 +63,17 @@ public class UEventServiceImpl implements UEventService {
     public RespBean updEvent(HashMap<String, Object> entity) {
         UEventEntity eventEntity = new UEventEntity();
         eventEntity.setId((Long) entity.get("id"));
-        eventEntity.seteTitle((String) entity.get("scheduleTitle"));
-        eventEntity.seteContent((String) entity.get("content"));
-        eventEntity.setStartDate((String) entity.get("startDate"));
-        eventEntity.setEndDate((String) entity.get("endDate"));
-        eventEntity.seteAddress((String) entity.get("scheduleAddress"));
+        eventEntity.setTitle((String) entity.get("scheduleTitle"));
+        eventEntity.setContent((String) entity.get("content"));
+        // 创建 DateTimeFormatter
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        // 解析字符串为 LocalDateTime
+        LocalDateTime startDate = LocalDateTime.parse(String.valueOf(entity.get("startDate")), formatter);
+        eventEntity.setStartDate(startDate);
+
+        LocalDateTime endDate = LocalDateTime.parse(String.valueOf(entity.get("endDate")), formatter);
+        eventEntity.setEndDate(endDate);
+        eventEntity.setAddress((String) entity.get("scheduleAddress"));
         eventEntity.setNote((String) entity.get("note"));
         eventEntity.setIsNotice((String) entity.get("isNotice"));
 
@@ -72,7 +87,6 @@ public class UEventServiceImpl implements UEventService {
 
     @Override
     public RespBean delEvent(String id) {
-        System.out.println(id);
         int status = eventMapper.delEvent(id);
         if(status > 0){
             return RespBean.ok("成功");

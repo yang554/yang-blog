@@ -4,10 +4,17 @@ import io.swagger.annotations.ApiModel;
 
 @ApiModel(value="t_blog_like", description="博客点赞表")
 public class TBlogLikeEntity {
+    private static final long serialVersionUID = 1L;
     private Long Id;
     private Long blogId;
     private Long userId;
-    private Integer isLike;
+    private String createTime;
+
+    public TBlogLikeEntity(Long id, Long blogId, Long userId) {
+        Id = id;
+        this.blogId = blogId;
+        this.userId = userId;
+    }
 
     public Long getId() {
         return Id;
@@ -33,11 +40,11 @@ public class TBlogLikeEntity {
         this.userId = userId;
     }
 
-    public Integer getIsLike() {
-        return isLike;
+    public String getCreateTime() {
+        return createTime;
     }
 
-    public void setIsLike(Integer isLike) {
-        this.isLike = isLike;
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 }

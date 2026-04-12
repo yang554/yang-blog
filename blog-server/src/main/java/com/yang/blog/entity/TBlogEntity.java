@@ -1,9 +1,13 @@
 package com.yang.blog.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.yang.blog.enmu.BlogArticleStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -42,8 +46,10 @@ public class TBlogEntity{
     @ApiModelProperty(value = "是否物理删除")
     private Boolean isdel;
     @ApiModelProperty(value = "创建时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createtime;
     @ApiModelProperty(value = "更新时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updtime;
     @ApiModelProperty(value = "备注")
     private String note;

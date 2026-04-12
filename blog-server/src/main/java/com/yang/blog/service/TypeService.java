@@ -6,6 +6,8 @@ import com.yang.blog.utils.RespBean;
 public interface TypeService {
     //查询所有分类
     RespBean getTypeAll();
+    //根据用户ID查询类型
+    RespBean getTypeByUserId(String userId);
     //分页查询
     RespBean getTypeByPage(Integer currentPage,Integer pageSize);
     //根据分类ID查询

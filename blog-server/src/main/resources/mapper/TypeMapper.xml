@@ -8,10 +8,39 @@
         <id column="tid" property="id"/>
         <result column="name" property="name"/>
         <result column="note" property="note"/>
+
+        <result column="count" property="count"/>
     </resultMap>
 
     <select id="getTypeAll" resultMap="typeMap">
-        SELECT t.id tid,t.name,t.note FROM t_type t ORDER BY tid DESC
+        SELECT
+            t.id AS tid,
+            t.name AS name,
+            t.note,
+            COUNT(b.id) AS `count`
+        FROM t_type t
+        LEFT JOIN t_blog b ON t.id = b.typeid
+            AND b.issue = 1
+            AND b.ispublic = 1
+            AND b.isdel = 0
+        GROUP BY t.id, t.name, t.note
+        ORDER BY `count` DESC
+    </select>
+
+    <select id="getTypeByUserId" resultMap="typeMap" parameterType="string">
+        SELECT
+            t.id AS tid,
+            t.name AS name,
+            t.note,
+            COUNT(b.id) AS `count`
+        FROM t_type t
+        LEFT JOIN t_blog b ON t.id = b.typeid
+            AND b.issue = 1
+            AND b.ispublic = 1
+            AND b.isdel = 0
+            AND b.`userid` = #{userId,jdbcType=VARCHAR}
+        GROUP BY t.id, t.name, t.note
+        ORDER BY `count` DESC
     </select>
 
     <select id="getCountByType" resultType="map">

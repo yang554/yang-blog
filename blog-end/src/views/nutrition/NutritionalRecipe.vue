@@ -1,129 +1,103 @@
 <template>
   <div class="user-list-view">
     <!--搜索-->
-    <el-row style="margin-top: 10px; margin-bottom: 10px">
-      <el-col :span="5">
-        <span class="span-txt">&emsp;菜品：</span>
-        <el-input
-          size="small"
-          style="width: 200px"
-          v-model="searchName"
-          placeholder="名称"
-        ></el-input>
-      </el-col>
-      <el-col :span="5">
-        <span class="span-txt">&emsp;类别：</span>
-        <el-input
-          size="small"
-          style="width: 200px"
-          v-model="searchType"
-          placeholder="类别"
-        ></el-input>
-      </el-col>
-      <el-col :span="1">
-        <el-button size="small" type="primary" @click="handleSearchEvent">
-          <i class="el-icon-search"></i>
-          搜索
-        </el-button>
-      </el-col>
-      <el-col :span="1">
-        <el-button size="small" type="info" @click="handleReset">
-          <i class="el-icon-refresh"></i>
-          重置
-        </el-button>
-      </el-col>
-      <el-col :span="1">
-        <el-button size="small" type="success" @click="handleAddBtn">
-          <i class="el-icon-plus"></i>
-          添加
-        </el-button>
-      </el-col>
-    </el-row>
-
-    <el-table
-      v-loading="pagination.loading"
-      border
-      :data="pagination.currentTableData"
-      style="width: 100%"
-      :max-height="this.screenHeight"
-      :header-cell-style="{ 'text-align': 'center' }"
-    >
-      <el-table-column label="编码" width="130px" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.fID }}
-        </template>
-      </el-table-column>
-      <el-table-column label="图片" align="center">
-        <template slot-scope="scope">
-          <el-image class="my-border" :src="scope.row.fImg"></el-image>
-        </template>
-      </el-table-column>
-      <el-table-column label="类别" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.fType }}
-        </template>
-      </el-table-column>
-      <el-table-column label="名称" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.fName }}
-        </template>
-      </el-table-column>
-      <el-table-column label="简介" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.fIntro | tableTile }}
-        </template>
-      </el-table-column>
-      <el-table-column label="配料" align="center">
-        <template slot-scope="scope"> {{ scope.row.fBatching }} </template>
-      </el-table-column>
-      <el-table-column label="调料" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.fSeasoning }}
-        </template>
-      </el-table-column>
-      <el-table-column label="做法" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.fMade | tableTile }}
-        </template>
-      </el-table-column>
-      <el-table-column label="小贴士" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.fTips | tableTile }}
-        </template>
-      </el-table-column>
-
-      <el-table-column label="操作" width="200" align="center" fixed="right">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="success"
-            @click="
-              $router.push(
-                '/home/nutrition/EditNutritionRecipes/' + scope.row.fID
-              )
-            "
-            >查看\编辑
+    <div class="search-container">
+      <el-row :gutter="20">
+        <el-col :span="3">
+          <div class="search-item">
+            <span class="search-label">菜品：</span>
+            <el-input size="small" style="width: 200px" v-model="searchName" placeholder="名称"></el-input>
+          </div>
+        </el-col>
+        <el-col :span="3">
+          <div class="search-item">
+            <span class="search-label">菜系：</span>
+            <el-input size="small" style="width: 200px" v-model="searchType" placeholder="菜系"></el-input>
+          </div>
+        </el-col>
+        <el-col :span="6">
+          <el-button size="small" type="primary" @click="handleSearchEvent">
+            <i class="el-icon-search"></i>
+            搜索
           </el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-            >删除
+          <el-button size="small" type="info" @click="handleReset">
+            <i class="el-icon-refresh"></i>
+            重置
           </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+          <el-button size="small" type="success" @click="handleAddBtn">
+            <i class="el-icon-plus"></i>
+            添加
+          </el-button>
+        </el-col>
+      </el-row>
+    </div>
+
+    <div class="table-container">
+      <el-table v-loading="pagination.loading" border :data="pagination.currentTableData" style="width: 100%"
+        :max-height="this.screenHeight" :header-cell-style="{ 'text-align': 'center' }">
+        <el-table-column label="编码" width="130px" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.fID }}
+          </template>
+        </el-table-column>
+        <el-table-column label="图片" align="center">
+          <template slot-scope="scope">
+            <el-image class="my-border" :src="scope.row.fImg"></el-image>
+          </template>
+        </el-table-column>
+        <el-table-column label="菜系" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.fType }}
+          </template>
+        </el-table-column>
+        <el-table-column label="名称" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.fName }}
+          </template>
+        </el-table-column>
+        <el-table-column label="简介" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.fIntro | tableTile }}
+          </template>
+        </el-table-column>
+        <el-table-column label="食材" align="center">
+          <template slot-scope="scope"> {{ scope.row.fBatching }} </template>
+        </el-table-column>
+        <el-table-column label="调料" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.fSeasoning }}
+          </template>
+        </el-table-column>
+        <el-table-column label="做法" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.fMade | tableTile }}
+          </template>
+        </el-table-column>
+        <el-table-column label="小贴士" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.fTips | tableTile }}
+          </template>
+        </el-table-column>
+
+        <el-table-column label="操作" width="200" align="center" fixed="right">
+          <template slot-scope="scope">
+            <el-button size="mini" type="success" @click="$router.push(
+              '/home/nutrition/EditNutritionRecipe/' + scope.row.fID
+            )
+              ">查看\编辑
+            </el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
     <!-- 分页 -->
-    <div style="margin-top: 20px" class="my-border-padding">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="pagination.currentPage"
-        :page-sizes="pagination.pageSizes"
-        :page-size="pagination.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="pagination.total"
-      >
+    <div class="pagination-container">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+        :current-page="pagination.currentPage" :page-sizes="pagination.pageSizes" :page-size="pagination.pageSize"
+        layout="total, sizes, prev, pager, next, jumper" :total="pagination.total">
       </el-pagination>
     </div>
   </div>
@@ -176,6 +150,7 @@ export default {
     //初始化
     init() {
       _getNutritionalRecipeAll(this.searchName, this.searchType).then((res) => {
+        
         if (res.status === 200) {
           if (res.data.length > 0) {
             this.pagination.listData = res.data;
@@ -257,7 +232,7 @@ export default {
     },
     handleAddBtn() {
       this.$router.push({
-        path: "/home/nutrition/AddNutritionRecipes" || "/",
+        path: "/home/nutrition/AddNutritionRecipe" || "/",
       });
     },
     /*分页事件*/
@@ -288,9 +263,6 @@ export default {
 </script>
   
 <style  lang="less" scoped>
-.span-txt {
-  font-size: 14px;
-  color: black;
-}
+@import '@/assets/table-container.css';
 </style>
   

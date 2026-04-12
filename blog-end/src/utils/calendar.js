@@ -62,6 +62,28 @@ export const handleCrateDate = (year, month, start, end, type) => {
     return arr
 }
 
+export const handleCreateDatePickerCurrent = () => {
+    const currentYear = new Date().getFullYear();
+    const years = []
+    const months = []
+    for (let i = 1970; i <= currentYear; i++) {
+        years.push({
+            label: `${i}年`,
+            value: i
+        })
+    }
+    for (let i = 0; i <= 11; i++) {
+        months.push({
+            label: `${i + 1}月`,
+            value: i + 1
+        })
+    }
+    return {
+        years,
+        months
+    }
+}
+
 export const handleCreateDatePicker = () => {
     const years = []
     const months = []

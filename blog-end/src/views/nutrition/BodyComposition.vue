@@ -1,64 +1,49 @@
 <template>
   <div class="user-list-view">
     <!--搜索-->
-    <el-row style="margin-top: 10px; margin-bottom: 10px">
-      <el-col :span="5">
-        <span class="span-txt">&emsp;姓名：</span>
-        <el-select
-          size="small"
-          v-model="uID"
-          filterable
-          placeholder="请选择用户"
-          style="width: 130px"
-        >
-          <el-option
-            v-for="(item, index) in uNameAll"
-            :key="index"
-            :label="item.username"
-            :value="item.id"
-          >
-          </el-option>
-        </el-select>
-      </el-col>
-      <el-col :span="1">
-        <el-button size="small" type="primary" @click="handleSearchEvent">
-          <i class="el-icon-search"></i>
-          搜索
-        </el-button>
-      </el-col>
-      <el-col :span="1">
-        <el-button size="small" type="info" @click="handleReset">
-          <i class="el-icon-refresh"></i>
-          重置
-        </el-button>
-      </el-col>
-      <el-col :span="1">
-        <el-button size="small" type="success" @click="handleAddBtn">
-          <i class="el-icon-plus"></i>
-          添加
-        </el-button>
-      </el-col>
-    </el-row>
+    <div class="search-container">
+      <el-row :gutter="20">
+        <el-col :span="4">
+          <div class="search-item">
+            <span class="search-label">姓名：</span>
+            <el-select size="small" v-model="uID" filterable placeholder="请选择用户" style="width: 130px">
+              <el-option v-for="(item, index) in uNameAll" :key="index" :label="item.username" :value="item.id">
+              </el-option>
+            </el-select>
+          </div>
+        </el-col>
+        <!-- 操作按钮 -->
+        <el-col :span="4" class="action-buttons">
+          <el-button size="small" type="primary" @click="handleSearchEvent">
+            <i class="el-icon-search"></i>
+            搜索
+          </el-button>
+          <el-button size="small" type="info" @click="handleReset">
+            <i class="el-icon-refresh"></i>
+            重置
+          </el-button>
+          <el-button size="small" type="success" @click="handleAddBtn">
+            <i class="el-icon-plus"></i>
+            添加
+          </el-button>
+        </el-col>
+      </el-row>
+    </div>
 
-    <el-table
-      v-loading="pagination.loading"
-      border
-      :data="pagination.currentTableData"
-      style="width: 100%"
-      :max-height="this.screenHeight"
-      :header-cell-style="{ 'text-align': 'center' }"
-    >
-    <el-table-column label="记录日期" width="110px" align="center">
+
+    <el-table v-loading="pagination.loading" border :data="pagination.currentTableData" style="width: 100%"
+      :max-height="this.screenHeight" :header-cell-style="{ 'text-align': 'center' }">
+      <el-table-column fixed="left" label="记录日期" width="100px" align="center">
         <template slot-scope="scope">
           {{ scope.row.recordTime }}
         </template>
       </el-table-column>
-      <el-table-column label="编码" width="130px" align="center">
+      <el-table-column fixed="left" label="编码" width="130px" align="center">
         <template slot-scope="scope">
           {{ scope.row.id }}
         </template>
       </el-table-column>
-      <el-table-column label="姓名" align="center">
+      <el-table-column fixed="left" label="姓名" align="center">
         <template slot-scope="scope">
           <!-- {{ scope.row.e_title | tableTile }} -->
           {{ scope.row.uName }}
@@ -174,36 +159,21 @@
       </el-table-column>
       <el-table-column label="操作" width="200" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="success"
-            @click="
-              $router.push(
-                '/home/nutrition/EditBodyComposition/' + scope.row.id
-              )
-            "
-            >查看\编辑
+          <el-button size="mini" type="success" @click="$router.push(
+            '/home/nutrition/EditBodyComposition/' + scope.row.id
+          )
+            ">查看\编辑
           </el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-            >删除
+          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除
           </el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页 -->
-    <div style="margin-top: 20px" class="my-border-padding">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="pagination.currentPage"
-        :page-sizes="pagination.pageSizes"
-        :page-size="pagination.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="pagination.total"
-      >
+    <div class="pagination-container">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+        :current-page="pagination.currentPage" :page-sizes="pagination.pageSizes" :page-size="pagination.pageSize"
+        layout="total, sizes, prev, pager, next, jumper" :total="pagination.total">
       </el-pagination>
     </div>
   </div>
@@ -378,9 +348,11 @@ export default {
 </script>
   
 <style  lang="less" scoped>
+@import '@/assets/table-container.css';
+
 .span-txt {
   font-size: 14px;
-  color: black;
+  color: #f3f3f3;
 }
 </style>
   

@@ -1,30 +1,29 @@
 <template>
-  <div style="height: 95%;width: 98%" v-loading="loading">
-    <div style="height: 7%;">
-      <el-row style="margin-top: 5px;margin-left:5px;">
-        <el-col :span="8">
+  <div style="height: 95%;width: 100%" v-loading="loading">
+    <div style="height: 7%;background-color: #1e1e2f;">
+      <el-row style="margin-left:5px;">
+        <el-col :span="2" style="margin-top: 5px;">
           <el-input placeholder="按用户名搜索" v-model="serachName">
             <template #prefix>
-              <el-icon class="el-input__icon"><search /></el-icon>
+              <el-icon class="el-input__icon">
+                <search />
+              </el-icon>
             </template>
           </el-input>
         </el-col>
-        <el-col :span="1">
+        <el-col :span="2" style="margin-top: 5px;">
           <el-button type="success" @click="serachByNameFun">
             <i class="el-icon-search"></i>
             搜索
           </el-button>
-        </el-col>
-        <el-col :span="1" :offset="1">
           <el-button type="warning" @click="zoomToFitFun">总览</el-button>
         </el-col>
       </el-row>
     </div>
     <!--族谱面板-->
-    <div
-      ref="myDiagramDiv"
-      style="background-color: rgb(248, 248, 248); border: 0px solid #9b9b9b; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;height: 90%"
-    ></div>
+    <div ref="myDiagramDiv"
+      style="background-color: #1e1e2f; border: 0px solid #9b9b9b; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;height: 97.7%">
+    </div>
     <div>
       <!--单击节点-成员详细信息面板-->
       <el-dialog width="30%" center :title="panTitle" v-model="dialogUserInfo">
@@ -81,7 +80,9 @@
                 <Connection />
               </el-icon>配偶
             </template>
-            <el-tag size="small" v-for="(item,idx ) in selectUserMates.values">{{ item.userName }}</el-tag>
+            <!-- <el-tag size="small" v-for="(item, index) in selectUserMates" :key="item.userId">{{ item.userName
+            }}</el-tag> -->
+            <div v-for="(item, index) in selectUserMates" :key="item.userId">{{ item.userName }}</div>
           </el-descriptions-item>
         </el-descriptions>
 
@@ -210,7 +211,7 @@ class GenogramLayout extends go.LayeredDigraphLayout {
         );
       } else {
         var marriages = 0;
-        node.linksConnected.each(function(l) {
+        node.linksConnected.each(function (l) {
           if (l.isLabeledLink) marriages++;
         });
         if (marriages === 0) {
@@ -236,7 +237,7 @@ class GenogramLayout extends go.LayeredDigraphLayout {
           net.linkVertexes(parent, child, link);
         } else {
           // 已婚的孩子
-          link.toNode.linksConnected.each(function(l) {
+          link.toNode.linksConnected.each(function (l) {
             if (!l.isLabeledLink) return;
             // 找到婚姻链接，现在获取其标签节点
             var mlab = l.labelNodes.first();
@@ -257,12 +258,12 @@ class GenogramLayout extends go.LayeredDigraphLayout {
       var dummyvert = net.createVertex();
       net.addVertex(dummyvert);
       var marriages = new go.Set();
-      cohort.each(function(n) {
-        n.linksConnected.each(function(l) {
+      cohort.each(function (n) {
+        n.linksConnected.each(function (l) {
           marriages.add(l);
         });
       });
-      marriages.each(function(link) {
+      marriages.each(function (link) {
         // 查找婚姻链接的顶点（即标签节点的顶点）
         var mlab = link.labelNodes.first();
         var v = net.findVertex(mlab);
@@ -280,7 +281,7 @@ class GenogramLayout extends go.LayeredDigraphLayout {
     if (coll.has(node)) return;
     coll.add(node);
     var lay = this;
-    node.linksConnected.each(function(l) {
+    node.linksConnected.each(function (l) {
       if (l.isLabeledLink) {
         // 如果是婚姻关系，继续与配偶双方保持联系
         lay.extendCohort(coll, l.fromNode);
@@ -335,14 +336,14 @@ class GenogramLayout extends go.LayeredDigraphLayout {
     super.commitNodes();
     go.LayeredDigraphLayout.prototype.commitNodes.call(this);
     //定位规则节点
-    this.network.vertexes.each(function(v) {
+    this.network.vertexes.each(function (v) {
       if (v.node !== null && !v.node.isLinkLabel) {
         v.node.position = new go.Point(v.x, v.y);
       }
     });
     // 定位每个婚姻顶点的配偶
     var layout = this;
-    this.network.vertexes.each(function(v) {
+    this.network.vertexes.each(function (v) {
       if (v.node === null) return;
       if (!v.node.isLinkLabel) return;
       var labnode = v.node;
@@ -385,7 +386,7 @@ class GenogramLayout extends go.LayeredDigraphLayout {
       }
     });
     // 仅将子节点放置在婚姻标签节点下
-    this.network.vertexes.each(function(v) {
+    this.network.vertexes.each(function (v) {
       if (v.node === null || v.node.linksConnected.count > 1) return;
       var mnode = layout.findParentsMarriageLabelNode(v.node);
       if (mnode !== null && mnode.linksConnected.count === 1) {
@@ -396,10 +397,10 @@ class GenogramLayout extends go.LayeredDigraphLayout {
         // 查看该层的水平中点是否有任何空白
         var overlaps = layout.diagram.findObjectsIn(
           newbnds,
-          function(x) {
+          function (x) {
             return x.part;
           },
-          function(p) {
+          function (p) {
             return p !== v.node;
           },
           true
@@ -420,7 +421,7 @@ class GenogramLayout extends go.LayeredDigraphLayout {
     return null;
   }
 } // end GenogramLayout class
-import { ref, onMounted, reactive, computed } from "vue";
+import { ref, onMounted, reactive, computed, watchEffect } from "vue";
 import { _getSourceAll } from "@/api/api";
 import { ElMessage, ElLoading } from "element-plus";
 import go from "gojs";
@@ -460,7 +461,9 @@ const UserInfo = reactive({
   dieDayNum: "", //亡故日期
   type: "" //操作
 });
-const selectUserMates = new Array<String>(); //选中成员配偶
+const selectUserMates = ref<string[]>([]);//选中成员配偶
+
+
 const size = ref("default");
 const iconStyle = computed(() => {
   const marginMap = {
@@ -928,14 +931,6 @@ function init() {
       for (var i = 0; i < arrays.length; i++) {
         let img = arrays[i].userImgUrl;
 
-        // let img = ref("");
-        // import("../../../blog-end/public" + arrays[i].userImgUrl).then(res => {
-        //   console.log(res.default);
-        //   img.value = res.default;
-
-        // });
-
-        // console.log("这是头像", img);
         if (
           (img == null || img == undefined || img == "") &&
           arrays[i].userSex == "男"
@@ -1084,7 +1079,7 @@ function serachByNameFun() {
     });
     return;
   }
-  res.each(function(node) {
+  res.each(function (node) {
     myDiagram.select(node);
     myDiagram.scale = 1;
     myDiagram.commandHandler.scrollToPart(myDiagram.findNodeForKey(node.key));
@@ -1116,7 +1111,8 @@ function nodeClick(e, obj) {
       UserInfo.userPhone = pData.phone;
       UserInfo.userPinYin = pData.pinyin;
       UserInfo.userSex = pData.sex;
-      selectUserMates.values = pData.mate;
+      selectUserMates.value = pData.mate;
+
       myDiagram.scale = 1;
       myDiagram.commandHandler.scrollToPart(
         myDiagram.findNodeForKey(obj.part.data.key)
@@ -1130,8 +1126,6 @@ function nodeClick(e, obj) {
       }
       dialogUserInfo.value = true;
       panTitle.value = "姓名：" + pData.name + "-第" + pData.love + "代";
-      // console.log(pData.img);
-      // console.log(selectUserMates.values[0].userName)
     } else {
       dialogUserInfo.value = false;
     }

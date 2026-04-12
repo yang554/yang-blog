@@ -13,6 +13,7 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
+
   // 本地服务的配置
   server: {
     port: 8092, // 端口 默认5173

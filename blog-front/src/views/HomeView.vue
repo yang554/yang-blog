@@ -2,24 +2,15 @@
   <div class="resize" :style="{ width: state.width + 'px', height: state.hHeight + 'px' }">
     <el-container class="content">
       <el-header class="header">
-        <img
-          class="img"
-          :style="{ width: state.width + 'px', height: state.headerhHeight + 'px' }"
-          src="@/assets/top-bg.png"
-        />
-        <div
-          class="avatar-block"
-          :style="{ width: state.avatarBlock + 'px', height: state.headerhHeight + 'px' }"
-        >
+        <img class="img" :style="{ width: state.width + 'px', height: state.headerhHeight + 'px' }"
+          src="@/assets/top-bg.png" />
+        <div class="avatar-block" :style="{ width: state.avatarBlock + 'px', height: state.headerhHeight + 'px' }">
           <TextScrollView class="block-left" />
           <div class="block-right">
             <el-avatar :size="130" :src="img" />
           </div>
         </div>
-        <div
-          class="content-right"
-          :style="{ width: state.contentRightWith + 'px', height: state.headerhHeight + 'px' }"
-        >
+        <div class="content-right" :style="{ width: state.contentRightWith + 'px', height: state.headerhHeight + 'px' }">
           <div class="span-div">
             <el-icon color="#409EFC">
               <Avatar />
@@ -50,63 +41,33 @@
             <el-icon color="#409EFC">
               <Connection />
             </el-icon>
-            <span class="span-txt">访问量：158956</span>
+            <span class="span-txt">访问量：{{ userInfo.browsecount }}</span>
             <el-icon color="#409EFC">
               <Notebook />
             </el-icon>
-            <span class="span-txt">文章：66</span>
+            <span class="span-txt">文章：{{ userInfo.count }}</span>
             <el-icon color="#409EFC">
               <Collection />
             </el-icon>
-            <span class="span-txt">原创：58</span>
+            <span class="span-txt">原创：{{ userInfo.originalCount }}</span>
           </div>
         </div>
       </el-header>
       <el-container class="container">
-        <el-aside
-          class="home-left"
-          :style="{ width: state.homeLeftWidth + 'px', height: state.homeLeftHeight + 'px' }"
-        >
-          <img
-            class="img"
-            :style="{ width: state.homeLeftWidth + 'px', height: state.homeLeftHeight + 'px' }"
-            src="@/assets/left-bg.png"
-          />
-          <div class="common-layout">
-            <el-container>
-              <!-- <el-header style="height:10px"></el-header> -->
-              <el-main
-                :style="{ width: state.homeLeftWidth + 'px', height: state.leftMainHeight + 'px' }"
-              >
-                <CarouselView class="home-left-car" />
-              </el-main>
-              <el-footer :style="{ height: state.footerHeight + 'px' }"></el-footer>
-            </el-container>
-          </div>
-        </el-aside>
         <el-main class="main-content">
-          <img
-            class="img"
-            :style="{ width: state.mainWidth + 'px', height: state.homeLeftHeight + 'px' }"
-            src="@/assets/main-bg.png"
-          />
-          <div class="common-layout">
+          <img class="img" :style="{ width: state.mainWidthImg + 'px', height: state.homeLeftHeight + 'px' }"
+            src="@/assets/main-bg.png" />
+          <div >
             <el-container>
-              <el-header>
-                <el-menu
-                  class="el-menu"
-                  mode="horizontal"
-                  background-color="#86ac79"
-                  text-color="#fff"
-                  active-text-color="#ffd04b"
-                  router
-                >
+              <el-header class="el-header-menu" :style="{ width: state.mainWidth + 'px'}">
+                <el-menu mode="horizontal" background-color="#86ac79" text-color="#fff"
+                  active-text-color="#ffd04b" router>
                   <el-menu-item :index="menu.path" v-for="(menu, idx) in menus" :key="idx">
                     <span>{{ menu.meta.title }}</span>
                   </el-menu-item>
                 </el-menu>
               </el-header>
-              <el-main :style="{ width: state.mainWidth + 'px', height: state.mainHeight + 'px' }">
+              <el-main class="common-layout" :style="{ width: state.mainWidth + 'px', height: state.mainHeight + 'px' }">
                 <router-view :key="$route.fullPath" :mainHeight="state.mainHeight" />
               </el-main>
               <el-footer :style="{ height: state.footerHeight + 'px' }"></el-footer>
@@ -119,6 +80,7 @@
 </template>
 
 <script setup lang="ts">
+import { _getBlogByUser } from "@/api/api.js";
 import { useRouter, useRoute } from "vue-router";
 import img from "../../../blog-end/public/static/defaultImg.png";
 import {
@@ -137,7 +99,6 @@ import LeftView from "@/components/LeftView.vue";
 
 const router = useRouter();
 const route = useRoute();
-// const img = require("../../../blog-end/public/static/defaultImg.png")
 const state = reactive({
   sidebarActiveIndex: "/home",
   arr: [],
@@ -148,20 +109,20 @@ const state = reactive({
   contentRightWith: document.documentElement.clientWidth * 0.75,
   avatarBlock: document.documentElement.clientWidth * 0.22,
 
-  leftMainHeight: document.documentElement.clientHeight * 0.64,
-
   homeLeftHeight: document.documentElement.clientHeight * 0.78,
-  homeLeftWidth: document.documentElement.clientWidth * 0.14,
 
-  mainWidth: document.documentElement.clientWidth * 0.86,
+  mainWidth: document.documentElement.clientWidth*0.997,
+  mainWidthImg: document.documentElement.clientWidth,
   mainHeight: document.documentElement.clientHeight * 0.58,
   homeLeftFooterHeight: document.documentElement.clientWidth * 0.08
 });
-
-// watch(router, () => {
-//   console.log("fdsf")
-//   state.sidebarActiveIndex = route.path;
-// })
+const userInfo = reactive({
+  browsecount:0,
+  likes:0,
+  collection:0,
+  count:0,
+  originalCount:0
+});
 
 //菜单
 const menus = computed(() => {
@@ -171,7 +132,6 @@ const menus = computed(() => {
       menuList = item.children;
     }
   });
-  // console.log(state.arr)
 
   return menuList;
 });
@@ -184,20 +144,38 @@ const handleResize = () => {
   state.contentRightWith = document.documentElement.clientWidth * 0.75;
   state.avatarBlock = document.documentElement.clientWidth * 0.22;
 
-  state.leftMainHeight = document.documentElement.clientHeight * 0.64;
-
   state.homeLeftHeight = document.documentElement.clientHeight * 0.78;
-  state.homeLeftWidth = document.documentElement.clientWidth * 0.14;
 
   state.mainHeight = document.documentElement.clientHeight * 0.58;
-  state.mainWidth = document.documentElement.clientWidth * 0.86;
+  state.mainWidth = document.documentElement.clientWidth*0.997;
+  mainWidthImg: document.documentElement.clientWidth,
   state.homeLeftFooterHeight = document.documentElement.clientHeight * 0.08;
 };
+
+/* 初始化方法*/
+function init() {
+  _getBlogByUser("1680851452956").then(res => {
+    if(res.data.msg == "ok"){
+      const bolgList = res.data.obj;
+      console.log(bolgList)
+      bolgList.forEach( item => {
+        userInfo.browsecount += parseInt(item.browsecount)
+        if(item.ispublic == "1" && item.issue == "1"){
+          userInfo.count += 1
+        }
+        if(item.ispublic == "1" && item.issue == "1" && item.isoriginal == "原创"){
+          userInfo.originalCount += 1
+        }
+      });
+    }
+  });
+}
 
 onMounted(() => {
   window.onresize = () => {
     handleResize();
   };
+  init();
 });
 
 onUnmounted(() => {
@@ -282,22 +260,32 @@ onUnmounted(() => {
   .home-left {
     padding: 0px;
     margin: 0px;
+
     .el-main {
       margin: 0px;
       padding: 12px;
       //overflow: hidden;
     }
+
     /* 隐藏滚动条的CSS */
     .el-main::-webkit-scrollbar {
       display: none;
     }
+
     .footer {
       background-color: rgb(0, 255, 98);
     }
   }
 
   .main-content {
-    padding: 0px 10px 0px 0px;
+    padding: 0px 6px 6px 0px;
+
+    .el-header-menu{
+      padding: 0px 0px 0px 12px !important; 
+    }
+    .common-layout{
+      padding: 0px 0px 0px 12px !important; 
+    }
 
     .el-main {
       //overflow: hidden;
@@ -309,9 +297,11 @@ onUnmounted(() => {
     .el-main::-webkit-scrollbar {
       display: none;
     }
+
     .router-content {
       overflow: auto;
     }
+
     /* 隐藏滚动条的CSS */
     .el-main::-webkit-scrollbar {
       display: none;
