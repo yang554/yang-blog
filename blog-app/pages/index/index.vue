@@ -70,6 +70,12 @@
 							</view>
 							<text class="action-label">经期预测</text>
 						</view>
+						<view class="action-item" @click="navigateTo('/pages/other/priceTracker/priceTracker')">
+							<view class="action-icon">
+								<image src="@/static/icon/zhishikuchaxun.png" mode="aspectFit" class="icon" />
+							</view>
+							<text class="action-label">商品记录</text>
+						</view>
 					</view>
 				</view>
 

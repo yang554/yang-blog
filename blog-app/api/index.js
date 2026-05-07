@@ -17,6 +17,7 @@ export { foodApi } from './modules/food.js'
 export { recipeApi } from './modules/recipe.js'
 export { recipesApi } from './modules/recipes.js'
 export { dietPlanApi } from './modules/dietPlan.js'
+export { priceTrackerApi } from './modules/priceTracker.js'
 
 // 导出请求方法
 export { default as request } from './request.js'

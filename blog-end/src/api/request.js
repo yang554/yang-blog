@@ -3,10 +3,16 @@ import router from '@/router/router.js'
 import Qs from 'qs'
 import { Message } from 'element-ui';
 
+/**
+ * 封装axios请求函数
+ * @param {Object} config - 请求配置对象
+ * @returns {Promise} - 返回axios请求的Promise对象
+ */
 export function request(config) {
+	// 创建axios实例
 	const instance1 = axios.create({
-		baseURL: '/api',
-		timeout: 10000,
+		baseURL: '/api',  // 设置基础URL，所有请求都会基于此地址
+		timeout: 10000,  // 设置请求超时时间为10秒
 	})
 	//请求拦截和响应拦截
 	instance1.interceptors.request.use(config => {
@@ -116,6 +122,14 @@ export const getRequest = (url, params) => {
 export const postRequest = (url, params) => {
 	return request({
 		method: "post",
+		url: `${url}`,
+		data: params
+	})
+}
+//put
+export const putRequest = (url, params) => {
+	return request({
+		method: "put",
 		url: `${url}`,
 		data: params
 	})

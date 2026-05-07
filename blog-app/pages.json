@@ -359,6 +359,15 @@
 					}
 				}
 			]
+		},
+		{
+			"root": "pages/other/",
+			"pages": [{
+				"path": "priceTracker/priceTracker",
+				"style": {
+					"navigationBarTitleText": "商品历史价格"
+				}
+			}]
 		}
 	],
 	"globalStyle": {

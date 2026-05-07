@@ -68,17 +68,17 @@ export const constantRoutes = [
     hidden: false,
     myIcon: "el-icon-s-management",
     meta: {
-      title: '博客管理',
+      title: '知识管理',
       roles: ['root', 'admin', 'blog_manager', 'visitor']
     },
     children: [
-      { path: "/home/blog/BlogDashBoardView", name: "BlogDashBoardView", meta: { title: '博客看板' }, component: () => import('@/views/index/BlogDashBoardView.vue'), myIcon: "el-icon-s-marketing" },
-      { path: "/home/blog/write", name: "WriteView", meta: { title: '发布博客' }, component: () => import('@/views/blogs/WriteView.vue'), myIcon: "el-icon-edit" },
+      { path: "/home/blog/BlogDashBoardView", name: "BlogDashBoardView", meta: { title: '博客看板' }, component: () => import('@/views/index/BlogDashBoardView.vue'), myIcon: "el-icon-s-marketing" , hidden: true},
+      { path: "/home/blog/write", name: "WriteView", meta: { title: '发布博客' }, component: () => import('@/views/blogs/WriteView.vue'), myIcon: "el-icon-edit", hidden: true },
       { path: '/home/editblog/:id', name: 'EditBlog', meta: { title: '编辑博客' }, component: () => import('@/views/blogs/EditBlog.vue'), props: true, hidden: true },
       { path: '/home/allblog', name: 'BlogView', meta: { title: '文章管理' }, component: () => import('@/views/blogs/BlogView.vue'), myIcon: "el-icon-notebook-1" },
       { path: '/home/sortblog', name: 'SortView', meta: { title: '分类专栏' }, component: () => import('@/views/blogs/SortView.vue'), myIcon: "el-icon-document" },
       { path: '/home/tagblog', name: 'TagView', meta: { title: '云标签管理' }, component: () => import('@/views/blogs/TagView.vue'), myIcon: "el-icon-collection-tag" },
-      { path: '/home/commentblog', name: '评论管理', meta: { title: '评论管理' }, component: () => import('@/views/blogs/RemarkView.vue'), props: true, myIcon: "el-icon-tickets" },
+      { path: '/home/commentblog', name: '评论管理', meta: { title: '评论管理' }, component: () => import('@/views/blogs/RemarkView.vue'), props: true, myIcon: "el-icon-tickets" , hidden: true},
     ]
   }, {
     path: '/home/user',
@@ -183,10 +183,20 @@ export const constantRoutes = [
     component: HomeView,
     meta: { title: 'app管理', roles: ['admin', 'root'] },
     hidden: false,
-    myIcon: "iconfont icon-keshifeiguanli",
+    myIcon: "el-icon-mobile-phone",
     children: [
-      { path: '/home/app/appUpload', name: 'appUpload', meta: { title: 'app上传' }, component: () => import('@/views/app/appUpload.vue'), myIcon: "iconfont icon-jisuanguize" },
+      { path: '/home/app/appUpload', name: 'appUpload', meta: { title: 'app上传' }, component: () => import('@/views/app/appUpload.vue'), myIcon: "el-icon-share" },
       { path: '/home/app/appList', name: 'appList', meta: { title: '历史更新' }, component: () => import('@/views/app/appList.vue'), myIcon: "iconfont icon-baojiadan" },
+    ]
+  }, {
+    path: '/home/goods',
+    name: '其他',
+    component: HomeView,
+    meta: { title: '其他' },
+    hidden: false,
+    myIcon: "el-icon-s-operation",
+    children: [
+      { path: '/home/goods/PriceTracker', name: 'PriceTracker', meta: { title: '商品价格对比' }, component: () => import('@/views/goods/PriceTracker.vue'), myIcon: "el-icon-goods" },
     ]
   }
 ]

@@ -1,4 +1,4 @@
-import { request, postKeyValueRequest, getRequest, postRequest, deleteRequest, uploadRequest, postRequestJson } from "./request.js"
+import { request, postKeyValueRequest, getRequest, postRequest, deleteRequest, uploadRequest, postRequestJson ,putRequest} from "./request.js"
 import { getToken } from '@/utils/auth'
 // ArrayBuffer 转 Base64
 function arrayBufferToBase64(buffer) {
@@ -20,24 +20,24 @@ function arrayBufferToBase64(buffer) {
     return buffer
 }
 
-//获取验证码
+//------------------获取验证码
 export const _getCaptchaImg = (data) => {
     return new Promise((resolve, reject) => {
         request({
             url: '/user/getCaptcha',
             method: 'GET',
-            responseType: 'arraybuffer', // 关键：接收二进制数据
+            responseType: 'arraybuffer', //------------------ 关键：接收二进制数据
             headers: {
                 'Content-Type': 'application/octet-stream'
             }
         })
             .then(res => {
                 if (res.status === 200) {
-                    // 转换 ArrayBuffer 为 Base64
+                    //------------------ 转换 ArrayBuffer 为 Base64
                     const base64 = arrayBufferToBase64(res.data)
                     const imageUrl = `data:image/gif;base64,${base64}`
 
-                    // 从响应头获取 captchaKey 信息
+                    //------------------ 从响应头获取 captchaKey 信息
                     const captchaKey = res.headers['x-captcha-key']
                     const captchaExpire = res.headers['x-captcha-expire']
 
@@ -58,19 +58,19 @@ export const _getCaptchaImg = (data) => {
             })
     })
 }
-//登录
+//------------------登录
 export const _userLogin = (data) => {
     return postRequest("/user/login", data);
 }
-//注销
+//------------------注销
 export const _userLogout = () => {
     return postRequest("/user/logout");
 }
-//注册
+//------------------注册
 export const _userRegister = (data) => {
     return postRequest("/user/register", data);
 }
-//分类专栏
+//------------------分类专栏
 export const _typeAll = () => {
     return getRequest("/type/all");
 }
@@ -89,7 +89,7 @@ export const _delTypeById = (data) => {
 export const _getUserRoleAll = () => {
     return getRequest("/type/count/type");
 }
-//云标签管理
+//------------------云标签管理
 export const _getTagAll = () => {
     return getRequest("/tag/all");
 }
@@ -105,11 +105,11 @@ export const _updTagById = (data) => {
 export const _delTagById = (data) => {
     return deleteRequest("/tag/delTagById?id=" + data);
 }
-//文件上传管理
+//------------------文件上传管理
 export const _uploadImgs = (data) => {
     return uploadRequest("/file/uploadAvatar", data)
 }
-//权限管理
+//------------------权限管理
 export const _getRoleAll = () => {
     return getRequest("/role/all");
 }
@@ -125,7 +125,7 @@ export const _updRole = (data) => {
 export const _delRole = (data) => {
     return deleteRequest("/role/delRole?id=" + data);
 }
-//博客管理
+//------------------博客管理
 export const _addBlog = (data) => {
     return postRequest("/blog/addBlog", data);
 }
@@ -153,7 +153,7 @@ export const _addBlogLikesOrCollectionCount = (bID, uID, typeOp) => {
 export const _getBlogByTile = (data) => {
     return getRequest(data);
 }
-//用户管理
+//------------------用户管理
 export const _findUser = (data) => {
     return postRequest("/user/findUser", data);
 }
@@ -178,7 +178,7 @@ export const _resetUserPwd = (data) => {
 export const _delUserById = (data) => {
     return deleteRequest("/user/delUser?id=" + data);
 }
-//用户经期管理
+//------------------用户经期管理
 export const _getByALL = () => {
     return getRequest("/aunt/getByALL")
 }
@@ -212,7 +212,7 @@ export const _updEvent = (data) => {
 export const _delEventById = (data) => {
     return deleteRequest("/event/delAunt?id=" + data);
 }
-// -- 族谱管理  ---
+//------------------ -- 族谱管理  ---
 export const _getFamilyTree = () => { //查询所有族谱的统计信息
     return getRequest("/TFamilyTreeController/getFamilyTree")
 }
@@ -258,7 +258,7 @@ export const _saveSource = (data) => {
 export const _delSource = (data) => {
     return postRequest("/source/delSource", data);
 }
-//营养管理-体成分分析
+//------------------营养管理-体成分分析
 export const _getNutritionAll = () => {
     return getRequest("/nutrition/all")
 }
@@ -274,7 +274,7 @@ export const _operationNBC = (data) => {
 export const _delNutritionById = (data) => {
     return deleteRequest("/nutrition/delNBC?id=" + data);
 }
-//营养管理-食物营养
+//------------------营养管理-食物营养
 export const _getFoodNutritionAll = () => {
     return getRequest("/foodNutrition/all")
 }
@@ -290,11 +290,11 @@ export const _operationFoodNutrition = (data) => {
 export const _delFoodNutritionById = (data) => {
     return deleteRequest("/foodNutrition/delFood?id=" + data);
 }
-//菜谱&食材关系
+//------------------菜谱&食材关系
 export const _getByRecipeId = (recipeId) => {
     return getRequest("/RecipeFood/getByRecipeId?recipeId=" + recipeId)
 }
-//营养管理-食物菜谱
+//------------------营养管理-食物菜谱
 export const _getNutritionalRecipeAll = () => {
     return getRequest("/NutritionalRecipe/all")
 }
@@ -319,7 +319,7 @@ export const _operationNutritionalRecipe = (data) => {
 export const _delNutritionalRecipe = (data) => {
     return deleteRequest("/NutritionalRecipe/delRecipe?id=" + data);
 }
-//营养管理-营养食谱
+//------------------营养管理-营养食谱
 export const _getNutritionalRecipesAll = () => {
     return getRequest("/NutritionalRecipes/all")
 }
@@ -335,7 +335,7 @@ export const _operationNutritionalRecipes = (data) => {
 export const _delNutritionalRecipes = (data) => {
     return deleteRequest("/NutritionalRecipes/delRecipes?id=" + data);
 }
-//饮食计划
+//------------------饮食计划
 export const _getDietPlanByUid = (createID, createDate) => {
     return getRequest("/dietPlan/getDietPlanByUid?createID=" + createID + "&createDate=" + createDate)
 }
@@ -345,7 +345,7 @@ export const _getDietPlanByDateScope = (createID, startDate,endDate) => {
 export const _operationDietPlan = (data) => {
     return postRequest("/dietPlan/operationDietPlan", data);
 }
-//人生轨迹-每日流水
+//------------------人生轨迹-每日流水
 export const _getDailyFlowAll = (data) => {
     return getRequest("/DailyFlowController/findAllById?id=" + data);
 }
@@ -388,7 +388,7 @@ export const _insertBatch = (data) => {
 export const _delFlow = (data) => {
     return deleteRequest("/DailyFlowController/delFlow?id=" + data);
 }
-//流水类型
+//------------------流水类型
 export const _getConsumptionTypeAll = () => {
     return getRequest("/consumption/getConsumptionTypeAll");
 }
@@ -407,7 +407,7 @@ export const _updConsumptionTypeById = (data) => {
 export const _delConsumptionType = (data) => {
     return deleteRequest("/consumption/delConsumptionType?id=" + data);
 }
-//存款金额
+//------------------存款金额
 export const _updUserDepositById = (data) => {
     return postRequest("/UserDeposit/updUserDepositById", data);
 }
@@ -420,7 +420,7 @@ export const _getUserDepositById = (data) => {
 export const _getUserDepositByName = (name) => {
     return getRequest("/UserDeposit/getUserDepositByName?name=" + name);
 }
-//抽奖系统
+//------------------抽奖系统
 export const _getPrizeAll = () => {
     return getRequest("/prize/all");
 }
@@ -430,7 +430,7 @@ export const _operationPrize = (data) => {
 export const _prizeDram = () => {
     return getRequest("/prize/dram");
 }
-//app管理
+//------------------app管理
 export const _uploadWgtFile = (data) => {
     return uploadRequest("/app/upload",data)
 }
@@ -442,4 +442,28 @@ export const _updateVersion = (data) => {
 }
 export const _deleteVersion = (data) =>  {
     return deleteRequest("/app/delete?id=" + data);
+}
+
+//------------------其他功能---------------------
+export const addProduct = (data) => {
+    return postRequest("/product/add",data) //添加商品信息
+}
+export const getProduct = () => {
+    return getRequest("/product/all")   //获取所有商品信息
+}
+export const editProduct = (data) => {
+    return putRequest("/product/edit",data) //编辑商品信息
+}
+export const delProduct = (id) => {
+    return deleteRequest(`/product/delete/${id}`) //删除商品信息(软删除)
+}
+
+export const addPriceRecord = (data) => {
+    return postRequest(`/price/add`,data) //添加商品历史价格记录
+}
+export const getRecordsByProductId = (id) => {
+    return getRequest(`/price/product/${id}`) //根据商品ID查询价格记录
+}
+export const delPriceRecord = (id) => {
+    return deleteRequest(`/price/delete/${id}`) //删除商品信息(物理删除)
 }

@@ -119,6 +119,19 @@ export const postRequestJson = (url, data = {}) => {
 	})
 }
 
+// PUT 请求 (JSON 格式)
+export const putRequestJson = (url, data = {}) => {
+	return request({
+		method: "PUT",
+		url: url,
+		data: data,
+		header: {
+			'Content-Type': 'application/json'
+		}
+	})
+}
+
+
 // DELETE 请求
 export const deleteRequest = (url, params = {}) => {
 	let queryString = ''

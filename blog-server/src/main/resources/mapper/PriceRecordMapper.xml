@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.PriceRecordMapper">
+    <resultMap id="recordMap" type="com.yang.blog.entity.PriceRecordEntity">
+        <id column="id" property="id"/>
+        <result column="product_id" property="productId"/>
+        <result column="price" property="price"/>
+        <result column="record_date" property="recordDate"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <select id="selectByProductId" resultMap="recordMap">
+        SELECT id, product_id, price, record_date, created_at
+        FROM price_records
+        WHERE product_id = #{productId}
+        ORDER BY record_date DESC
+    </select>
+
+    <select id="selectByDateRange" resultMap="recordMap">
+        SELECT id, product_id, price, record_date, created_at
+        FROM price_records
+        WHERE record_date BETWEEN #{startDate} AND #{endDate}
+        ORDER BY record_date DESC
+    </select>
+
+    <select id="selectByProductAndDate" resultMap="recordMap">
+        SELECT id, product_id, price, record_date, created_at
+        FROM price_records
+        WHERE product_id = #{productId}
+        AND record_date = #{recordDate}
+        LIMIT 1
+    </select>
+
+    <select id="selectPage" resultMap="recordMap">
+        SELECT id, product_id, price, record_date, created_at
+        FROM price_records
+        <where>
+            <if test="productId != null">
+                AND product_id = #{productId}
+            </if>
+            <if test="startDate != null">
+                AND record_date &gt;= #{startDate}
+            </if>
+            <if test="endDate != null">
+                AND record_date &lt;= #{endDate}
+            </if>
+        </where>
+        ORDER BY record_date DESC
+    </select>
+
+    <select id="selectMaxPriceByProduct" resultMap="recordMap">
+        SELECT id, product_id, price, record_date, created_at
+        FROM price_records
+        WHERE product_id = #{productId}
+        ORDER BY price DESC
+        LIMIT 1
+    </select>
+
+    <select id="selectMinPriceByProduct" resultMap="recordMap">
+        SELECT id, product_id, price, record_date, created_at
+        FROM price_records
+        WHERE product_id = #{productId}
+        ORDER BY price ASC
+        LIMIT 1
+    </select>
+
+    <select id="selectAvgPriceByProduct" resultType="java.lang.Double">
+        SELECT AVG(price)
+        FROM price_records
+        WHERE product_id = #{productId}
+    </select>
+</mapper>
