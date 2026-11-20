@@ -2,7 +2,9 @@
     "version" : "1.0",
     "configurations" : [
         {
-            "playground" : "standard",
+            "customPlaygroundType" : "local",
+            "localRepoPath" : "E:/MyProject/yang-blog/blog-app/unpackage/debug",
+            "playground" : "custom",
             "type" : "uni-app:app-android"
         },
         {
@@ -223877,537 +223879,461 @@
             },
             "type" : "unicloud"
         },
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	},
-	{
-		"app-plus" : 
-		{
-			"launchtype" : "local"
-		},
-		"type" : "unicloud"
-	}
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        },
+        {
+            "app-plus" : {
+                "launchtype" : "local"
+            },
+            "type" : "unicloud"
+        }
     ]
 }

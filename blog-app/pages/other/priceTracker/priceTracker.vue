@@ -1,208 +1,92 @@
 <template>
 	<view class="app-container">
-		<!-- ==================== 顶部状态栏 ==================== -->
-		<view class="top-bar">
-			<view class="stats-group">
-				<view class="stat-item">
-					<view class="stat-icon">📦</view>
-					<view class="stat-info">
-						<view class="stat-value">{{ totalProducts }}</view>
-						<view class="stat-label">商品总数</view>
-					</view>
+		<!-- ===== 顶部导航 ===== -->
+		<view class="page-header">
+			<view class="header-right">
+				<view class="search-wrapper">
+					<uni-icons type="search" size="20" color="#9a9693"></uni-icons>
+					<input type="text" v-model="globalSearchKeyword" placeholder="搜索商品..." class="search-input" />
+					<text v-if="globalSearchKeyword" class="clear-search" @click="globalSearchKeyword = ''">✕</text>
 				</view>
-				<view class="stat-item">
-					<view class="stat-icon">⭐</view>
-					<view class="stat-info">
-						<view class="stat-value">{{ avgRatingFormatted }}</view>
-						<view class="stat-label">平均评分</view>
-					</view>
-				</view>
-			</view>
-
-			<view class="action-group">
-				<view class="search-box">
-					<text class="search-icon">🔍</text>
-					<input type="text" v-model="globalSearchKeyword" placeholder="搜索商品名称或品牌..." class="search-input" />
-					<button v-if="globalSearchKeyword" @click="clearGlobalSearch" class="clear-search">✕</button>
-				</view>
-				<button class="add-btn" @click="openAddProductModal">
-					<text>+</text> 添加商品
-				</button>
-			</view>
-		</view>
-
-		<!-- ==================== 内容区域 ==================== -->
-		<view class="main-content" v-if="selectedProduct">
-			<!-- 左侧区域：商品选择器 -->
-			<view class="left-panel">
-				<!-- 商品切换卡片（分页版） -->
-				<view class="product-selector">
-					<view class="selector-header">
-						<text class="selector-title">📋 商品列表</text>
-						<text class="product-count">{{ filteredProducts.length }}个商品</text>
-					</view>
-
-					<!-- 商品列表内置搜索框 -->
-					<view class="product-search">
-						<input type="text" v-model="productListSearch" placeholder="在列表中搜索商品..."
-							class="product-search-input" @input="resetPagination" />
-					</view>
-
-					<!-- 分页商品列表 -->
-					<scroll-view scroll-y class="product-tabs-container">
-						<view v-for="product in paginatedProducts" :key="product.id"
-							:class="['product-tab', { active: selectedProduct && selectedProduct.id === product.id }]"
-							@click="selectProduct(product)">
-							<view class="tab-info">
-								<view class="tab-name-wrapper">
-									<text class="tab-name">{{ product.name }}</text>
-									<text class="tab-stars" v-if="product.rating">
-										{{ '⭐'.repeat(product.rating) }}
-									</text>
-								</view>
-								<view class="tab-meta">
-									<text v-if="product.brand" class="tab-brand">品牌：{{ product.brand }}</text>
-									<text v-if="product.specification"
-										class="tab-brand">规格：{{ product.specification }}</text>
-									<text v-if="product.origin" class="tab-brand">产地：{{ product.origin }}</text>
-									<text v-if="product.remarks" class="tab-brand">备注：{{ product.remarks }}</text>
-								</view>
-							</view>
-							<view class="tab-actions">
-								<text @click.stop="openEditProductModal(product)" class="tab-edit">✏️</text>
-								<text @click.stop="deleteProduct(product.id)" class="tab-delete">🗑️</text>
-							</view>
-						</view>
-						<view v-if="paginatedProducts.length === 0" class="no-product-tab">
-							暂无匹配的商品
-						</view>
-					</scroll-view>
-
-					<!-- 分页组件 -->
-					<view class="pagination-wrapper" v-if="totalPages > 1 || searchedProducts.length > pageSize">
-						<view class="pagination-info">
-							共 {{ searchedProducts.length }} 条，第 {{ currentPage }}/{{ totalPages }} 页
-						</view>
-						<view class="pagination-controls">
-							<button class="page-btn" :disabled="currentPage === 1" @click="currentPage--">«</button>
-							<button v-for="page in displayPages" :key="page"
-								:class="['page-btn', { active: currentPage === page }]" @click="goToPage(page)">
-								{{ page }}
-							</button>
-							<button class="page-btn" :disabled="currentPage === totalPages"
-								@click="currentPage++">»</button>
-							<picker mode="selector" :range="pageSizeOptions" :value="pageSizeIndex"
-								@change="onPageSizeChange">
-								<button class="page-size-select">{{ pageSize }}条/页</button>
-							</picker>
-						</view>
-					</view>
-				</view>
-			</view>
-
-			<!-- 右侧区域：历史价格列表（可按日期搜索） -->
-			<view class="right-panel">
-				<view class="history-card">
-					<view class="card-header">
-						<text class="card-title">📜 历史价格记录</text>
-						<button class="add-price-btn" @click="openAddPriceModal">+ 添加价格</button>
-					</view>
-
-					<!-- 日期搜索栏 -->
-					<view class="date-search-bar">
-						<view class="date-range">
-							<view class="date-input-wrapper">
-								<text class="date-label">从</text>
-								<picker mode="date" :value="dateFrom" @change="onDateFromChange">
-									<view class="date-input">{{ dateFrom || '请选择' }}</view>
-								</picker>
-								<text class="date-label">至</text>
-								<picker mode="date" :value="dateTo" @change="onDateToChange">
-									<view class="date-input">{{ dateTo || '请选择' }}</view>
-								</picker>
-							</view>
-							
-							<picker mode="selector" :range="sortTypeOptions" :value="sortTypeIndex"
-								@change="onSortTypeChange">
-								<view class="sort-select">{{ sortTypeLabel }}</view>
-							</picker>
-							<button v-if="dateFrom || dateTo" @click="clearDateFilter"
-								class="clear-date-btn">清除筛选</button>
-						</view>
-					</view>
-
-					<!-- 价格列表 -->
-					<scroll-view scroll-y class="price-list-container">
-						<view v-if="filteredPrices.length > 0" class="price-table">
-							<view class="price-table-header">
-								<view class="col-date">日期</view>
-								<view class="col-price">价格 (¥)</view>
-								<view class="col-change">涨跌幅</view>
-								<view class="col-action">操作</view>
-							</view>
-							<view class="price-table-body">
-								<view v-for="(item, idx) in filteredPrices" :key="item.id || idx"
-									class="price-table-row">
-									<view class="col-date">
-										<text class="date-badge">{{ formatDate(item.date) }}</text>
-									</view>
-									<view class="col-price">
-										<text class="price-value">¥{{ item.value.toFixed(2) }}</text>
-									</view>
-									<view class="col-change">
-										<text :class="['change-badge', getChangeClass(item, idx)]">
-											{{ getChangeText(item, idx) }}
-										</text>
-									</view>
-									<view class="col-action">
-										<text @click="deletePriceItem(item)" class="delete-price-btn">✕</text>
-									</view>
-								</view>
-							</view>
-						</view>
-						<view v-else class="empty-price-list">
-							<text>📭</text>
-							<text v-if="dateFrom || dateTo">没有找到该时间范围内的价格记录</text>
-							<text v-else>暂无历史价格，点击“添加价格”开始记录</text>
-						</view>
-					</scroll-view>
-
-					<!-- 价格统计摘要 -->
-					<view class="price-summary"
-						v-if="selectedProduct && selectedProduct.prices && selectedProduct.prices.length > 0">
-						<view class="summary-item">
-							<text class="summary-label">最低价</text>
-							<text class="summary-value min">¥{{ minPrice.toFixed(2) }}</text>
-						</view>
-						<view class="summary-item">
-							<text class="summary-label">最高价</text>
-							<text class="summary-value max">¥{{ maxPrice.toFixed(2) }}</text>
-						</view>
-						<view class="summary-item">
-							<text class="summary-label">平均价</text>
-							<text class="summary-value avg">¥{{ avgPrice.toFixed(2) }}</text>
-						</view>
-						<view class="summary-item">
-							<text class="summary-label">最新价</text>
-							<text class="summary-value latest">¥{{ latestPrice.toFixed(2) }}</text>
-						</view>
-					</view>
+				<view class="header-actions">
+					<button class="btn-add" @click="openAddProductModal">新增</button>
+					<button class="btn-sort" :class="{ active: sortField === 'name' }" @click="sortBy('name')">
+						名称 {{ sortField === 'name' ? (sortOrder === 'asc' ? '↑' : '↓') : '' }}
+					</button>
+					<button class="btn-sort" :class="{ active: sortField === 'latest' }" @click="sortBy('latest')">
+						最新 
+					</button>
 				</view>
 			</view>
 		</view>
 
-		<!-- 未选择商品时的空状态 -->
-		<view class="empty-state-large" v-else>
-			<view class="empty-icon">🛒</view>
-			<text class="empty-title">暂无商品</text>
-			<text class="empty-desc">点击上方“添加商品”按钮开始记录商品价格</text>
-			<button class="btn-primary" @click="openAddProductModal">+ 添加商品</button>
+		<!-- ===== 商品列表 ===== -->
+		<view class="list-card">
+			<view class="list-header">
+				<view class="list-header-left">
+					<text class="list-title">📋 商品列表</text>
+					<text class="list-badge">{{ filteredProducts.length }}</text>
+				</view>
+				<view class="list-header-right">
+					<text class="list-sort-info">{{ sortLabel }}</text>
+				</view>
+			</view>
+			<view class="list-search">
+				<input type="text" v-model="productListSearch" placeholder="筛选商品..." class="list-search-input" />
+				<text v-if="productListSearch" class="clear-search-input" @click="productListSearch = ''">✕</text>
+			</view>
+			<scroll-view scroll-y class="list-scroll">
+				<!-- 列表视图 -->
+				<view>
+					<view v-for="product in paginatedProducts" :key="product.id" class="list-item">
+						<view class="item-info" @click="goToDetail(product)">
+							<view class="item-name-row">
+								<text class="item-name">{{ product.name }}</text>
+								<text v-if="product.rating" class="item-stars">{{ getStars(product.rating) }}</text>
+								<text v-if="product.isNew" class="item-badge-new">NEW</text>
+							</view>
+							<view class="item-meta">
+								<text v-if="product.remarks" class="item-tag">备注：{{ product.remarks }}</text>
+							</view>
+						</view>
+						<view class="item-actions">
+							<uni-icons type="compose" @click="openEditProductModal(product)" size="20"
+								color="#a5a29e"></uni-icons>
+							<uni-icons type="clear" @click="deleteProduct(product.id)" size="20"
+								color="#ac0a0a"></uni-icons>
+						</view>
+					</view>
+				</view>
+
+				<view v-if="paginatedProducts.length === 0" class="list-empty">
+					<text class="empty-icon">🔍</text>
+					<text class="empty-text">没有匹配的商品</text>
+					<text class="empty-hint">试试调整搜索条件或添加新商品</text>
+				</view>
+			</scroll-view>
+
+			<!-- 分页 -->
+			<view v-if="filteredProducts.length > pageSize" class="list-pagination">
+				<text class="page-info">{{ currentPage }}/{{ totalPages }} 页 · {{ filteredProducts.length }} 项</text>
+				<view class="page-controls">
+					<button class="page-btn" :disabled="currentPage === 1"
+						@click="currentPage = currentPage - 1">‹</button>
+					<button v-for="p in displayPages" :key="p" :class="['page-btn', { active: currentPage === p }]"
+						@click="goToPage(p)">
+						{{ p }}
+					</button>
+					<button class="page-btn" :disabled="currentPage === totalPages"
+						@click="currentPage = currentPage + 1">›</button>
+					<picker mode="selector" :range="pageSizeOptions" :value="pageSizeIndex" @change="onPageSizeChange">
+						<button class="page-size-btn">{{ pageSize }}条</button>
+					</picker>
+				</view>
+			</view>
 		</view>
 
-		<!-- ==================== 弹窗 ==================== -->
-		<!-- 添加/编辑商品弹窗 -->
+		<!-- ===== 弹窗：添加/编辑商品 ===== -->
 		<view v-if="showProductModal" class="modal-mask" @click.self="closeProductModal">
-			<view class="modal-container">
+			<view class="modal-box">
 				<view class="modal-header">
 					<text class="modal-title">{{ productModalTitle }}</text>
 					<text class="modal-close" @click="closeProductModal">✕</text>
@@ -214,32 +98,7 @@
 							class="form-input" />
 					</view>
 					<view class="form-row">
-						<view class="form-group">
-							<text class="form-label">品牌</text>
-							<input type="text" v-model="editingProduct.brand" placeholder="例：Apple"
-								class="form-input" />
-						</view>
-						<view class="form-group">
-							<text class="form-label">产地</text>
-							<input type="text" v-model="editingProduct.origin" placeholder="例：中国" class="form-input" />
-						</view>
-					</view>
-					<view class="form-row">
-						<view class="form-group">
-							<text class="form-label">星级评分</text>
-							<view class="rating-select">
-								<text v-for="n in 5" :key="n" class="star" @click="editingProduct.rating = n">
-									{{ n <= (editingProduct.rating || 0) ? '⭐' : '☆' }}
-								</text>
-								<text v-if="editingProduct.rating" class="clear-rating"
-									@click="editingProduct.rating = null">清除</text>
-							</view>
-						</view>
-						<view class="form-group">
-							<text class="form-label">规格</text>
-							<input type="text" v-model="editingProduct.specification" placeholder="例：台"
-								class="form-input" />
-						</view>
+						<!-- 保留其他字段扩展，暂时隐藏 -->
 					</view>
 					<view class="form-group">
 						<text class="form-label">备注</text>
@@ -253,33 +112,9 @@
 			</view>
 		</view>
 
-		<!-- 添加价格弹窗 -->
-		<view v-if="showPriceModal" class="modal-mask" @click.self="closePriceModal">
-			<view class="modal-container modal-small">
-				<view class="modal-header">
-					<text class="modal-title">添加价格记录</text>
-					<text class="modal-close" @click="closePriceModal">✕</text>
-				</view>
-				<view class="modal-body">
-					<view class="price-product-info" v-if="selectedProduct">
-						<text class="product-badge">{{ selectedProduct.name }}</text>
-					</view>
-					<view class="form-group">
-						<text class="form-label">日期 <text class="required">*</text></text>
-						<picker mode="date" :value="newPrice.date" :end="todayDate" @change="onNewPriceDateChange">
-							<view class="form-input date-placeholder">{{ newPrice.date || '请选择日期' }}</view>
-						</picker>
-					</view>
-					<view class="form-group">
-						<text class="form-label">价格 (¥) <text class="required">*</text></text>
-						<input type="digit" v-model="newPrice.value" placeholder="0.00" class="form-input" />
-					</view>
-				</view>
-				<view class="modal-footer">
-					<button class="btn-cancel" @click="closePriceModal">取消</button>
-					<button class="btn-save" @click="savePrice">添加</button>
-				</view>
-			</view>
+		<!-- ===== Toast 提示 ===== -->
+		<view v-if="toastMessage" class="toast" :class="toastType">
+			<text>{{ toastMessage }}</text>
 		</view>
 	</view>
 </template>
@@ -293,27 +128,17 @@
 		name: 'PriceTracker',
 		data() {
 			return {
-				sortType: 'date_desc',
-				sortTypeOptions: ['按日期（最新优先）', '按日期（最早优先）', '按价格（从低到高）', '按价格（从高到低）'],
-				sortTypeMap: {
-					'按日期（最新优先）': 'date_desc',
-					'按日期（最早优先）': 'date_asc',
-					'按价格（从低到高）': 'price_asc',
-					'按价格（从高到低）': 'price_desc'
-				},
-				pageSizeOptions: ['5条/页', '10条/页', '20条/页', '50条/页'],
+				pageSizeOptions: ['5条', '10条', '20条', '50条'],
 				pageSizeValues: [5, 10, 20, 50],
+				currentPage: 1,
+				pageSize: 10,
 				products: [],
 				globalSearchKeyword: '',
 				productListSearch: '',
-				selectedProduct: null,
-				dateFrom: '',
-				dateTo: '',
+				sortField: 'latest',
+				sortOrder: 'desc',
 				showProductModal: false,
-				showPriceModal: false,
 				isEditMode: false,
-				currentPage: 1,
-				pageSize: 10,
 				editingProduct: {
 					id: null,
 					name: '',
@@ -326,298 +151,169 @@
 					createdAt: '',
 					isDeleted: 0
 				},
-				newPrice: {
-					date: '',
-					value: null
-				}
+				toastMessage: '',
+				toastType: 'toast-info',
+				toastTimer: null
 			};
 		},
 		computed: {
-			totalProducts() {
-				return this.products.length;
+			sortLabel: function() {
+				var labels = {
+					name: '按名称',
+					price: '按价格',
+					rating: '按评分',
+					latest: '按最新'
+				};
+				return labels[this.sortField] || '默认';
 			},
-			avgRatingFormatted() {
-				const rated = this.products.filter(p => p.rating);
-				if (rated.length === 0) return '--';
-				const sum = rated.reduce((s, p) => s + p.rating, 0);
-				return (sum / rated.length).toFixed(1);
+			filteredProducts: function() {
+				var list = this.products.filter(function(p) {
+					return p.isDeleted !== 1;
+				});
+
+				var kw = this.globalSearchKeyword.trim().toLowerCase();
+				if (kw) {
+					list = list.filter(function(p) {
+						return p.name.toLowerCase().includes(kw) ||
+							(p.brand && p.brand.toLowerCase().includes(kw)) ||
+							(p.remarks && p.remarks.toLowerCase().includes(kw));
+					});
+				}
+
+				var kw2 = this.productListSearch.trim().toLowerCase();
+				if (kw2) {
+					list = list.filter(function(p) {
+						return p.name.toLowerCase().includes(kw2) ||
+							(p.brand && p.brand.toLowerCase().includes(kw2));
+					});
+				}
+
+				// 保留原有过滤（虽然未使用，但保留兼容）
+				if (this.filterRating) {
+					list = list.filter(function(p) {
+						return p.rating === this.filterRating;
+					}.bind(this));
+				}
+
+				list.sort(function(a, b) {
+					switch (this.sortField) {
+						case 'name':
+							return this.sortOrder === 'asc' ?
+								a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+						case 'rating':
+							var aRating = a.rating || 0;
+							var bRating = b.rating || 0;
+							return this.sortOrder === 'asc' ? aRating - bRating : bRating - aRating;
+						case 'latest':
+						default:
+							var aDate = a.prices && a.prices.length ? a.prices[a.prices.length - 1].date :
+								'1970-01-01';
+							var bDate = b.prices && b.prices.length ? b.prices[b.prices.length - 1].date :
+								'1970-01-01';
+							return this.sortOrder === 'asc' ?
+								aDate.localeCompare(bDate) : bDate.localeCompare(aDate);
+					}
+				}.bind(this));
+
+				return list;
 			},
-			filteredProducts() {
-				if (!this.globalSearchKeyword.trim()) return this.products;
-				const kw = this.globalSearchKeyword.trim().toLowerCase();
-				return this.products.filter(p =>
-					p.name.toLowerCase().includes(kw) ||
-					(p.brand && p.brand.toLowerCase().includes(kw))
-				);
+			paginatedProducts: function() {
+				var start = (this.currentPage - 1) * this.pageSize;
+				return this.filteredProducts.slice(start, start + this.pageSize);
 			},
-			searchedProducts() {
-				if (!this.productListSearch.trim()) return this.filteredProducts;
-				const kw = this.productListSearch.trim().toLowerCase();
-				return this.filteredProducts.filter(p =>
-					p.name.toLowerCase().includes(kw) ||
-					(p.brand && p.brand.toLowerCase().includes(kw))
-				);
+			totalPages: function() {
+				return Math.ceil(this.filteredProducts.length / this.pageSize) || 1;
 			},
-			paginatedProducts() {
-				const start = (this.currentPage - 1) * this.pageSize;
-				const end = start + this.pageSize;
-				return this.searchedProducts.slice(start, end);
-			},
-			totalPages() {
-				return Math.ceil(this.searchedProducts.length / this.pageSize) || 1;
-			},
-			displayPages() {
-				const total = this.totalPages;
-				const current = this.currentPage;
-				const maxVisible = 5;
-				let start = Math.max(1, current - Math.floor(maxVisible / 2));
-				let end = Math.min(total, start + maxVisible - 1);
+			displayPages: function() {
+				var total = this.totalPages;
+				var current = this.currentPage;
+				var maxVisible = 5;
+				var start = Math.max(1, current - Math.floor(maxVisible / 2));
+				var end = Math.min(total, start + maxVisible - 1);
 				if (end - start + 1 < maxVisible) {
 					start = Math.max(1, end - maxVisible + 1);
 				}
-				const pages = [];
-				for (let i = start; i <= end; i++) {
-					pages.push(i);
-				}
+				var pages = [];
+				for (var i = start; i <= end; i++) pages.push(i);
 				return pages;
 			},
-			filteredPrices() {
-				if (!this.selectedProduct || !this.selectedProduct.prices) return [];
-				let prices = [...this.selectedProduct.prices];
-
-				switch (this.sortType) {
-					case 'date_asc':
-						prices.sort((a, b) => new Date(a.date) - new Date(b.date));
-						break;
-					case 'price_asc':
-						prices.sort((a, b) => a.value - b.value);
-						break;
-					case 'price_desc':
-						prices.sort((a, b) => b.value - a.value);
-						break;
-					default:
-						prices.sort((a, b) => new Date(b.date) - new Date(a.date));
-				}
-
-				if (this.dateFrom) {
-					prices = prices.filter(p => new Date(p.date) >= new Date(this.dateFrom));
-				}
-				if (this.dateTo) {
-					prices = prices.filter(p => new Date(p.date) <= new Date(this.dateTo));
-				}
-				return prices;
-			},
-			minPrice() {
-				if (!this.selectedProduct?.prices?.length) return 0;
-				return Math.min(...this.selectedProduct.prices.map(p => p.value));
-			},
-			maxPrice() {
-				if (!this.selectedProduct?.prices?.length) return 0;
-				return Math.max(...this.selectedProduct.prices.map(p => p.value));
-			},
-			avgPrice() {
-				if (!this.selectedProduct?.prices?.length) return 0;
-				const sum = this.selectedProduct.prices.reduce((s, p) => s + p.value, 0);
-				return sum / this.selectedProduct.prices.length;
-			},
-			latestPrice() {
-				if (!this.selectedProduct?.prices?.length) return 0;
-				const sorted = [...this.selectedProduct.prices].sort((a, b) => new Date(b.date) - new Date(a.date));
-				return sorted[0].value;
-			},
-			todayDate() {
-				const today = new Date();
-				return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-			},
-			productModalTitle() {
-				return this.isEditMode ? '编辑商品信息' : '添加新商品';
-			},
-			sortTypeIndex() {
-				return this.sortTypeOptions.findIndex(opt => this.sortTypeMap[opt] === this.sortType);
-			},
-			sortTypeLabel() {
-				return this.sortTypeOptions[this.sortTypeIndex] || '按日期（最新优先）';
-			},
-			pageSizeIndex() {
+			pageSizeIndex: function() {
 				return this.pageSizeValues.indexOf(this.pageSize);
+			},
+			productModalTitle: function() {
+				return this.isEditMode ? '编辑商品' : '添加商品';
 			}
 		},
-		watch: {
-			searchedProducts: {
-				handler(newList) {
-					this.currentPage = 1;
-					if (newList.length > 0) {
-						if (!this.selectedProduct || !newList.find(p => p.id === this.selectedProduct.id)) {
-							this.selectProduct(newList[0]);
-						}
-					} else {
-						this.selectedProduct = null;
-					}
-				},
-				immediate: true
-			}
-		},
-		mounted() {
+		mounted: function() {
 			this.loadData();
 		},
 		methods: {
-			async loadData() {
-				try {
-					const res = await priceTrackerApi.getProduct();
-					if (res.data) {
-						this.products = res.data;
-					}
-					if (this.products.length > 0 && !this.selectedProduct) {
-						await this.selectProduct(this.products[0]);
-					}
-				} catch (err) {
-					console.error("加载商品失败:", err);
-					uni.showToast({
-						title: "加载商品失败",
-						icon: "none"
-					});
+			getStars: function(rating) {
+				if (!rating) return '';
+				var stars = '';
+				for (var i = 0; i < rating; i++) {
+					stars += '⭐';
 				}
+				return stars;
 			},
-			clearGlobalSearch() {
-				this.globalSearchKeyword = '';
-				if (this.products.length > 0 && !this.selectedProduct) {
-					this.selectProduct(this.products[0]);
-				}
+			getLatestDate: function(product) {
+				if (!product || !product.prices || !product.prices.length) return '暂无';
+				var sorted = [].concat(product.prices).sort(function(a, b) {
+					return new Date(b.date) - new Date(a.date);
+				});
+				var date = new Date(sorted[0].date);
+				return (date.getMonth() + 1) + '/' + date.getDate();
 			},
-			resetPagination() {
-				this.currentPage = 1;
+			showToast: function(message, type) {
+				type = type || 'toast-info';
+				if (this.toastTimer) clearTimeout(this.toastTimer);
+				this.toastMessage = message;
+				this.toastType = type;
+				this.toastTimer = setTimeout(function() {
+					this.toastMessage = '';
+				}.bind(this), 3000);
 			},
-			goToPage(page) {
-				this.currentPage = page;
-			},
-			onPageSizeChange(e) {
-				const index = e.detail.value;
-				this.pageSize = this.pageSizeValues[index];
-				this.resetPagination();
-			},
-			onSortTypeChange(e) {
-				const index = e.detail.value;
-				this.sortType = this.sortTypeMap[this.sortTypeOptions[index]];
-			},
-			onDateFromChange(e) {
-				this.dateFrom = e.detail.value;
-			},
-			onDateToChange(e) {
-				this.dateTo = e.detail.value;
-			},
-			onNewPriceDateChange(e) {
-				this.newPrice.date = e.detail.value;
-			},
-			async selectProduct(product) {
-				if (this.selectedProduct && this.selectedProduct.id === product.id) return;
-
-				this.selectedProduct = null;
-
-				try {
-					const res = await priceTrackerApi.getRecordsByProductId(product.id);
-					const prices = [];
+			loadData: function() {
+				var _this = this;
+				priceTrackerApi.getProduct().then(function(res) {
 					if (res.data) {
-						res.data.forEach(element => {
-							prices.push({
-								id: element.id,
-								date: element.recordDate,
-								value: element.price
-							});
+						_this.products = res.data.map(function(p) {
+							return {
+								...p,
+								prices: p.prices || []
+							};
 						});
 					}
-
-					const productWithPrices = {
-						...product,
-						prices: prices
-					};
-					this.selectedProduct = productWithPrices;
-
-					const index = this.products.findIndex(p => p.id === product.id);
-					if (index !== -1) {
-						this.products[index] = productWithPrices;
-					}
-				} catch (err) {
-					console.error("获取价格记录失败:", err);
-					this.selectedProduct = {
-						...product,
-						prices: []
-					};
-				}
-
-				this.dateFrom = '';
-				this.dateTo = '';
-			},
-			formatDate(dateStr) {
-				const date = new Date(dateStr);
-				return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-			},
-			getChangeClass(item, idx) {
-				const prices = this.filteredPrices;
-				if (idx === prices.length - 1) return 'no-change';
-				const prevPrice = prices[idx + 1].value;
-				if (item.value > prevPrice) return 'up';
-				if (item.value < prevPrice) return 'down';
-				return 'flat';
-			},
-			getChangeText(item, idx) {
-				const prices = this.filteredPrices;
-				if (idx === prices.length - 1) return '--';
-				const prevPrice = prices[idx + 1].value;
-				const change = ((item.value - prevPrice) / prevPrice * 100).toFixed(1);
-				if (item.value > prevPrice) return `+${change}%`;
-				if (item.value < prevPrice) return `${change}%`;
-				return '0%';
-			},
-			clearDateFilter() {
-				this.dateFrom = '';
-				this.dateTo = '';
-			},
-			deletePriceItem(priceItem) {
-				uni.showModal({
-					title: '提示',
-					content: `确定删除 ${this.formatDate(priceItem.date)} 的价格记录 ¥${priceItem.value} 吗？`,
-					success: async (res) => {
-						if (res.confirm) {
-							try {
-								const result = await priceTrackerApi.delPriceRecord(priceItem.id);
-								if (result.status === 200) {
-									const indexInOriginal = this.selectedProduct.prices.findIndex(p => p.id ===
-										priceItem.id);
-									if (indexInOriginal !== -1) {
-										this.selectedProduct.prices.splice(indexInOriginal, 1);
-										const productIndex = this.products.findIndex(p => p.id === this
-											.selectedProduct.id);
-										if (productIndex !== -1) {
-											this.products[productIndex].prices = [...this.selectedProduct
-												.prices
-											];
-										}
-										uni.showToast({
-											title: '删除成功',
-											icon: 'success'
-										});
-									}
-								} else {
-									uni.showToast({
-										title: result.data.msg || '删除失败',
-										icon: 'none'
-									});
-								}
-							} catch (err) {
-								console.error("删除失败:", err);
-								uni.showToast({
-									title: '删除失败',
-									icon: 'none'
-								});
-							}
-						}
-					}
+				}).catch(function(err) {
+					console.error("加载商品失败:", err);
+					_this.showToast('加载商品失败', 'toast-error');
 				});
 			},
-			openAddProductModal() {
+			sortBy: function(field) {
+				if (this.sortField === field) {
+					this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+				} else {
+					this.sortField = field;
+					this.sortOrder = field === 'name' ? 'asc' : 'desc';
+				}
+				this.currentPage = 1;
+			},
+			goToDetail: function(product) {
+				uni.navigateTo({
+					url: '/pages/other/priceTrackerInfo/priceTrackerInfo?id=' + product.id
+				});
+			},
+			goToPage: function(page) {
+				this.currentPage = page;
+			},
+			onPageSizeChange: function(e) {
+				this.pageSize = this.pageSizeValues[e.detail.value];
+				this.currentPage = 1;
+			},
+			openAddProductModal: function() {
 				this.isEditMode = false;
 				this.editingProduct = {
-					id: Date.now(),
+					id: null,
 					name: '',
 					brand: '',
 					origin: '',
@@ -630,809 +326,639 @@
 				};
 				this.showProductModal = true;
 			},
-			openEditProductModal(product) {
+			openEditProductModal: function(product) {
 				this.isEditMode = true;
 				this.editingProduct = JSON.parse(JSON.stringify(product));
 				this.showProductModal = true;
 			},
-			async saveProduct() {
+			saveProduct: function() {
+				var _this = this;
 				if (!this.editingProduct.name.trim()) {
-					uni.showToast({
-						title: '请填写商品名称',
-						icon: 'none'
-					});
+					this.showToast('请填写商品名称', 'toast-error');
 					return;
 				}
-				try {
-					let res;
-					if (this.isEditMode) {
-						res = await priceTrackerApi.editProduct(this.editingProduct);
-						console.log("编辑商品结果:", res);
+				if (this.isEditMode) {
+					priceTrackerApi.editProduct(this.editingProduct).then(function(res) {
 						if (res.status === 200) {
-							const index = this.products.findIndex(p => p.id === this.editingProduct.id);
-							if (index !== -1) {
-								this.products[index] = {
-									...this.editingProduct,
-									prices: this.products[index]?.prices || []
-								};
-								if (this.selectedProduct?.id === this.editingProduct.id) {
-									this.selectedProduct = this.products[index];
+							var idx = -1;
+							for (var i = 0; i < _this.products.length; i++) {
+								if (_this.products[i].id === _this.editingProduct.id) {
+									idx = i;
+									break;
 								}
 							}
-							uni.showToast({
-								title: '保存成功',
-								icon: 'success'
-							});
+							if (idx !== -1) {
+								const updated = {
+									..._this.editingProduct,
+									prices: _this.products[idx] ? _this.products[idx].prices || [] : []
+								};
+								_this.$set(_this.products, idx, updated);
+							}
+							_this.showToast('保存成功', 'toast-success');
+							_this.closeProductModal();
 						} else {
-							uni.showToast({
-								title: res.data.msg || '保存失败',
-								icon: 'none'
-							});
+							_this.showToast(res.data ? res.data.msg || '保存失败' : '保存失败', 'toast-error');
 						}
-					} else {
-						res = await priceTrackerApi.addProduct(this.editingProduct);
+					}).catch(function(err) {
+						console.error("保存失败:", err);
+						_this.showToast('保存失败', 'toast-error');
+					});
+				} else {
+					priceTrackerApi.addProduct(this.editingProduct).then(function(res) {
 						if (res.status === 200) {
-							await this.loadData();
-							uni.showToast({
-								title: '添加成功',
-								icon: 'success'
-							});
+							_this.loadData();
+							_this.showToast('添加成功', 'toast-success');
+							_this.closeProductModal();
 						} else {
-							uni.showToast({
-								title: res.msg || '添加失败',
-								icon: 'none'
-							});
+							_this.showToast(res.msg || '添加失败', 'toast-error');
 						}
-					}
-					this.closeProductModal();
-				} catch (err) {
-					console.error("保存失败:", err);
-					uni.showToast({
-						title: '保存失败',
-						icon: 'none'
+					}).catch(function(err) {
+						console.error("添加失败:", err);
+						_this.showToast('添加失败', 'toast-error');
 					});
 				}
 			},
-			deleteProduct(id) {
+			deleteProduct: function(id) {
+				var _this = this;
 				uni.showModal({
 					title: '提示',
 					content: '确定删除该商品及其所有价格记录吗？',
-					success: async (res) => {
+					success: function(res) {
 						if (res.confirm) {
-							try {
-								const result = await priceTrackerApi.delProduct(id);
+							priceTrackerApi.delProduct(id).then(function(result) {
 								if (result.status === 200) {
-									this.products = this.products.filter(p => p.id !== id);
-									if (this.selectedProduct?.id === id) {
-										this.selectedProduct = this.products[0] || null;
-									}
-									uni.showToast({
-										title: '删除成功',
-										icon: 'success'
+									_this.products = _this.products.filter(function(p) {
+										return p.id !== id;
 									});
+									_this.showToast('删除成功', 'toast-success');
 								} else {
-									uni.showToast({
-										title: result.data.msg || '删除失败',
-										icon: 'none'
-									});
+									_this.showToast(result.data ? result.data.msg || '删除失败' :
+										'删除失败', 'toast-error');
 								}
-							} catch (err) {
+							}).catch(function(err) {
 								console.error("删除失败:", err);
-								uni.showToast({
-									title: '删除失败',
-									icon: 'none'
-								});
-							}
+								_this.showToast('删除失败', 'toast-error');
+							});
 						}
 					}
 				});
 			},
-			openAddPriceModal() {
-				if (!this.selectedProduct) return;
-				this.newPrice = {
-					date: this.todayDate,
-					value: null
-				};
-				this.showPriceModal = true;
-			},
-			async savePrice() {
-				if (!this.newPrice.date) {
-					uni.showToast({
-						title: '请选择日期',
-						icon: 'none'
-					});
-					return;
-				}
-				if (!this.newPrice.value || this.newPrice.value <= 0) {
-					uni.showToast({
-						title: '请输入正确的价格',
-						icon: 'none'
-					});
-					return;
-				}
-				if (!this.selectedProduct.prices) this.selectedProduct.prices = [];
-
-				const exists = this.selectedProduct.prices.some(p => p.date === this.newPrice.date);
-				if (exists) {
-					uni.showToast({
-						title: '该日期已存在价格记录',
-						icon: 'none'
-					});
-					return;
-				}
-
-				const priceData = {
-					productId: this.selectedProduct.id,
-					price: parseFloat(this.newPrice.value),
-					recordDate: this.newPrice.date
-				};
-
-				try {
-					const res = await priceTrackerApi.addPriceRecord(priceData);
-					if (res.status === 200) {
-						const newRecord = {
-							id: res.data?.id || Date.now(),
-							date: this.newPrice.date,
-							value: parseFloat(this.newPrice.value)
-						};
-						this.selectedProduct.prices.push(newRecord);
-						this.selectedProduct.prices.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-						const productIndex = this.products.findIndex(p => p.id === this.selectedProduct.id);
-						if (productIndex !== -1) {
-							this.products[productIndex].prices = [...this.selectedProduct.prices];
-						}
-
-						uni.showToast({
-							title: '价格添加成功',
-							icon: 'success'
-						});
-						this.closePriceModal();
-					} else {
-						uni.showToast({
-							title: res.data.msg || '添加失败',
-							icon: 'none'
-						});
-					}
-				} catch (err) {
-					console.error("添加价格失败:", err);
-					uni.showToast({
-						title: '添加失败',
-						icon: 'none'
-					});
-				}
-			},
-			closeProductModal() {
+			closeProductModal: function() {
 				this.showProductModal = false;
-			},
-			closePriceModal() {
-				this.showPriceModal = false;
 			}
 		}
 	};
 </script>
 
 <style scoped>
-	/* 全局样式 */
 	.app-container {
-		min-height: 98vh;
-		background: #f0f2f5;
+		min-height: 100vh;
+		background: #f0f4f8;
+		padding: 12px 16px 20px;
 		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+		position: relative;
 	}
 
-	/* 顶部状态栏 */
-	.top-bar {
-		background: #ffffff;
-		padding: 24rpx 32rpx;
+	/* ===== Toast ===== */
+	.toast {
+		position: fixed;
+		top: 16px;
+		left: 50%;
+		transform: translateX(-50%);
+		padding: 8px 20px;
+		border-radius: 12px;
+		background: #1e293b;
+		color: #ffffff;
+		font-size: 13px;
+		font-weight: 500;
+		z-index: 9999;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+		animation: slideDown 0.3s ease;
+	}
+
+	.toast-success {
+		background: #10b981;
+	}
+
+	.toast-error {
+		background: #ef4444;
+	}
+
+	.toast-info {
+		background: #4f7df3;
+	}
+
+	@keyframes slideDown {
+		from {
+			opacity: 0;
+			transform: translateX(-50%) translateY(-20px);
+		}
+
+		to {
+			opacity: 1;
+			transform: translateX(-50%) translateY(0);
+		}
+	}
+
+	/* ===== 顶部导航 ===== */
+	.page-header {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		flex-wrap: wrap;
-		gap: 20rpx;
-		box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.05);
-		border-bottom: 1rpx solid #e9ecef;
-		position: sticky;
-		top: 0;
-		z-index: 100;
+		gap: 8px 12px;
+		background: #ffffff;
+		padding: 8px 14px;
+		border-radius: 14px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+		margin-bottom: 12px;
 	}
 
-	.stats-group {
-		display: flex;
-		gap: 48rpx;
-	}
-
-	.stat-item {
+	.header-left {
 		display: flex;
 		align-items: center;
-		gap: 16rpx;
+		gap: 6px;
 	}
 
-	.stat-icon {
-		font-size: 48rpx;
-	}
-
-	.stat-info {
+	.header-right {
 		display: flex;
-		flex-direction: column;
-	}
-
-	.stat-value {
-		font-size: 40rpx;
-		font-weight: 700;
-		color: #1e293b;
-		line-height: 1.2;
-	}
-
-	.stat-label {
-		font-size: 22rpx;
-		color: #64748b;
-	}
-
-	.action-group {
-		display: flex;
-		gap: 24rpx;
 		align-items: center;
+		gap: 8px;
+		flex-wrap: wrap;
+		flex: 1;
 	}
 
-	.search-box {
+	.search-wrapper {
 		position: relative;
 		display: flex;
 		align-items: center;
+		background: #f8fafc;
+		border-radius: 30px;
+		padding: 0 0px;
+		border: 1px solid #e2e8f0;
+		transition: border 0.2s, box-shadow 0.2s;
+		flex: 1;
+		min-width: 180px;
 	}
 
-	.search-icon {
-		position: absolute;
-		left: 24rpx;
-		font-size: 28rpx;
-		opacity: 0.6;
+	.search-wrapper:focus-within {
+		border-color: #4f7df3;
+		box-shadow: 0 0 0 3px rgba(79, 125, 243, 0.12);
+		background: #ffffff;
 	}
 
 	.search-input {
-		padding: 16rpx 32rpx 16rpx 64rpx;
-		border: 1rpx solid #e2e8f0;
-		border-radius: 60rpx;
-		width: 400rpx;
-		font-size: 26rpx;
-		background: #f8fafc;
-	}
-
-	.search-input:focus {
-		border-color: #2c7da0;
-		background: #ffffff;
+		border: none;
+		background: transparent;
+		padding: 6px 2px;
+		font-size: 13px;
+		flex: 1;
+		outline: none;
 	}
 
 	.clear-search {
-		position: absolute;
-		right: 20rpx;
-		background: none;
+		font-size: 14px;
+		color: #94a3b8;
+		padding: 0 10px;
+		cursor: pointer;
+	}
+
+	.header-actions {
+		display: flex;
+		gap: 6px;
+		align-items: center;
+		flex-wrap: nowrap;
+	}
+
+	/* 新增按钮 - 突出显示 */
+	.btn-add {
+		background: #4f7df3;
+		color: #ffffff;
 		border: none;
-		font-size: 28rpx;
+		padding: 4px 14px;
+		border-radius: 30px;
+		font-size: 13px;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.2s;
+		white-space: nowrap;
+		height: 32px;
+		display: flex;
+		align-items: center;
+	}
+
+	.btn-add:hover {
+		background: #3b66d0;
+	}
+
+	.btn-add:active {
+		transform: scale(0.94);
+	}
+
+	/* 排序按钮 - 轻量标签样式 */
+	.btn-sort {
+		background: #f1f5f9;
+		color: #475569;
+		border: 1px solid #e2e8f0;
+		padding: 0 12px;
+		border-radius: 30px;
+		font-size: 13px;
+		font-weight: 500;
+		cursor: pointer;
+		transition: all 0.2s;
+		white-space: nowrap;
+		height: 32px;
+		display: flex;
+		align-items: center;
+		gap: 2px;
+	}
+
+	.btn-sort:hover {
+		background: #e2e8f0;
+	}
+
+	.btn-sort.active {
+		background: #eef2ff;
+		border-color: #4f7df3;
+		color: #4f7df3;
+	}
+
+	.btn-sort:active {
+		transform: scale(0.94);
+	}
+
+	/* 移除旧的无用按钮样式 */
+	.btn-filter {
+		display: none;
+	}
+
+	/* ===== 商品列表 ===== */
+	.list-card {
+		background: #ffffff;
+		border-radius: 14px;
+		border: 1px solid #eef2f6;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.list-header {
+		padding: 10px 14px;
+		background: #fafbfc;
+		border-bottom: 1px solid #eef2f6;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.list-header-left {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.list-title {
+		font-weight: 600;
+		font-size: 15px;
+		color: #0f172a;
+	}
+
+	.list-badge {
+		font-size: 12px;
+		color: #64748b;
+		background: #eef2f6;
+		padding: 0 10px;
+		border-radius: 20px;
+	}
+
+	.list-sort-info {
+		font-size: 11px;
 		color: #94a3b8;
 	}
 
-	.add-btn {
-		background: #2c7da0;
-		color: #ffffff;
-		border: none;
-		padding: 0 10rpx 0 10rpx;
-		border-radius: 60rpx;
-		font-weight: 500;
-		display: flex;
-		align-items: center;
-		gap: 12rpx;
-		font-size: 28rpx;
+	.list-search {
+		padding: 6px 12px;
+		border-bottom: 1px solid #f1f5f9;
+		position: relative;
 	}
 
-	/* 主内容区域 - 两列布局 */
-	.main-content {
-		max-width: 1600rpx;
-		margin: 0 auto;
-		padding: 24rpx;
-		display: flex;
-		gap: 24rpx;
-		min-height: calc(100vh - 120rpx);
-	}
-
-	.left-panel {
-		flex: 1.2;
-		display: flex;
-		flex-direction: column;
-		gap: 24rpx;
-	}
-
-	.right-panel {
-		flex: 1;
-	}
-
-	/* 商品选择器 */
-	.product-selector {
-		background: #ffffff;
-		border-radius: 32rpx;
-		overflow: hidden;
-		box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.05);
-		display: flex;
-		flex-direction: column;
-	}
-
-	.selector-header {
-		padding: 24rpx 32rpx;
-		background: #fafbfc;
-		border-bottom: 1rpx solid #eef2f6;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-
-	.selector-title {
-		font-size: 28rpx;
-		font-weight: 600;
-		color: #1e293b;
-	}
-
-	.product-count {
-		font-size: 22rpx;
-		color: #64748b;
-	}
-
-	.product-search {
-		padding: 16rpx 24rpx;
-		border-bottom: 1rpx solid #eef2f6;
-	}
-
-	.product-search-input {
-		width: 95%;
-		padding: 16rpx 24rpx;
-		border: 1rpx solid #e2e8f0;
-		border-radius: 48rpx;
-		font-size: 24rpx;
+	.list-search-input {
+		width: 85%;
+		padding: 6px 32px 6px 12px;
+		border: 1px solid #e2e8f0;
+		border-radius: 20px;
+		font-size: 13px;
 		background: #f8fafc;
+		outline: none;
+		transition: border 0.2s;
 	}
 
-	.product-tabs-container {
-		max-height: 500rpx;
+	.list-search-input:focus {
+		border-color: #4f7df3;
+		background: #ffffff;
+	}
+
+	.clear-search-input {
+		position: absolute;
+		right: 22px;
+		top: 50%;
+		transform: translateY(-50%);
+		padding: 0 10px;
+		font-size: 14px;
+		color: #94a3b8;
+		cursor: pointer;
+	}
+
+	.list-scroll {
+		flex: 1;
+		max-height: 520px;
 		overflow-y: auto;
 	}
 
-	.product-tab {
-		padding: 20rpx 24rpx;
+	/* 保留卡片视图样式（未使用，但保留） */
+	.card-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+		gap: 10px;
+		padding: 10px 12px;
+	}
+
+	/* ... 其余卡片样式省略，保留原有 */
+
+	/* ===== 列表视图 ===== */
+	.list-item {
+		padding: 10px 14px;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		border-bottom: 1rpx solid #f1f5f9;
+		border-bottom: 1px solid #f1f5f9;
+		cursor: pointer;
+		transition: background 0.15s;
 	}
 
-	.product-tab.active {
-		background: #eef2ff;
-		border-left: 6rpx solid #2c7da0;
+	.list-item:hover {
+		background: #f8fafc;
 	}
 
-	.tab-info {
+	.item-info {
 		flex: 1;
+		min-width: 0;
 	}
 
-	.tab-name-wrapper {
+	.item-name-row {
 		display: flex;
 		align-items: center;
-		gap: 12rpx;
-		margin-bottom: 8rpx;
+		gap: 6px;
 		flex-wrap: wrap;
+		margin-bottom: 2px;
 	}
 
-	.tab-name {
+	.item-name {
 		font-weight: 600;
-		color: #1e293b;
-		font-size: 26rpx;
+		font-size: 14px;
+		color: #0f172a;
 	}
 
-	.tab-stars {
-		font-size: 22rpx;
+	.item-stars {
+		font-size: 12px;
 		color: #f5a623;
 	}
 
-	.tab-meta {
+	.item-badge-new {
+		font-size: 9px;
+		background: #10b981;
+		color: #ffffff;
+		padding: 0 8px;
+		border-radius: 16px;
+		font-weight: 600;
+	}
+
+	.item-meta {
 		display: flex;
-		gap: 16rpx;
-		font-size: 22rpx;
-		color: #64748b;
+		gap: 4px;
 		flex-wrap: wrap;
 	}
 
-	.tab-brand {
+	.item-tag {
+		font-size: 11px;
+		color: #64748b;
 		background: #f1f5f9;
-		padding: 4rpx 12rpx;
-		border-radius: 20rpx;
+		padding: 0 8px;
+		border-radius: 16px;
 	}
 
-	.tab-actions {
+	.price-tag {
+		background: #eef2ff;
+		color: #4f7df3;
+		font-weight: 600;
+	}
+
+	.target-hit {
+		background: #d1fae5;
+		color: #10b981;
+		font-weight: 600;
+	}
+
+	.item-actions {
 		display: flex;
-		gap: 16rpx;
+		gap: 8px;
+		align-items: center;
+		font-size: 16px;
+		flex-shrink: 0;
 	}
 
-	.tab-edit,
-	.tab-delete {
-		font-size: 32rpx;
-		padding: 8rpx;
+	.item-edit {
+		cursor: pointer;
+		opacity: 0.6;
+		transition: opacity 0.2s;
 	}
 
-	.tab-delete {
-		color: #ef4444;
+	.item-edit:hover {
+		opacity: 1;
 	}
 
-	.no-product-tab {
-		padding: 60rpx;
+	.item-delete {
+		cursor: pointer;
+		opacity: 0.5;
+		transition: opacity 0.2s;
+	}
+
+	.item-delete:hover {
+		opacity: 1;
+	}
+
+	.item-arrow {
+		color: #cbd5e1;
+		font-size: 18px;
+	}
+
+	.list-empty {
+		padding: 30px 16px;
 		text-align: center;
 		color: #94a3b8;
 	}
 
-	/* 分页组件 */
-	.pagination-wrapper {
-		padding: 16rpx 24rpx;
-		border-top: 1rpx solid #eef2f6;
+	.empty-icon {
+		font-size: 32px;
+		display: block;
+		margin-bottom: 6px;
+	}
+
+	.empty-text {
+		font-size: 14px;
+		display: block;
+	}
+
+	.empty-hint {
+		font-size: 12px;
+		color: #cbd5e1;
+		display: block;
+		margin-top: 2px;
+	}
+
+	/* ===== 分页 ===== */
+	.list-pagination {
+		padding: 8px 14px;
+		border-top: 1px solid #eef2f6;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		flex-wrap: wrap;
-		gap: 16rpx;
+		gap: 6px;
 		background: #fafbfc;
 	}
 
-	.pagination-info {
-		font-size: 22rpx;
+	.page-info {
+		font-size: 12px;
 		color: #64748b;
 	}
 
-	.pagination-controls {
+	.page-controls {
 		display: flex;
-		gap: 12rpx;
+		gap: 4px;
 		align-items: center;
 		flex-wrap: wrap;
 	}
 
 	.page-btn {
-		min-width: 56rpx;
-		height: 56rpx;
-		padding: 0 16rpx;
-		border: 1rpx solid #e2e8f0;
+		min-width: 28px;
+		height: 28px;
+		padding: 0 6px;
+		border: 1px solid #e2e8f0;
 		background: #ffffff;
-		border-radius: 16rpx;
-		font-size: 24rpx;
+		border-radius: 6px;
+		font-size: 12px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		cursor: pointer;
+		transition: all 0.15s;
 	}
 
 	.page-btn.active {
-		background: #2c7da0;
-		border-color: #2c7da0;
+		background: #4f7df3;
+		border-color: #4f7df3;
 		color: #ffffff;
 	}
 
-	.page-btn[disabled] {
-		opacity: 0.5;
+	.page-btn:disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
 	}
 
-	.page-size-select {
-		padding: 12rpx 20rpx;
-		border: 1rpx solid #e2e8f0;
-		border-radius: 16rpx;
-		font-size: 22rpx;
+	.page-size-btn {
+		padding: 2px 10px;
+		border: 1px solid #e2e8f0;
+		border-radius: 6px;
+		font-size: 12px;
 		background: #ffffff;
+		cursor: pointer;
 	}
 
-	/* 历史价格卡片 */
-	.history-card {
-		background: #ffffff;
-		border-radius: 32rpx;
-		padding: 24rpx;
-		box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.05);
-		display: flex;
-		flex-direction: column;
-		gap: 24rpx;
-	}
-
-	.card-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-
-	.card-title {
-		font-size: 32rpx;
-		font-weight: 600;
-		color: #1e293b;
-	}
-
-	.add-price-btn {
-		background: #2c7da0;
-		color: #ffffff;
-		border: none;
-		padding: 12rpx 28rpx;
-		border-radius: 60rpx;
-		font-size: 24rpx;
-	}
-
-	/* 日期搜索栏 */
-	.date-search-bar {
-		background: #f8fafc;
-		padding: 20rpx 24rpx;
-		border-radius: 32rpx;
-	}
-
-	.date-range {
-		display: flex;
-		gap: 20rpx;
-		flex-wrap: wrap;
-		align-items: center;
-	}
-
-	.date-input-wrapper {
-		display: flex;
-		align-items: center;
-		gap: 24rpx;
-	}
-
-	.date-label {
-		font-size: 24rpx;
-		color: #475569;
-	}
-
-	.date-input {
-		padding: 12rpx 20rpx;
-		border: 1rpx solid #e2e8f0;
-		border-radius: 32rpx;
-		font-size: 24rpx;
-		background: #ffffff;
-		min-width: 200rpx;
-	}
-
-	.sort-select {
-		padding: 12rpx 24rpx;
-		border: 1rpx solid #e2e8f0;
-		border-radius: 32rpx;
-		font-size: 24rpx;
-		background: #ffffff;
-	}
-
-	.clear-date-btn {
-		background: #e2e8f0;
-		border: none;
-		padding: 10rpx 24rpx;
-		border-radius: 48rpx;
-		font-size: 22rpx;
-	}
-
-	/* 价格表格 */
-	.price-list-container {
-		max-height: 600rpx;
-		overflow-y: auto;
-	}
-
-	.price-table {
-		width: 100%;
-	}
-
-	.price-table-header {
-		display: grid;
-		grid-template-columns: 1.2fr 1fr 1fr 0.6fr;
-		padding: 16rpx 20rpx;
-		background: #f8fafc;
-		border-radius: 24rpx;
-		font-size: 22rpx;
-		font-weight: 600;
-		color: #475569;
-		margin-bottom: 12rpx;
-	}
-
-	.price-table-row {
-		display: grid;
-		grid-template-columns: 1.2fr 1fr 1fr 0.6fr;
-		padding: 20rpx 20rpx;
-		border-bottom: 1rpx solid #f1f5f9;
-		align-items: center;
-	}
-
-	.date-badge {
-		font-size: 24rpx;
-		font-weight: 500;
-	}
-
-	.price-value {
-		font-weight: 700;
-		color: #1e293b;
-		font-size: 28rpx;
-	}
-
-	.change-badge {
-		font-size: 22rpx;
-		padding: 4rpx 12rpx;
-		border-radius: 32rpx;
-		display: inline-block;
-	}
-
-	.change-badge.up {
-		background: #d1fae5;
-		color: #059669;
-	}
-
-	.change-badge.down {
-		background: #fee2e2;
-		color: #dc2626;
-	}
-
-	.change-badge.flat,
-	.change-badge.no-change {
-		background: #f1f5f9;
-		color: #64748b;
-	}
-
-	.delete-price-btn {
-		font-size: 32rpx;
-		color: #cbd5e1;
-		text-align: center;
-	}
-
-	.empty-price-list {
-		text-align: center;
-		padding: 80rpx 32rpx;
-		color: #94a3b8;
-		display: flex;
-		flex-direction: column;
-		gap: 16rpx;
-	}
-
-	/* 价格摘要 */
-	.price-summary {
-		display: flex;
-		justify-content: space-between;
-		background: #f8fafc;
-		padding: 24rpx 32rpx;
-		border-radius: 32rpx;
-		margin-top: 12rpx;
-	}
-
-	.summary-item {
-		text-align: center;
-	}
-
-	.summary-label {
-		display: block;
-		font-size: 20rpx;
-		color: #64748b;
-		margin-bottom: 6rpx;
-	}
-
-	.summary-value {
-		font-size: 32rpx;
-		font-weight: 700;
-	}
-
-	.summary-value.min {
-		color: #059669;
-	}
-
-	.summary-value.max {
-		color: #dc2626;
-	}
-
-	.summary-value.avg {
-		color: #3b82f6;
-	}
-
-	.summary-value.latest {
-		color: #e67e22;
-	}
-
-	/* 空状态 */
-	.empty-state-large {
-		text-align: center;
-		padding: 120rpx 40rpx;
-		background: #ffffff;
-		margin: 80rpx auto;
-		max-width: 600rpx;
-		border-radius: 64rpx;
-	}
-
-	.empty-icon {
-		font-size: 96rpx;
-		margin-bottom: 32rpx;
-		opacity: 0.6;
-	}
-
-	.empty-title {
-		font-size: 36rpx;
-		font-weight: 600;
-		color: #1e293b;
-		display: block;
-		margin-bottom: 16rpx;
-	}
-
-	.empty-desc {
-		font-size: 26rpx;
-		color: #64748b;
-		display: block;
-		margin-bottom: 32rpx;
-	}
-
-	.btn-primary {
-		background: #2c7da0;
-		color: #ffffff;
-		border: none;
-		padding: 20rpx 48rpx;
-		border-radius: 60rpx;
-		font-size: 28rpx;
-	}
-
-	/* 弹窗样式 */
+	/* ===== 弹窗 ===== */
 	.modal-mask {
 		position: fixed;
 		top: 0;
 		left: 0;
 		right: 0;
 		bottom: 0;
-		background: rgba(0, 0, 0, 0.5);
+		background: rgba(15, 23, 42, 0.5);
+		backdrop-filter: blur(4px);
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		z-index: 1000;
 	}
 
-	.modal-container {
+	.modal-box {
 		background: #ffffff;
-		border-radius: 48rpx;
+		border-radius: 24px;
 		width: 90%;
-		max-width: 600rpx;
+		max-width: 500px;
 		max-height: 85vh;
 		display: flex;
 		flex-direction: column;
+		box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+		animation: scaleIn 0.3s ease;
 	}
 
-	.modal-small {
-		max-width: 500rpx;
+	@keyframes scaleIn {
+		from {
+			opacity: 0;
+			transform: scale(0.95);
+		}
+
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
 	}
 
 	.modal-header {
-		padding: 28rpx 32rpx;
-		border-bottom: 1rpx solid #f0f0f0;
+		padding: 14px 18px;
+		border-bottom: 1px solid #f1f5f9;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 	}
 
 	.modal-title {
-		font-size: 32rpx;
-		font-weight: 600;
-		color: #1e293b;
+		font-size: 17px;
+		font-weight: 700;
+		color: #0f172a;
 	}
 
 	.modal-close {
-		font-size: 40rpx;
+		font-size: 24px;
 		color: #94a3b8;
+		cursor: pointer;
+		line-height: 1;
 	}
 
 	.modal-body {
-		padding: 32rpx;
-		flex: 1;
+		padding: 16px 18px;
 		overflow-y: auto;
+		flex: 1;
 	}
 
 	.modal-footer {
-		padding: 24rpx 32rpx;
-		border-top: 1rpx solid #f0f0f0;
+		padding: 12px 18px;
+		border-top: 1px solid #f1f5f9;
 		display: flex;
 		justify-content: flex-end;
-		gap: 20rpx;
+		gap: 10px;
 	}
 
 	.form-group {
-		margin-bottom: 28rpx;
+		margin-bottom: 12px;
 	}
 
 	.form-label {
-		font-size: 26rpx;
+		font-size: 13px;
 		font-weight: 500;
 		color: #475569;
-		margin-bottom: 12rpx;
 		display: block;
+		margin-bottom: 3px;
 	}
 
 	.required {
@@ -1440,96 +966,127 @@
 	}
 
 	.form-input {
-		width: 60%;
-		padding: 20rpx 24rpx;
-		border: 1rpx solid #e2e8f0;
-		border-radius: 32rpx;
-		font-size: 26rpx;
+		width: 85%;
+		padding: 8px 14px;
+		border: 1px solid #e2e8f0;
+		border-radius: 10px;
+		font-size: 14px;
 		background: #f8fafc;
+		outline: none;
+		transition: border 0.2s;
+	}
+
+	.form-input:focus {
+		border-color: #4f7df3;
+		background: #ffffff;
 	}
 
 	.form-row {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		gap: 24rpx;
+		gap: 10px;
 	}
 
-	.rating-select {
+	.rating-group {
 		display: flex;
-		gap: 12rpx;
+		gap: 6px;
 		align-items: center;
 	}
 
 	.star {
-		font-size: 40rpx;
+		font-size: 24px;
+		cursor: pointer;
 	}
 
 	.clear-rating {
-		font-size: 22rpx;
+		font-size: 12px;
 		color: #94a3b8;
-		margin-left: 16rpx;
-	}
-
-	.price-product-info {
-		text-align: center;
-		margin-bottom: 28rpx;
-	}
-
-	.product-badge {
-		background: #eef2ff;
-		padding: 12rpx 28rpx;
-		border-radius: 60rpx;
-		font-size: 26rpx;
-	}
-
-	.date-placeholder {
-		color: #64748b;
+		cursor: pointer;
+		margin-left: 6px;
 	}
 
 	.btn-cancel {
 		background: #f1f5f9;
 		border: none;
-		padding: 16rpx 40rpx;
-		border-radius: 60rpx;
-		font-size: 26rpx;
+		padding: 6px 18px;
+		border-radius: 20px;
+		font-size: 14px;
+		font-weight: 500;
+		cursor: pointer;
+	}
+
+	.btn-cancel:hover {
+		background: #e2e8f0;
 	}
 
 	.btn-save {
-		background: #2c7da0;
+		background: #4f7df3;
 		color: #ffffff;
 		border: none;
-		padding: 16rpx 48rpx;
-		border-radius: 60rpx;
-		font-size: 26rpx;
+		padding: 6px 24px;
+		border-radius: 20px;
+		font-size: 14px;
+		font-weight: 600;
+		cursor: pointer;
 	}
 
-	/* 响应式 */
-	@media (max-width: 1000rpx) {
-		.main-content {
-			flex-direction: column;
+	.btn-save:hover {
+		background: #3b66d0;
+	}
+
+	/* ===== 响应式 ===== */
+	@media (max-width: 700px) {
+		.app-container {
+			padding: 8px 10px 16px;
 		}
 
-		.stats-group {
+		.page-header {
+			flex-direction: column;
+			align-items: stretch;
+		}
+
+		.header-right {
+			flex-direction: column;
+			align-items: stretch;
+			gap: 8px;
+		}
+
+		.search-wrapper {
 			width: 100%;
-			justify-content: space-between;
 		}
 
-		.top-bar {
+		.search-input {
+			width: 100%;
+		}
+
+		.header-actions {
+			justify-content: stretch;
+			flex-wrap: wrap;
+		}
+
+		.header-actions .btn-add,
+		.header-actions .btn-sort {
+			flex: 1;
+			justify-content: center;
+			min-width: 60px;
+		}
+
+		.form-row {
+			grid-template-columns: 1fr;
+		}
+
+		.list-pagination {
 			flex-direction: column;
 			align-items: stretch;
+			gap: 4px;
 		}
 
-		.action-group {
-			justify-content: space-between;
+		.page-controls {
+			justify-content: center;
 		}
 
-		.date-range {
-			flex-direction: column;
-			align-items: stretch;
-		}
-
-		.date-input-wrapper {
-			justify-content: space-between;
+		.card-grid {
+			grid-template-columns: 1fr;
 		}
 	}
 </style>

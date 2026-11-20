@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yang.blog.entity.PriceRecordEntity;
 import com.yang.blog.mapper.PriceRecordMapper;
 import com.yang.blog.service.PriceRecordService;
+import com.yang.blog.utils.CommonDate;
 import com.yang.blog.utils.RespBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,12 +33,14 @@ public class PriceRecordServiceImpl implements PriceRecordService {
 
             if (existingRecord != null) {
                 // 如果已存在，则更新
-                existingRecord.setPrice(record.getPrice());
-                int result = recordMapper.updateById(existingRecord);
+//                existingRecord.setPrice(record.getPrice());
+//                int result = recordMapper.updateById(existingRecord);
+                record.setId(CommonDate.getStamp());
+                int result = recordMapper.insert(record);
                 if (result > 0) {
-                    return RespBean.ok("更新价格记录成功", existingRecord);
+                    return RespBean.ok("添加价格记录成功", record);
                 }
-                return RespBean.error("更新价格记录失败");
+                return RespBean.error("添加价格记录失败");
             } else {
                 // 如果不存在，则新增
                 int result = recordMapper.insert(record);

@@ -11,7 +11,7 @@
 				<view class="card-row">
 					<view class="summary-card">
 						<view class="card-icon" style="background: #e6f7ff;">
-							<text class="iconfont icon-danju" style="color: #1890ff;"></text>
+							<text class="iconfont icon-liushui" style="color: #1890ff;"></text>
 						</view>
 						<view class="card-content">
 							<view class="card-title">流水号</view>
@@ -24,7 +24,7 @@
 				<view class="card-row">
 					<view class="summary-card">
 						<view class="card-icon" style="background: #fff7e6;">
-							<text class="iconfont icon-jine" style="color: #fa8c16;"></text>
+							<text class="iconfont icon-caiwuliushui" style="color: #fa8c16;"></text>
 						</view>
 						<view class="card-content">
 							<view class="card-title">总金额</view>
@@ -47,7 +47,7 @@
 				<view class="card-row">
 					<view class="summary-card">
 						<view class="card-icon" style="background: #f9f0ff;">
-							<text class="iconfont icon-riqi" style="color: #722ed1;"></text>
+							<text class="iconfont icon-jingqi" style="color: #722ed1;"></text>
 						</view>
 						<view class="card-content">
 							<view class="card-title">账单日期</view>
@@ -64,7 +64,7 @@
 		</view>
 
 		<!-- 操作信息 -->
-		<view class="info-section">
+		<!-- <view class="info-section">
 			<view class="section-title">
 				<text class="iconfont icon-caozuo"></text>
 				<text class="title-text">操作信息</text>
@@ -83,14 +83,10 @@
 					<text class="info-value">{{ dailyFlowEntity.fUpdateTime || '未记录' }}</text>
 				</view>
 			</view>
-		</view>
+		</view> -->
 
 		<!-- 操作按钮-->
 		<view class="action-section">
-			<view class="section-title">
-				<text class="iconfont icon-anniu"></text>
-				<text class="title-text">操作</text>
-			</view>
 			<view class="action-buttons">
 				<button class="btn btn-warning" @click="handleReset">
 					<text class="iconfont icon-zhongzhi"></text>
@@ -107,7 +103,7 @@
 			</view>
 		</view>
 
-		<!-- 明细列表 - 修改为表格样式 -->
+		<!-- 明细列表 - 表格样式 -->
 		<view class="detail-section">
 			<view class="section-header">
 				<view class="section-title">
@@ -121,8 +117,8 @@
 				</view>
 			</view>
 
-			<!-- 表格容器 -->
-			<view class="table-container">
+			<!-- 表格容器 --> 
+			<view class="table-container" v-if="detailList.length != 0">
 				<scroll-view class="table-scroll" scroll-x="true" scroll-y="true" :style="{height: tableHeight + 'px'}">
 					<view class="table-wrapper" :style="{width: tableWidth + 'px'}">
 						<!-- 表头 -->
@@ -205,6 +201,11 @@
 				</button>
 			</view>
 		</view>
+
+		<!-- ===== 底部中央悬浮语音按钮 ===== -->
+		<view class="voice-fab" @click="handleVoiceInput">
+			<uni-icons type="mic" size="30"></uni-icons>
+		</view>
 	</view>
 </template>
 
@@ -217,6 +218,9 @@
 	import {
 		lifeApi
 	} from '@/api/index.js'
+	import {
+		parseVoiceText
+	} from './parseEngine'
 
 	// 防抖函数
 	const debounce = (func, wait) => {
@@ -234,6 +238,7 @@
 	export default {
 		data() {
 			return {
+				isVoiceRecognizing: false, // 防止重复触发
 				showDatePicker: false,
 				type: 'expense', // income: 收入, expense: 支出
 				detailList: [],
@@ -293,8 +298,8 @@
 			},
 			typeIcon() {
 				return this.type === 'income' ?
-					'icon-shouru' :
-					'icon-zhichu';
+					'icon-jishouru' :
+					'icon-jizhichu';
 			},
 			typeIconStyle() {
 				return this.type === 'income' ? {
@@ -323,6 +328,116 @@
 		},
 
 		methods: {
+			// 语音录入入口
+			handleVoiceInput() {
+				// #ifdef APP-PLUS
+				if (this.isVoiceRecognizing) return;
+				// 检查是否已获取tagList（如果未加载完成，可先加载）
+				if (this.tagList.length === 0) {
+					uni.showToast({
+						title: '费用来源列表未加载，请稍后',
+						icon: 'none'
+					});
+					return;
+				}
+				this.startRecognize();
+				// #endif
+				// #ifndef APP-PLUS
+				uni.showToast({
+					title: '语音录入仅在App端支持',
+					icon: 'none'
+				});
+				// #endif
+			},
+
+			startRecognize() {
+				// #ifdef APP-PLUS
+				const options = {
+					engine: 'baidu',
+					// lang: 'zh-cn',  // 可保留或注释
+					continue: false, // 识别到静音后自动结束
+					interimResults: false // 只返回最终结果
+				};
+				this.isVoiceRecognizing = true;
+				uni.showToast({
+					title: '请说话...',
+					icon: 'none'
+				});
+
+				plus.speech.startRecognize(options,
+					(res) => {
+						this.isVoiceRecognizing = false;
+						const rawText = res || '';
+						if (rawText) {
+							this.handleVoiceResult(rawText);
+						} else {
+							uni.showToast({
+								title: '未识别到语音',
+								icon: 'none'
+							});
+						}
+					},
+					(err) => {
+						this.isVoiceRecognizing = false;
+						console.error('语音识别失败：', JSON.stringify(err));
+						uni.showToast({
+							title: '语音识别失败，请重试',
+							icon: 'none'
+						});
+					}
+				);
+				// #endif
+			},
+
+			// 处理语音解析并添加明细
+			async handleVoiceResult(rawText) {
+				const result = await parseVoiceText(rawText);
+				if (!result.amount || result.amount <= 0) {
+					uni.showToast({
+						title: '未识别到有效金额，请包含“块/元”',
+						icon: 'none'
+					});
+					return;
+				}
+
+				// 匹配费用来源
+				let matchedTagId = '';
+				// 优先根据解析出的 category 匹配 tagList 中的 name
+				if (result.category) {
+					const found = this.tagList.find(tag => tag.name === result.category);
+					if (found) {
+						matchedTagId = found.name; // 假设 tag 对象有 name 字段
+					} else {
+						// 如果没匹配到，尝试模糊匹配（包含关键词）
+						for (let tag of this.tagList) {
+							if (tag.name.includes(result.category) || result.category.includes(tag.name)) {
+								matchedTagId = tag.name;
+								break;
+							}
+						}
+					}
+				}
+
+				// 构建新明细
+				const newRow = {
+					id: getTime("start"), // 需要确保 getTime 已导入
+					cost: result.amount.toString(),
+					type: this.dailyFlowEntity.type,
+					fID: this.dailyFlowEntity.id,
+					typeTagID: matchedTagId || '',
+					note: rawText,
+					purpose: result.purpose
+				};
+
+				// 添加到列表
+				this.detailList.push(newRow);
+				this.calculateTotal();
+				this.updatePagination();
+
+				// 自动跳转到最后一页（显示新添加的行）
+				this.pagination.currentPage = this.pagination.totalPage;
+				this.updatePagination();
+			},
 			// 计算表格高度
 			calculateTableHeight() {
 				const systemInfo = uni.getSystemInfoSync();
@@ -986,6 +1101,47 @@
 			margin-right: 8rpx;
 		}
 	}
+
+	/* ===== 底部中央悬浮语音按钮 ===== */
+	.voice-fab {
+		position: fixed;
+		bottom: 120rpx;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 120rpx;
+		height: 120rpx;
+		background: rgba(180, 180, 180, 0.5);
+		backdrop-filter: blur(8px);
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+		z-index: 999;
+		transition: all 0.3s ease;
+		border: 1rpx solid rgba(255, 255, 255, 0.25);
+
+		&:active {
+			transform: translateX(-50%) scale(0.88);
+			background: rgba(160, 160, 160, 0.7);
+		}
+
+		.mic-icon {
+			font-size: 48rpx;
+			color: rgba(80, 80, 80, 0.8);
+		}
+
+		.fab-label {
+			display: none;
+		}
+	}
+
+	/* 容器底部留出空间，避免被悬浮按钮遮挡 */
+	// .container {
+	// 	padding: 20rpx 20rpx 200rpx 20rpx;
+	// 	background-color: #f8f9fa;
+	// 	min-height: 100vh;
+	// }
 
 	/* 响应式调整 */
 	@media (max-width: 300px) {

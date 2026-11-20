@@ -6,8 +6,8 @@ const env = process.env.NODE_ENV || 'development'
 const config = {
   // 开发环境
   development: {
-    BASE_URL: 'http://192.168.0.100:8090',
-	IMG_URL: 'http://192.168.0.100:80',
+    BASE_URL: 'http://192.168.0.110:8090',
+	IMG_URL: 'http://192.168.0.110:80',
     TIMEOUT: 10000
   },
   // 生产环境

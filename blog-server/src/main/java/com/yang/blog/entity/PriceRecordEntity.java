@@ -43,6 +43,21 @@ public class PriceRecordEntity implements Serializable {
     @ApiModelProperty(value = "价格(元)")
     private BigDecimal price;
 
+    @ApiModelProperty(value = "数量")
+    private Integer quantity;
+
+    @ApiModelProperty(value = "规格")
+    private String specName;
+
+    @ApiModelProperty(value = "单位")
+    private String unit;
+
+    @ApiModelProperty(value = "品牌")
+    private String brand;
+
+    @ApiModelProperty(value = "货源")
+    private String supply;
+
     @ApiModelProperty(value = "价格记录日期")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate recordDate;

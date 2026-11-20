@@ -363,11 +363,18 @@
 		{
 			"root": "pages/other/",
 			"pages": [{
-				"path": "priceTracker/priceTracker",
-				"style": {
-					"navigationBarTitleText": "商品历史价格"
+					"path": "priceTracker/priceTracker",
+					"style": {
+						"navigationBarTitleText": "商品历史价格"
+					}
+				},
+				{
+					"path": "priceTrackerInfo/priceTrackerInfo",
+					"style": {
+						"navigationBarTitleText": "商品价格详情"
+					}
 				}
-			}]
+			]
 		}
 	],
 	"globalStyle": {

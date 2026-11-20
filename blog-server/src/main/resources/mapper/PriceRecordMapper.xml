@@ -8,26 +8,31 @@
         <id column="id" property="id"/>
         <result column="product_id" property="productId"/>
         <result column="price" property="price"/>
+        <result column="quantity" property="quantity"/>
+        <result column="spec_name" property="specName"/>
+        <result column="unit" property="unit"/>
+        <result column="brand" property="brand"/>
+        <result column="supply" property="supply"/>
         <result column="record_date" property="recordDate"/>
         <result column="created_at" property="createdAt"/>
     </resultMap>
 
     <select id="selectByProductId" resultMap="recordMap">
-        SELECT id, product_id, price, record_date, created_at
+        SELECT id, product_id, price,quantity,spec_name,unit,brand,supply, record_date, created_at
         FROM price_records
         WHERE product_id = #{productId}
         ORDER BY record_date DESC
     </select>
 
     <select id="selectByDateRange" resultMap="recordMap">
-        SELECT id, product_id, price, record_date, created_at
+        SELECT id, product_id, price,quantity,spec_name,unit,brand,supply, record_date, created_at
         FROM price_records
         WHERE record_date BETWEEN #{startDate} AND #{endDate}
         ORDER BY record_date DESC
     </select>
 
     <select id="selectByProductAndDate" resultMap="recordMap">
-        SELECT id, product_id, price, record_date, created_at
+        SELECT id, product_id, price,quantity,spec_name,unit,brand,supply, record_date, created_at
         FROM price_records
         WHERE product_id = #{productId}
         AND record_date = #{recordDate}
@@ -35,7 +40,7 @@
     </select>
 
     <select id="selectPage" resultMap="recordMap">
-        SELECT id, product_id, price, record_date, created_at
+        SELECT id, product_id, price,quantity,spec_name,unit,brand,supply, record_date, created_at
         FROM price_records
         <where>
             <if test="productId != null">
@@ -52,7 +57,7 @@
     </select>
 
     <select id="selectMaxPriceByProduct" resultMap="recordMap">
-        SELECT id, product_id, price, record_date, created_at
+        SELECT id, product_id, price,quantity,spec_name,unit,brand,supply, record_date, created_at
         FROM price_records
         WHERE product_id = #{productId}
         ORDER BY price DESC
@@ -60,7 +65,7 @@
     </select>
 
     <select id="selectMinPriceByProduct" resultMap="recordMap">
-        SELECT id, product_id, price, record_date, created_at
+        SELECT id, product_id, price,quantity,spec_name,unit,brand,supply, record_date, created_at
         FROM price_records
         WHERE product_id = #{productId}
         ORDER BY price ASC

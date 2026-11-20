@@ -2,8 +2,8 @@
     "name" : "枫萱悦宁",
     "appid" : "__UNI__70D2920",
     "description" : "个人助手",
-    "versionName" : "2.4.7",
-    "versionCode" : 247,
+    "versionName" : "2.5.5",
+    "versionCode" : 255,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
@@ -16,6 +16,9 @@
             "autoclose" : true,
             "delay" : 0
         },
+        "compatible" : {
+            "ignoreVersion" : true
+        },
         /* 模块配置 */
         "modules" : {
             "Camera" : {},
@@ -25,7 +28,8 @@
             "Bluetooth" : {},
             "Record" : {},
             "SQLite" : {},
-            "VideoPlayer" : {}
+            "VideoPlayer" : {},
+            "Speech" : {}
         },
         /* 应用发布信息 */
         "distribute" : {
@@ -47,7 +51,8 @@
                     "<uses-feature android:name=\"android.hardware.camera\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>",
                     "<uses-permission android:name=\"android.permission.READ_CONTACTS\" />",
-                    "<uses-permission android:name=\"android.permission.WRITE_CONTACTS\" />"
+                    "<uses-permission android:name=\"android.permission.WRITE_CONTACTS\" />",
+                    "<uses-permission android:name=\"android.permission.RECORD_AUDIO\" />"
                 ],
                 "abiFilters" : [ "armeabi-v7a", "arm64-v8a" ]
             },
@@ -57,7 +62,14 @@
             },
             /* SDK配置 */
             "sdkConfigs" : {
-                "ad" : {}
+                "ad" : {},
+                "speech" : {
+                    "baidu" : {
+                        "appid" : "124082484",
+                        "apikey" : "2BqA6SbyCaAJntW8liNxZRnq",
+                        "secretkey" : "uvCrzD3szwgd3mff39GhBe5NWR4Sc2av"
+                    }
+                }
             },
             "splashscreen" : {
                 "iosStyle" : "common",

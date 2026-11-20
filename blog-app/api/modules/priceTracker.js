@@ -11,6 +11,9 @@ import {
 } from '@/api/config.js'
 
 export const priceTrackerApi = {
+	getProductById : (id) => {
+	    return getRequest(`/product/${id}`) //根据ID查询商品详情
+	},
 	addProduct : (data) => {
 	    return postRequestJson("/product/add",data) //添加商品信息
 	},
@@ -27,10 +30,13 @@ export const priceTrackerApi = {
 	addPriceRecord : (data) => {
 	    return postRequestJson(`/price/add`,data) //添加商品历史价格记录
 	},
+	editPriceRecord : (data) => {
+	    return putRequestJson("/price/edit",data) //编辑商品信息
+	},
 	getRecordsByProductId : (id) => {
 	    return getRequest(`/price/product/${id}`) //根据商品ID查询价格记录
 	},
 	delPriceRecord : (id) => {
-	    return deleteRequest(`/price/delete/${id}`) //删除商品信息(物理删除)
+	    return deleteRequest(`/price/delete/${id}`) //删除商品价格信息(物理删除)
 	},
 }

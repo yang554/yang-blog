@@ -88,6 +88,8 @@ class UpdateManager {
 	async getLatestVersionInfo(appName) {
 		const params = `versionName=${appName}&versionCode=&startTime=&endTime=`
 		const response = await userApi._getLatestVersionInfo(params);
+		
+		console.log(response.data[response.data.length -1])
 		if (response.status === 200) {
 			return response.data[response.data.length -1];
 		} else {
