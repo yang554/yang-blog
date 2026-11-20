@@ -12,7 +12,7 @@ import java.util.Map;
 @Transactional
 public interface UEventMapper {
     //查询
-    List<Map<String,Object>> getEvenByPage(@Param(value = "type") String type,
+    List<UEventEntity> getEvenByPage(@Param(value = "type") String type,
                                            @Param(value = "eTitle") String eTitle,
                                            @Param(value = "uName") String uName,
                                            @Param(value = "createName") String createName);

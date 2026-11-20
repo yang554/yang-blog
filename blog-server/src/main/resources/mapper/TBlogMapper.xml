@@ -30,69 +30,138 @@
         <result column="uName" property="uName"/>
         <result column="uNickname" property="uNickname"/>
         <result column="tName" property="tName"/>
+        <result column="is_like" property="isLike"/>
+        <result column="is_collection" property="isCollection"/>
     </resultMap>
 
     <select id="getBlogByPage" resultType="map" parameterType="com.yang.blog.entity.TBlogEntity">
-        SELECT
-        b.`id` AS bid,b.`title`,b.`description`,b.`cover`,b.`isoriginal`,
-        b.content,b.`ispublic`,b.`iscomment`,b.`issue`,b.`browsecount`,b.`likes`,
-        b.`collection`,b.`typeid`,b.`userid`,b.`tagjson`,b.`isdel`,b.`createtime`,
-        b.`updtime`,u.`id` AS uid,u.`username` AS uName,u.`nickname` AS uNickname,
-        u.`avatar`,u.`email`,u.`description`,t.id,t.`name`AS tName,t.note
-        FROM
-        t_blog b
-        LEFT JOIN sys_user u
-        ON b.`userid` = u.`id`
-        LEFT JOIN t_type t
-        ON t.id = b.typeid
+        SELECT * FROM (
+            SELECT b.`id` AS bid,b.`title`,b.`description`,b.`cover`,b.`isoriginal`,
+            b.content,b.`ispublic`,b.`iscomment`,b.`issue`,b.`browsecount`,b.`likes`,
+            b.`collection`,b.`typeid`,b.`userid`,b.`tagjson`,b.`isdel`,b.`createtime`,
+            b.`updtime`,u.`id` AS uid,u.`username` AS uName,u.`nickname` AS uNickname,
+            u.`avatar`,u.`email`,t.id,t.`name`AS tName,t.note,
+            IF(l.user_id IS NOT NULL, 1, 0) AS is_liked,
+            IF(c.user_id IS NOT NULL, 1, 0) AS is_collection
+            FROM t_blog b
+            LEFT JOIN sys_user u
+            ON b.`userid` = u.`id`
+            LEFT JOIN t_type t
+            ON t.id = b.typeid
+            LEFT JOIN t_blog_like l ON l.blog_id = b.id AND l.user_id = #{uID}
+            LEFT JOIN t_blog_collection c ON c.blog_id = b.id AND c.user_id = #{uID}
+        ) T
         <where>
             <if test="ispublic != null">
-                and b.`ispublic` = #{ispublic,jdbcType=VARCHAR}
+                and T.`ispublic` = #{ispublic,jdbcType=VARCHAR}
             </if>
             <if test="isoriginal != null ">
-                and b.`isoriginal` = #{isoriginal,jdbcType=VARCHAR}
+                and T.`isoriginal` = #{isoriginal,jdbcType=VARCHAR}
             </if>
             <if test="issue != null ">
-                and b.`issue` = #{issue,jdbcType=VARCHAR}
+                and T.`issue` = #{issue,jdbcType=VARCHAR}
             </if>
             <if test="isdel != null ">
-                and b.`isdel` = #{isdel,jdbcType=VARCHAR}
+                and T.`isdel` = #{isdel,jdbcType=VARCHAR}
+            </if>
+            <if test="isLiked != null ">
+                and T.`is_liked` = #{isLiked}
+            </if>
+            <if test="authorID != null ">
+                and T.`userid` = #{authorID}
+            </if>
+            <if test="type != null ">
+                and T.`typeid` = #{type,jdbcType=VARCHAR}
+            </if>
+            <if test="isCollection != null ">
+                and T.`is_collection` = #{isCollection}
+            </if>
+            <if test="title != null ">
+                and T.`title` LIKE CONCAT('%',#{title},'%')
+            </if>
+        </where>
+        ORDER BY T.`createtime` DESC
+    </select>
+
+    <select id="getBlogByPageTitle" resultType="map" parameterType="com.yang.blog.entity.TBlogEntity">
+        SELECT * FROM (
+            SELECT
+            b.`id` AS bid,b.`title`,b.`description`,b.`cover`,b.`isoriginal`,
+            b.content,b.`ispublic`,b.`iscomment`,b.`issue`,b.`browsecount`,b.`likes`,
+            b.`collection`,b.`typeid`,b.`userid`,b.`tagjson`,b.`isdel`,b.`createtime`,
+            b.`updtime`,u.`id` AS uid,u.`username` AS uName,u.`nickname` AS uNickname,
+            u.`avatar`,u.`email`,u.`description`,t.id,t.`name`AS tName,t.note,
+            IF(l.user_id IS NOT NULL, 1, 0) AS is_liked,
+            IF(c.user_id IS NOT NULL, 1, 0) AS is_collection
+            FROM
+            t_blog b
+            LEFT JOIN sys_user u
+            ON b.`userid` = u.`id`
+            LEFT JOIN t_type t
+            ON t.id = b.typeid
+            LEFT JOIN t_blog_like l ON l.blog_id = b.id AND l.user_id = #{uID}
+            LEFT JOIN t_blog_collection c ON c.blog_id = b.id AND c.user_id = #{uID}
+        ) T
+        <where>
+            <if test="ispublic != null">
+                and T.`ispublic` = #{ispublic,jdbcType=VARCHAR}
+            </if>
+            <if test="isoriginal != null ">
+                and T.`isoriginal` = #{isoriginal,jdbcType=VARCHAR}
+            </if>
+            <if test="issue != null ">
+                and T.`issue` = #{issue,jdbcType=VARCHAR}
+            </if>
+            <if test="isdel != null ">
+                and T.`isdel` = #{isdel,jdbcType=VARCHAR}
+            </if>
+            <if test="isLiked != null ">
+                and T.`is_liked` = #{isLiked}
+            </if>
+            <if test="isCollection != null ">
+                and T.`is_collection` = #{isCollection}
+            </if>
+            <if test="type != null ">
+                and T.`typeid` = #{type,jdbcType=VARCHAR}
+            </if>
+            <if test="title != null ">
+                and T.`title` LIKE CONCAT('%',#{title},'%')
             </if>
         </where>
         ORDER BY b.`createtime` DESC
     </select>
 
-    <select id="getBlogByPageTitle" resultType="map" parameterType="com.yang.blog.entity.TBlogEntity">
+    <select id="getBlogByParams" resultType="map">
         SELECT
         b.`id` AS bid,b.`title`,b.`description`,b.`cover`,b.`isoriginal`,
         b.content,b.`ispublic`,b.`iscomment`,b.`issue`,b.`browsecount`,b.`likes`,
         b.`collection`,b.`typeid`,b.`userid`,b.`tagjson`,b.`isdel`,b.`createtime`,
         b.`updtime`,u.`id` AS uid,u.`username` AS uName,u.`nickname` AS uNickname,
-        u.`avatar`,u.`email`,u.`description`,t.id,t.`name`AS tName,t.note
+        u.`avatar`,u.`email`,u.`description`,t.id,t.`name`AS tName,t.note,
+        IF(l.user_id IS NOT NULL, 1, 0) AS is_liked
         FROM
         t_blog b
         LEFT JOIN sys_user u
         ON b.`userid` = u.`id`
         LEFT JOIN t_type t
         ON t.id = b.typeid
-        <where>
-            <if test="ispublic != null">
-                and b.`ispublic` = #{ispublic,jdbcType=VARCHAR}
-            </if>
-            <if test="isoriginal != null ">
-                and b.`isoriginal` = #{isoriginal,jdbcType=VARCHAR}
-            </if>
-            <if test="issue != null ">
-                and b.`issue` = #{issue,jdbcType=VARCHAR}
-            </if>
-            <if test="isdel != null ">
-                and b.`isdel` = #{isdel,jdbcType=VARCHAR}
-            </if>
-            <if test="title != null ">
-                and b.`title` LIKE CONCAT('%',#{title},'%')
-            </if>
-        </where>
-        ORDER BY b.`createtime` DESC
+        LEFT JOIN t_blog_like l ON l.blog_id = b.id AND l.user_id = #{uID}
+        WHERE issue=1 AND ispublic = 1 AND isdel = 0 AND b.`userid` =  #{uID}
+        <if test="title != null ">
+            and b.`title` LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="type != null ">
+            and b.`typeid` = #{type,jdbcType=VARCHAR}
+        </if>
+        <if test="tags != null and tags.size() > 0">
+            <!-- 将传入的tags转换为JSON数组进行匹配 -->
+            AND JSON_OVERLAPS(tagjson, JSON_ARRAY(
+            <foreach collection="tags" item="tag" separator=",">
+                CAST(#{tag} AS DECIMAL(20,0))
+            </foreach>
+            ))
+        </if>
+
     </select>
 
     <select id="getBlogByID" resultType="com.yang.blog.entity.TBlogEntity">
@@ -133,6 +202,23 @@
         WHERE b.id = #{bID}
     </select>
 
+    <select id="getBlogByUser" resultType="map">
+    SELECT
+    b.`id` AS bid,b.`title`,b.`description`,b.`cover`,b.`isoriginal`,
+    b.content,b.`ispublic`,b.`iscomment`,b.`issue`,b.`browsecount`,b.`likes`,
+    b.`collection`,b.`typeid`,b.`userid`,b.`tagjson`,b.`isdel`,b.`createtime`,
+    b.`updtime`,u.`id` AS uid,u.`username` AS uName,u.`nickname` AS uNickname,
+    u.`avatar`,u.`email`,u.`description`,t.id,t.`name`AS tName,t.note
+    FROM
+    t_blog b
+    LEFT JOIN sys_user u
+    ON b.`userid` = u.`id`
+    LEFT JOIN t_type t
+    ON t.id = b.typeid
+    WHERE b.userid = #{uID,jdbcType=VARCHAR}
+    ORDER BY b.`createtime` DESC
+    </select>
+
     <insert id="addBlog" parameterType="com.yang.blog.entity.TBlogEntity">
         INSERT INTO t_blog (id,title,description,content,cover,isoriginal,ispublic,iscomment,issue,typeid,userid,tagjson,createtime)
         VALUES (#{id,jdbcType=VARCHAR},#{title,jdbcType=VARCHAR},#{description,jdbcType=VARCHAR},#{content,jdbcType=VARCHAR}
@@ -146,6 +232,18 @@
           isoriginal = #{isoriginal},ispublic = #{ispublic},iscomment = #{iscomment},issue = #{issue},typeid = #{typeid},tagjson = #{tagjson},
           updtime = #{updtime}
         WHERE id = #{id}
+    </update>
+
+    <update id="addBlogBrowseCount" >
+        UPDATE t_blog SET browsecount = CONVERT(browsecount, UNSIGNED) + #{value} WHERE id = #{bID};
+    </update>
+
+    <update id="addBlogLikesCount" >
+        UPDATE t_blog SET likes = CONVERT(likes, UNSIGNED) + #{value} WHERE id = #{bID};
+    </update>
+
+    <update id="addBlogCollectionCount" >
+        UPDATE t_blog SET collection = CONVERT(collection, UNSIGNED) + #{value} WHERE id = #{bID};
     </update>
 
     <update id="saveBlogCover" >

@@ -12,6 +12,10 @@ import java.util.List;
 public interface NutritionalRecipeMapper {
     //查询所有记录
     List<NutritionalRecipeEntity> findAll();
+    //查询所有记录
+    List<NutritionalRecipeEntity> findAllByUserCol(@Param("uID")String uID);
+    //获取菜谱类型
+    List<NutritionalRecipeEntity> getFoodType();
     //条件查询
     List<NutritionalRecipeEntity> findByFactor(@Param("name")String name, @Param("type")String type);
     //根据ID查询

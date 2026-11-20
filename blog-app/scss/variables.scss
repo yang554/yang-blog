@@ -1,0 +1,66 @@
+$primary-color: #8B4513;
+$primary-light: #A1887F;
+$primary-dark: #5D4037;
+$accent-color: #D4AF37;
+$success-color: #52c41a;
+$warning-color: #faad14;
+$error-color: #ff4d4f;
+$info-color: #1890ff;
+
+$text-primary: #333333;
+$text-secondary: #666666;
+$text-light: #999999;
+$text-white: #ffffff;
+
+$bg-white: #FAF0E6;
+$bg-light: #F8F9FA;
+$bg-gray: #f5f5f5;
+$border-color: #f0f0f0;
+
+$shadow-light: 0 4rpx 24rpx rgba(0, 0, 0, 0.06);
+$shadow-medium: 0 8rpx 32rpx rgba(139, 69, 19, 0.15);
+$shadow-heavy: 0 16rpx 48rpx rgba(139, 69, 19, 0.2);
+$shadow-soft: 0 4rpx 24rpx rgba(139, 69, 19, 0.1);
+
+// 主题映射
+$theme-colors: (
+  "primary": $primary-color,
+  "success": $success-color,
+  "warning": $warning-color,
+  "error": $error-color,
+  "info": $info-color,
+  "accent": $accent-color
+) !default;
+
+// 响应式断点
+$breakpoints: (
+  "xs": 0,
+  "sm": 576px,
+  "md": 768px,
+  "lg": 992px,
+  "xl": 1200px
+) !default;
+
+// 字体大小
+$font-sizes: (
+  "xs": 20rpx,
+  "sm": 24rpx,
+  "base": 28rpx,
+  "lg": 32rpx,
+  "xl": 36rpx,
+  "2xl": 40rpx,
+  "3xl": 48rpx
+) !default;
+
+// 间距
+$spacings: (
+  0: 0,
+  1: 8rpx,
+  2: 16rpx,
+  3: 24rpx,
+  4: 32rpx,
+  5: 40rpx,
+  6: 48rpx,
+  8: 64rpx,
+  10: 80rpx
+) !default;

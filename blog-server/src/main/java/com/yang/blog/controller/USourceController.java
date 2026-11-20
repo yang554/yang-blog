@@ -17,15 +17,17 @@ import java.util.logging.Logger;
 @RestController
 @RequestMapping("/source")
 public class USourceController {
-    Logger log = Logger.getLogger(String.valueOf(USourceController.class));
-
     @Autowired
     private USourceService sourceService;
 
     @GetMapping("/getSourceAll")
     @ApiOperation("获取所有成员")
-    private List<USourceEntity> getSourceAll(){
-        return sourceService.selectSourceAll();
+    private List<USourceEntity> getSourceAll(@RequestParam("pTree") String pTree){
+        if("".equals(pTree)){
+            return sourceService.selectSourceAll(null);
+        }else{
+            return sourceService.selectSourceAll(Long.valueOf(pTree));
+        }
     }
 
     @GetMapping("/getSourceCount")
@@ -41,8 +43,12 @@ public class USourceController {
     }
 
     @GetMapping("/getSourceByName")
-    private List<USourceEntity> getSourceByName(@RequestParam("s_name") String s_name){
-        return sourceService.selectUserByName(s_name);
+    private List<USourceEntity> getSourceByName(@RequestParam("pTree") String pTree,@RequestParam("s_name") String s_name){
+        if("".equals(pTree)){
+            return sourceService.selectUserByName(null,s_name);
+        }else{
+            return sourceService.selectUserByName(Long.valueOf(pTree),s_name);
+        }
     }
     @GetMapping("/getUserCountBySex")
     @ApiOperation("获取成员男女比例")
@@ -56,14 +62,23 @@ public class USourceController {
     }
     @GetMapping("/getUserCountByLove")
     @ApiOperation("根据代系获取人口数量")
-    private RespBean getUserCountByLove(){
-        return sourceService.getUserCountByLove();
+    private RespBean getUserCountByLove(@RequestParam("pTree") String pTree){
+        if("".equals(pTree)){
+            return RespBean.error("未指定族谱");
+        }else{
+            return sourceService.getUserCountByLove(Long.valueOf(pTree));
+        }
     }
     @GetMapping("/getUserCountByLoveAndSex")
     @ApiOperation("根据代系获取男女比例")
-    private RespBean getUserCountByLoveAndSex(){
-        return sourceService.getUserCountByLoveAndSex();
+    private RespBean getUserCountByLoveAndSex(@RequestParam("pTree") String pTree){
+        if("".equals(pTree)){
+            return RespBean.error("未指定族谱");
+        }else{
+            return sourceService.getUserCountByLoveAndSex(Long.valueOf(pTree));
+        }
     }
+
     //添加配偶、子女
     @PostMapping("/addSource")
     public RespBean addSource(@RequestBody HashMap<String,String> params){
@@ -82,6 +97,9 @@ public class USourceController {
         String isSurvival = params.get("isSurvival").trim();
         String userLove = params.get("userLove").trim();
         String type = params.get("type").trim();
+        String pTreeId = params.get("pTree").trim();
+        String userAddressNewCode = params.get("userAddressNewCode");
+        String userAddressOldCode = params.get("userAddressOldCode");
 
         userEntity.setUserId(id);
         userEntity.setUserName(name);
@@ -94,6 +112,9 @@ public class USourceController {
         userEntity.setUserAddressOld(addressOld);
         userEntity.setUserNote(note);
         userEntity.setUserDieDay(dieDay);
+        userEntity.setpTree(Long.valueOf(pTreeId));
+        userEntity.setUserAddressNewCode(userAddressNewCode);
+        userEntity.setUserAddressOldCode(userAddressOldCode);
         if("是".equals(isSurvival)) userEntity.setIsSurvival("1");
         else userEntity.setIsSurvival("0");
 
@@ -113,13 +134,17 @@ public class USourceController {
             userEntity.setUserMID(MID);
             RespBean addStatus = sourceService.insertUserSource(userEntity);
             return RespBean.ok("addChildren is ok");
+        }else if("addFirstUser".equals(type)){
+            userEntity.setUserLove("1");
+            RespBean addStatus = sourceService.insertUserSource(userEntity);
+            return RespBean.ok("addFirstUser is ok");
         }else {
             return RespBean.error("未知异常");
         }
     }
 
     //添加父母
-    @RequestMapping("/addParents")
+    @PostMapping("/addParents")
     @ResponseBody
     public RespBean addParents(@RequestBody List<USourceEntity> parentsList){
         USourceEntity userInfo;

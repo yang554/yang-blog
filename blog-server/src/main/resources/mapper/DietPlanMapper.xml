@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.DietPlanMapper">
+    <resultMap id="map" type="com.yang.blog.entity.DietPlanEntity">
+        <id column="id" property="id"/>
+        <result column="energy" property="energy"/>
+        <result column="fat" property="fat"/>
+        <result column="carbonWater" property="carbonWater"/>
+        <result column="protein" property="protein"/>
+        <result column="createDate" property="createDate"/>
+        <result column="createID" property="createID"/>
+        <result column="note" property="note"/>
+    </resultMap>
+
+    <resultMap id="ResultMap" type="com.yang.blog.entity.DietPlanEntity" extends="map">
+        <!-- 一对多关系 -->
+        <collection property="planInfoEntities" ofType="com.yang.blog.entity.DietPlanInfoEntity" columnPrefix="info_">
+            <id column="id" property="id"/>
+            <result column="time" property="time"/>
+            <result column="foodName" property="foodName"/>
+            <result column="energy" property="energy"/>
+            <result column="fat" property="fat"/>
+            <result column="carbonWater" property="carbonWater"/>
+            <result column="protein" property="protein"/>
+            <result column="planID" property="planID"/>
+            <result column="createTime" property="createTime"/>
+            <result column="note" property="note"/>
+        </collection>
+    </resultMap>
+
+    <select id="findAll" resultMap="map">
+        SELECT * FROM t_diet_plan ORDER BY id DESC
+    </select>
+
+    <select id="findByIdAndDate" resultMap="ResultMap">
+        SELECT
+            a.*,
+            b.id as info_id,
+            b.time as info_time,
+            b.foodName as info_foodName,
+            b.protein as info_protein,
+            b.energy as info_energy,
+            b.fat as info_fat,
+            b.carbonWater as info_carbonWater,
+            b.planID as info_planID,
+            b.createTime as info_createTime,
+            b.note as info_note
+        FROM (SELECT * FROM t_diet_plan WHERE createID = #{createID} AND createDate = #{createDate}) a
+        LEFT JOIN t_diet_plan_info b ON a.id = b.planID
+        ORDER BY b.time, b.id
+    </select>
+
+    <select id="getRawData" parameterType="string" resultMap="ResultMap">
+        SELECT
+            a.*,
+            b.id as info_id,
+            b.time as info_time,
+            b.foodName as info_foodName,
+            b.protein as info_protein,
+            b.energy as info_energy,
+            b.fat as info_fat,
+            b.carbonWater as info_carbonWater,
+            b.planID as info_planID,
+            b.createTime as info_createTime,
+            b.note as info_note
+        FROM (
+          SELECT * FROM t_diet_plan
+            <where>
+                <if test="createID != ''and createID != '' ">
+                    AND createID = #{createID}
+                </if>
+                <if test="startDate != ''and startDate != '' ">
+                    AND  DATE_FORMAT(createDate, '%Y-%m-%d') BETWEEN #{startDate} AND #{endDate}
+                </if>
+            </where>
+        ) a
+        LEFT JOIN t_diet_plan_info b ON a.id = b.planID
+        ORDER BY b.time, b.id
+    </select>
+
+    <insert id="insertData">
+        INSERT INTO t_diet_plan (id,energy,fat,carbonWater,protein,createID,createDate,note)
+        VALUES (
+            #{id},#{energy},#{fat},#{carbonWater},#{protein},
+            #{createID},#{createDate},#{note}
+        )
+    </insert>
+
+    <update id="updateData">
+        UPDATE t_diet_plan
+        SET energy = #{energy},fat = #{fat},carbonWater = #{carbonWater},protein = #{protein},note = #{note}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteData">
+        DELETE FROM t_diet_plan WHERE id = #{id}
+    </delete>
+</mapper>

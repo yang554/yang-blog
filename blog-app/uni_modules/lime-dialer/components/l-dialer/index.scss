@@ -1,0 +1,134 @@
+
+@mixin theme($property, $variable) {
+	$theme: (
+		'dialer_text_color': #ffb400,
+		'dialer_prize_font_size': 12px,
+		'dialer_prize_name_padding': 8px,
+		'dialer_prize_inner_padding': 8px,
+		'dialer_prize_image_size': 36px
+	);
+
+	$value: map-get($theme, $variable);
+	#{$property}: $value;
+	
+	/* #ifndef UNI-APP-X && APP */
+	$css-variable: var(--#{$variable}, #{$value});
+	#{$property}: #{$css-variable};
+	/* #endif */
+}
+
+.l-dialer {
+  position: relative;
+
+  &__inner {
+    width: 100%;
+    height: 100%;
+	flex:1;
+    position: relative;
+	/* #ifndef UNI-APP-X && APP */
+    @include theme('color', 'dialer_text_color');
+	background-repeat: no-repeat;
+	background-size: cover;
+	// #endif
+   
+    box-sizing: border-box;
+	// border-radius: 999px;
+	overflow: visible;
+	// transition: transform 3s ease;
+	// transform-origin: 50% 50%;
+	transition-property: transform;
+	transition-timing-function: cubic-bezier(0.250, 0.460, 0.455, 0.995);
+    &-border {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+    }
+
+    &-wrap {
+		position: relative;
+		z-index: 1;
+		width: 100%;
+		height: 100%;
+		border-radius: 999px;
+		overflow: hidden;
+		box-sizing: border-box;
+		// background: red;
+		/* #ifndef UNI-APP-X && APP */
+		&::after {
+			position: absolute;
+			left: 0;
+			top: 0;
+			bottom: 0;
+			right: 0;
+			content: '';
+			border-radius: 50%;
+			box-shadow: 0 0 20rpx currentColor inset;
+		}
+		/* #endif */
+    }
+
+    &-item {
+      overflow: hidden;
+      position: absolute;
+      top: -50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      transform-origin: 0 100%;
+	  z-index: 10;
+    }
+
+    &-content {
+      position: absolute;
+      @include theme('padding-top', 'dialer_prize_inner_padding');
+      box-sizing: border-box;
+      width: 100%;
+      height: 100%;
+      left: -50%;
+      bottom: -50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    &-name {
+      @include theme('padding-top', 'dialer_prize_name_padding');
+      @include theme('padding-bottom', 'dialer_prize_name_padding');
+      @include theme('font-size', 'dialer_prize_font_size');
+      @include theme('color', 'dialer_text_color');
+    }
+
+    &-img {
+      @include theme('width', 'dialer_prize_image_size');
+      @include theme('height', 'dialer_prize_image_size');
+    }
+  }
+
+  &__pointer {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
+}
+
+/* #ifndef UNI-APP-X && APP */
+.heart {
+  animation: heart 1s infinite;
+}
+
+@keyframes heart {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.03);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+/* #endif */

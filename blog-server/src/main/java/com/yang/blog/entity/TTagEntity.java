@@ -3,8 +3,11 @@ package com.yang.blog.entity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.io.Serializable;
+
 @ApiModel(value="t-tag类", description="云标签实体类")
-public class TTagEntity {
+public class TTagEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
     @ApiModelProperty(value = "编码")
     private Long id;
     @ApiModelProperty(value = "标签名称")

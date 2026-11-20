@@ -1,6 +1,5 @@
 package com.yang.blog.controller;
 
-import com.yang.blog.entity.TBlogEntity;
 import com.yang.blog.service.TBlogService;
 import com.yang.blog.utils.RespBean;
 import io.swagger.annotations.ApiImplicitParam;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
@@ -22,16 +22,26 @@ public class TBlogController {
     @GetMapping("/getBlogByPage")
     @ApiOperation("博客分页查询")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "页码", defaultValue = "1"),
+            @ApiImplicitParam(name = "size", value = "每页数量", defaultValue = "10"),
             @ApiImplicitParam(name = "ispublic",value = "是否公开"),
             @ApiImplicitParam(name = "isoriginal",value = "原创或转载"),
             @ApiImplicitParam(name = "issue",value = "草稿"),
             @ApiImplicitParam(name = "isdel",value = "是否已删除"),
     })
-    public RespBean getBlogByPage(@RequestParam(value = "ispublic",required = false) Boolean ispublic,
+    public RespBean getBlogByPage(@RequestParam(value = "page", defaultValue = "1") int page,
+                                  @RequestParam(value = "size", defaultValue = "10") int size,
+                                  @RequestParam(value = "ispublic",required = false) Boolean ispublic,
                                   @RequestParam(value = "isoriginal",required = false) String isoriginal,
                                   @RequestParam(value = "issue",required = false) Boolean issue,
-                                  @RequestParam(value = "isdel",required = false) Boolean isdel){
-        return blogService.getBlogByPage(ispublic,isoriginal,issue,isdel);
+                                  @RequestParam(value = "isdel",required = false) Boolean isdel,
+                                  @RequestParam(value = "title",required = false) String title,
+                                  @RequestParam(value = "uID",required = false) String uID,
+                                  @RequestParam(value = "isLiked",required = false) String isLiked,
+                                  @RequestParam(value = "isCollection",required = false) String isCollection,
+                                  @RequestParam(value = "authorID",required = false) String authorID,
+                                  @RequestParam(value = "type",required = false) String type){
+        return blogService.getBlogByPage(page,size,ispublic,isoriginal,issue,isdel,title,uID,isLiked,isCollection,authorID,type);
     }
 
     @GetMapping("/getBlogByPageTitle")
@@ -47,8 +57,28 @@ public class TBlogController {
                                   @RequestParam(value = "isoriginal",required = false) String isoriginal,
                                   @RequestParam(value = "issue",required = false) Boolean issue,
                                   @RequestParam(value = "isdel",required = false) Boolean isdel,
-                                  @RequestParam(value = "title",required = false) String title){
-        return blogService.getBlogByPageTitle(ispublic,isoriginal,issue,isdel,title);
+                                  @RequestParam(value = "title",required = false) String title,
+                                  @RequestParam(value = "uID",required = false) String uID,
+                                  @RequestParam(value = "isLiked",required = false) String isLiked,
+                                  @RequestParam(value = "isCollection",required = false) String isCollection,
+                                       @RequestParam(value = "type",required = false) String type){
+        return blogService.getBlogByPageTitle(ispublic,isoriginal,issue,isdel,title,uID,isLiked,isCollection,type);
+    }
+
+    @GetMapping("/getBlogByParams")
+    @ApiOperation("APP端查询")
+    public RespBean getBlogByParams(
+                                       @RequestParam(value = "title",required = false) String title,
+                                       @RequestParam(value = "uID",required = false) String uID,
+                                       @RequestParam(value = "tags",required = false) List<String> tags,
+                                       @RequestParam(value = "type",required = false) String type){
+        return blogService.getBlogByParams(title,uID,tags,type);
+    }
+
+    @GetMapping("/getBlogByUser")
+    @ApiOperation("根据用户查询自己文章")
+    public RespBean getBlogByUser(@RequestParam(value = "uID") String uID){
+        return blogService.getBlogByUser(uID);
     }
 
 
@@ -81,6 +111,12 @@ public class TBlogController {
     @ApiOperation("保存博客")
     private RespBean saveBlog(@RequestBody HashMap<String,Object> entity){
         return blogService.saveBlog(entity);
+    }
+
+    @PostMapping("/addBlogBrowseCount")
+    @ApiOperation("添加文章浏览量")
+    private RespBean addBlogBrowseCount(@RequestParam("bID") String bID){
+        return blogService.addBlogBrowseCount(bID);
     }
 
 }

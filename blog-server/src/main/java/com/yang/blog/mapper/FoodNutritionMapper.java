@@ -13,6 +13,8 @@ public interface FoodNutritionMapper {
     List<FoodNutritionEntity> findAll();
     //条件查询
     List<FoodNutritionEntity> findByFactor(String param);
+    //批量添加记录
+    int insertBatch(List<FoodNutritionEntity> entitys);
     //添加食物
     int addFood(FoodNutritionEntity entity);
     //修改食物

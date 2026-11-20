@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.TFamilyTreeMapper">
+    <resultMap id="map" type="com.yang.blog.entity.TFamilyTreeEntity">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="generation" property="generation"/>
+        <result column="displayName" property="displayName"/>
+        <result column="createID" property="createID"/>
+        <result column="remarks" property="remarks"/>
+        <result column="note" property="note"/>
+
+        <result column="total_members" property="totalMembers"/>
+        <result column="max_generation" property="maxGeneration"/>
+    </resultMap>
+
+    <select id="getFamilyTree" resultType="map">
+        SELECT
+            ft.id,
+            ft.`name`,
+            ft.displayName,
+            SUM(CASE WHEN fm.s_sex = '男' THEN 1 ELSE 0 END) AS male_count,
+            SUM(CASE WHEN fm.s_sex = '女' THEN 1 ELSE 0 END) AS female_count,
+            SUM(CASE WHEN fm.S_IS_SURVIVAL = 1 THEN 1 ELSE 0 END) AS alive_count,
+            SUM(CASE WHEN fm.S_IS_SURVIVAL = 0 THEN 1 ELSE 0 END) AS deceased_count,
+            COUNT(fm.s_id) AS total_members,
+            IFNULL(MAX(fm.S_LOVE), 0) AS max_generation
+        FROM t_family_tree ft
+        LEFT JOIN u_source fm ON ft.id = fm.p_Tree
+        GROUP BY ft.id, ft.`name`
+        ORDER BY ft.id;
+    </select>
+
+    <select id="getAll" resultType="map">
+        SELECT * FROM t_family_tree
+    </select>
+
+    <insert id="addTree" parameterType="com.yang.blog.entity.TFamilyTreeEntity">
+        INSERT INTO t_family_tree (id,`name`,generation,displayName,createID,remarks,note)
+        VALUES (#{id,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{generation,jdbcType=VARCHAR},#{displayName,jdbcType=VARCHAR},
+        #{createID,jdbcType=VARCHAR},#{remarks,jdbcType=VARCHAR},#{note,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="saveTree" parameterType="com.yang.blog.entity.TFamilyTreeEntity">
+        UPDATE t_family_tree SET `name` = #{name,jdbcType=VARCHAR},generation = #{generation},displayName = #{displayName},
+        remarks = #{remarks},note = #{note}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delTree" >
+        DELETE FROM t_family_tree WHERE id = #{id}
+    </delete>
+</mapper>

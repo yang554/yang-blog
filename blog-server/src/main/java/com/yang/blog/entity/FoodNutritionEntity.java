@@ -1,5 +1,6 @@
 package com.yang.blog.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 
 import java.time.LocalDateTime;
@@ -34,7 +35,9 @@ public class FoodNutritionEntity {
     private String fSe; //硒
     private String fFe; //铁
     private String fRole; //作用
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fCreateTime; //创建时间
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fUpdateTime; //修改时间
     private String fNote; //备注
 

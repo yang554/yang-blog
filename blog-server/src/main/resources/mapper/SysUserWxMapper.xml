@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+    <!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+    <mapper namespace="com.yang.blog.mapper.SysUserWxMapper">
+    <resultMap id="map" type="com.yang.blog.entity.SysUserWxEntity">
+        <id column="id" property="id"/>
+        <result column="openid" property="openid"/>
+        <result column="nickname" property="nickname"/>
+        <result column="created_at" property="createTime"/>
+    </resultMap>
+
+    <select id="findByOpenid" resultMap="map">
+        SELECT * FROM sys_user_wx WHERE openid = #{openid}
+    </select>
+    
+    <insert id="register" parameterType="com.yang.blog.entity.SysUserWxEntity">
+      INSERT INTO sys_user_wx (id,openid,nickname)
+      VALUES(#{id,jdbcType=VARCHAR},#{openid,jdbcType=VARCHAR},#{nickname,jdbcType=VARCHAR})
+    </insert>
+
+</mapper>

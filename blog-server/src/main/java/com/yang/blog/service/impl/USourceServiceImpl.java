@@ -23,8 +23,8 @@ public class USourceServiceImpl implements USourceService {
      * @return
      */
     @Override
-    public List<USourceEntity> selectSourceAll() {
-        List<USourceEntity> sourceEntities = sourceMapper.selectSourceAll();
+    public List<USourceEntity> selectSourceAll(Long pTree) {
+        List<USourceEntity> sourceEntities = sourceMapper.selectSourceAll(pTree);
 
         for (int i=0;i<sourceEntities.size();i++){
             if("男".equals(sourceEntities.get(i).getUserSex()) && "0".equals(sourceEntities.get(i).getIsSurvival())){
@@ -59,8 +59,8 @@ public class USourceServiceImpl implements USourceService {
      * @return
      */
     @Override
-    public List<USourceEntity> selectUserByName(String s_name) {
-        List<USourceEntity> sourceEntities = sourceMapper.selectUserByName(s_name);
+    public List<USourceEntity> selectUserByName(Long pTree,String s_name) {
+        List<USourceEntity> sourceEntities = sourceMapper.selectUserByName(pTree,s_name);
         for (int i=0;i<sourceEntities.size();i++){
             String mateIds = "";
             List<USourceEntity> list = null;
@@ -108,8 +108,8 @@ public class USourceServiceImpl implements USourceService {
     }
 
     @Override
-    public RespBean getUserCountByLove() {
-        List<Map<String,Integer>> list = sourceMapper.getUserCountByLove();
+    public RespBean getUserCountByLove(Long pTree) {
+        List<Map<String,Integer>> list = sourceMapper.getUserCountByLove(pTree);
         if(ObjectUtils.isEmpty(list)){
             return RespBean.error("查询失败");
         }else{
@@ -118,10 +118,10 @@ public class USourceServiceImpl implements USourceService {
     }
 
     @Override
-    public RespBean getUserCountByLoveAndSex() {
-        List<Map<String,Integer>> list = sourceMapper.getUserCountByLoveAndSex();
+    public RespBean getUserCountByLoveAndSex(Long pTree) {
+        List<Map<String,Integer>> list = sourceMapper.getUserCountByLoveAndSex(pTree);
         if(ObjectUtils.isEmpty(list)){
-            return RespBean.error("查询失败");
+            return RespBean.error("查询失败",list);
         }else{
             return RespBean.ok("ok",list);
         }
@@ -268,6 +268,8 @@ public class USourceServiceImpl implements USourceService {
         sourceEntity.setUserPhone((String) user.get("userPhone"));
         sourceEntity.setUserEmil((String) user.get("userEmil"));
         sourceEntity.setUserNote((String) user.get("userNote"));
+        sourceEntity.setUserAddressNewCode((String) user.get("userAddressNewCode"));
+        sourceEntity.setUserAddressOldCode((String) user.get("userAddressOldCode"));
 
         int count = sourceMapper.updateUserByKey(sourceEntity);
         if(count > 0){
@@ -284,6 +286,7 @@ public class USourceServiceImpl implements USourceService {
      */
     @Override
     public RespBean deleteUserByKey(List<String> list) {
+//        sourceMapper.updateMateIdByList(list);
         sourceMapper.deleteUserByKey(list);
         return RespBean.ok("ok");
     }

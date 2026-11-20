@@ -1,24 +1,24 @@
 <template>
-    <div class="tag-blog-view">
+    <div class="user-list-view">
         <!--搜索-->
-        <el-row style="margin-top: 10px;margin-bottom: 10px;">
-            <el-col :span="8">
-                <el-input placeholder="输入需要搜素\新增的标签名称" v-model="inputTagName">
-                </el-input>
-            </el-col>
-            <el-col :span="1">
-                <el-button type="primary" @click="searchByName">
-                    <i class="el-icon-search"></i>
-                    搜索
-                </el-button>
-            </el-col>
-            <el-col :span="1" :offset="1">
-                <el-button type="success" @click="addTagBtn">
-                    <i class="el-icon-plus"></i>
-                    添加
-                </el-button>
-            </el-col>
-        </el-row>
+        <div class="search-container">
+            <el-row :gutter="20">
+                <el-col :span="8">
+                    <el-input size="small" placeholder="输入需要搜素\新增的标签名称" v-model="inputTagName">
+                    </el-input>
+                </el-col>
+                <el-col :span="4">
+                    <el-button  size="small" type="primary" @click="searchByName">
+                        <i class="el-icon-search"></i>
+                        搜索
+                    </el-button>
+                    <el-button  size="small" type="success" @click="addTagBtn">
+                        <i class="el-icon-plus"></i>
+                        添加
+                    </el-button>
+                </el-col>
+            </el-row>
+        </div>
 
         <!--修改分类的对话框-->
         <el-dialog title="编辑Tag信息" :visible.sync="updateTagDialogFormVisible">
@@ -39,8 +39,7 @@
                 <br />
                 <br />
                 <el-select v-model="editTag.color" placeholder="请选择标签颜色">
-                    <el-option v-for="item in selectTagOptions" :key="item.value" :label="item.label"
-                        :value="item.value">
+                    <el-option v-for="item in selectTagOptions" :key="item.value" :label="item.label" :value="item.value">
                         <el-button size="mini" :type="item.value" circle></el-button>
                         <span style="margin-left: 20px; color: #8492a6; font-size: 13px">{{ item.label }}</span>
                     </el-option>
@@ -52,31 +51,33 @@
             </div>
         </el-dialog>
 
-        <el-table v-loading="pagination.listLoading" :data="pagination.currentPageData" height="700" stripe
-            style="width: 100%">
-            <el-table-column label="编码">
-                <template slot-scope="scope">
-                    <span style="margin-left: 10px">{{ scope.row.id }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column label="名称">
-                <template slot-scope="scope">
-                    <el-tag :type="scope.row.color == '' ? 'success' : scope.row.color">{{ scope.row.name }}</el-tag>
-                </template>
-            </el-table-column>
-            <el-table-column label="操作">
-                <template slot-scope="scope">
-                    <el-button type="warning" @click="handleEdit(scope.$index, scope.row)">编辑
-                    </el-button>
-                    <el-button type="danger" @click="handleDelete(scope.$index, scope.row)">删除
-                    </el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-        <div class="block">
+        <div class="table-container">
+            <el-table v-loading="pagination.listLoading" :data="pagination.currentPageData" stripe
+                :max-height="this.screenHeight" style="width: 100%">
+                <el-table-column label="编码">
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.id }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="名称">
+                    <template slot-scope="scope">
+                        <el-tag :type="scope.row.color == '' ? 'success' : scope.row.color">{{ scope.row.name }}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="warning"  size="small" @click="handleEdit(scope.$index, scope.row)">编辑
+                        </el-button>
+                        <el-button type="danger" size="small" @click="handleDelete(scope.$index, scope.row)">删除
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+
+        <div class="pagination-container">
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper"
-                :total="pagination.total">
+                :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="pagination.total">
             </el-pagination>
         </div>
     </div>
@@ -89,6 +90,7 @@ export default {
     components: {},
     data() {
         return {
+            screenHeight: 950,
             inputTagName: "",
             updateTagDialogFormVisible: false,  //编辑type对话框是否显示
             editTag: {
@@ -128,12 +130,22 @@ export default {
                 },
                 {
                     value: 'danger',
-                    label: '危险'
+                    label: '重要'
                 },
             ],
         }
     },
+    beforeDestroy() {
+        window.removeEventListener("resize", this.updateScreenHeight); // 组件销毁前移除事件监听
+    },
+    mounted() {
+        this.updateScreenHeight(); // 组件挂载时获取屏幕高度
+        window.addEventListener("resize", this.updateScreenHeight); // 监听窗口大小变化
+    },
     methods: {
+        updateScreenHeight() {
+            this.screenHeight = window.innerHeight - 300; // 更新屏幕高度
+        },
         //分页
         getCurrentPageData(currentPage, pageSize) {
             let begin = (currentPage - 1) * pageSize;
@@ -156,7 +168,7 @@ export default {
         getTagALl() {
             _getTagAll().then(res => {
                 if (res.data.status === 200) {
-                    this.pagination.list = res.data.obj
+                    this.pagination.list = res.data.data
                     this.pagination.listLoading = false
                     this.pagination.total = this.pagination.list.length
 
@@ -212,7 +224,7 @@ export default {
             } else {
                 _getTagByName(this.inputTagName).then(res => {
                     if (res.data.status === 200) {
-                        this.pagination.list = res.data.obj
+                        this.pagination.list = res.data.data
                         this.pagination.listLoading = false
                         this.pagination.total = this.pagination.list.length
 
@@ -261,7 +273,5 @@ export default {
 </script>
 
 <style>
-.block {
-    margin-top: 20px;
-}
+@import '@/assets/table-container.css';
 </style>

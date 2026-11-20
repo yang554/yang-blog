@@ -1,37 +1,32 @@
 package com.yang.blog.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
+
+import java.time.LocalDateTime;
 
 @ApiModel(value="UEventEntity", description="user-event")
 public class UEventEntity {
+    private static final long serialVersionUID = 1L;
     private Long id;
-    private String eTitle;
-    private String eContent;
-    private String startDate;
-    private String endDate;
-    private String uName;
-    private String eAddress;
+    private String title;
+    private String content;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime startDate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime endDate;
+    private String name;
+    private String address;
     private String isNotice;
     private String createNameID;
     private String createName;
-    private String createDate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime createDate;
     private String note;
     private String type;
 
-    public String getCreateNameID() {
-        return createNameID;
-    }
-
-    public void setCreateNameID(String createNameID) {
-        this.createNameID = createNameID;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
     public Long getId() {
@@ -42,52 +37,52 @@ public class UEventEntity {
         this.id = id;
     }
 
-    public String geteTitle() {
-        return eTitle;
+    public String getTitle() {
+        return title;
     }
 
-    public void seteTitle(String eTitle) {
-        this.eTitle = eTitle;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String geteContent() {
-        return eContent;
+    public String getContent() {
+        return content;
     }
 
-    public void seteContent(String eContent) {
-        this.eContent = eContent;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public String getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 
-    public String getEndDate() {
+    public LocalDateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
     }
 
-    public String getuName() {
-        return uName;
+    public String getName() {
+        return name;
     }
 
-    public void setuName(String uName) {
-        this.uName = uName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String geteAddress() {
-        return eAddress;
+    public String getAddress() {
+        return address;
     }
 
-    public void seteAddress(String eAddress) {
-        this.eAddress = eAddress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getIsNotice() {
@@ -98,6 +93,14 @@ public class UEventEntity {
         this.isNotice = isNotice;
     }
 
+    public String getCreateNameID() {
+        return createNameID;
+    }
+
+    public void setCreateNameID(String createNameID) {
+        this.createNameID = createNameID;
+    }
+
     public String getCreateName() {
         return createName;
     }
@@ -106,11 +109,11 @@ public class UEventEntity {
         this.createName = createName;
     }
 
-    public String getCreateDate() {
+    public LocalDateTime getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(String createDate) {
+    public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
     }
 
@@ -120,5 +123,13 @@ public class UEventEntity {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

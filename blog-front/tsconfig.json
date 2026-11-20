@@ -2,13 +2,22 @@
   "files": [],
   "references": [
     {
-      "path": "./tsconfig.node.json"
+      "path": "tsconfig.node.json"
     },
     {
-      "path": "./tsconfig.app.json"
-    }
+      "path": "tsconfig.app.json"
+    },
   ],
   "compilerOptions": {
-    "noImplicitAny": false, // 不允许隐式的any类型
-  }
+    "target": "ESNext",
+    "module": "ESNext",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"]
+    },
+    "types": ["vite/client", "element-plus/global"],
+    "moduleResolution": "node"
+  },
+  "include": ["src/**/*.ts", "src/**/*.vue"]
 }

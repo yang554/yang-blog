@@ -13,6 +13,8 @@ import java.util.Map;
 public interface TypeMapper {
     //查询所有分类
     List<TypeEntity> getTypeAll();
+    //根据用户ID查询类型
+    List<TypeEntity> getTypeByUserId(String userId);
     //根据分类ID查询
     TypeEntity getTypeById(String id);
     //根据分类名称查询(模糊)

@@ -22,6 +22,11 @@ public class TypeController {
         return typeService.getTypeAll();
     }
 
+    @GetMapping("/getTypeByUserId")
+    private RespBean getTypeByUserId(@RequestParam String userId){
+        return typeService.getTypeByUserId(userId);
+    }
+
     @GetMapping("/getTypeByName")
     @ApiOperation("通过name查询分类")
     @ApiImplicitParams({

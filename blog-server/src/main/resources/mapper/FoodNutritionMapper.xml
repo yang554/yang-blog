@@ -58,6 +58,23 @@
         ORDER BY f_update_time DESC
     </select>
 
+    <insert id="insertBatch">
+        INSERT INTO food_nutrition (f_id,f_img,f_type,f_name,f_edible_section,f_energy,f_carbon_water,f_fat,
+        f_protein,f_dietary_fiber,f_vitaminA,f_vitaminC,f_vitaminD,f_vitaminE,f_vitaminK,f_vitaminB1,f_vitaminB2,f_vitaminB3,
+        f_vitaminB6,f_vitaminB9,f_vitaminB12,f_K,f_Na,f_Ca,f_Zn,f_Se,f_Fe,f_role,f_create_time,f_update_time,f_note)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.fID,jdbcType=VARCHAR},#{item.fImg,jdbcType=VARCHAR},#{item.fType,jdbcType=VARCHAR},#{item.fName,jdbcType=VARCHAR},
+            #{item.fEdibleSection,jdbcType=VARCHAR},#{item.fEnergy,jdbcType=VARCHAR},#{item.fCarbonWater,jdbcType=VARCHAR},#{item.fFat,jdbcType=VARCHAR},
+            #{item.fProtein,jdbcType=VARCHAR},#{item.fDietaryFiber,jdbcType=VARCHAR},#{item.fVitaminA,jdbcType=VARCHAR},#{item.fVitaminC,jdbcType=VARCHAR},
+            #{item.fVitaminD,jdbcType=VARCHAR},#{item.fVitaminE,jdbcType=VARCHAR},#{item.fVitaminK,jdbcType=VARCHAR},#{item.fVitaminB1,jdbcType=VARCHAR},
+            #{item.fVitaminB2,jdbcType=VARCHAR},#{item.fVitaminB3,jdbcType=VARCHAR},#{item.fVitaminB6,jdbcType=VARCHAR},#{item.fVitaminB9,jdbcType=VARCHAR},
+            #{item.fVitaminB12,jdbcType=VARCHAR},#{item.fK,jdbcType=VARCHAR},#{item.fNa,jdbcType=VARCHAR},#{item.fCa,jdbcType=VARCHAR},
+            #{item.fZn,jdbcType=VARCHAR},#{item.fSe,jdbcType=VARCHAR},#{item.fFe,jdbcType=VARCHAR},#{item.fRole,jdbcType=VARCHAR},
+            #{item.fCreateTime,jdbcType=VARCHAR},#{item.fUpdateTime,jdbcType=VARCHAR},#{item.fNote,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+
     <insert id="addFood" useGeneratedKeys="true" keyProperty="id" parameterType="com.yang.blog.entity.NutritionBodyCompositionEntity">
       INSERT INTO food_nutrition (f_id,f_img,f_type,f_name,f_edible_section,f_energy,f_carbon_water,f_fat,
       f_protein,f_dietary_fiber,f_vitaminA,f_vitaminC,f_vitaminD,f_vitaminE,f_vitaminK,f_vitaminB1,f_vitaminB2,f_vitaminB3,
@@ -79,7 +96,7 @@
         f_vitaminE = #{fVitaminE},f_vitaminK = #{fVitaminK},f_vitaminB1 = #{fVitaminB1},
         f_vitaminB2 = #{fVitaminB2},f_vitaminB3 = #{fVitaminB3},f_vitaminB6 = #{fVitaminB6},f_vitaminB9 = #{fVitaminB9},
         f_vitaminB12 = #{fVitaminB12},f_K = #{fK},f_Na = #{fNa},f_Ca = #{fCa},f_Zn = #{fZn},f_Se = #{fSe},f_Fe = #{fFe},
-        f_role = #{fRole},f_create_time = #{fCreateTime},f_update_time = #{fUpdateTime},f_note = #{fNote}
+        f_role = #{fRole},f_update_time = #{fUpdateTime},f_note = #{fNote}
         WHERE f_id=#{fID}
     </update>
 

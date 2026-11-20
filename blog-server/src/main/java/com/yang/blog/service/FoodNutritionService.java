@@ -11,6 +11,8 @@ public interface FoodNutritionService {
     List<FoodNutritionEntity> findAll();
     //条件查询
     List<FoodNutritionEntity> findByFactor(String param);
+    //批量添加记录
+    RespBean insertBatch(List<FoodNutritionEntity> entity);
     //操作
     RespBean operationFood(HashMap<String,Object> entity);
     //删除食物

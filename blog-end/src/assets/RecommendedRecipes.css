@@ -1,0 +1,360 @@
+
+  
+  :root {
+    --primary: #3498db;
+    --secondary: #2c3e50;
+    --success: #2ecc71;
+    --warning: #f39c12;
+    --danger: #e74c3c;
+    --light: #f8f9fa;
+    --dark: #343a40;
+    --gray: #95a5a6;
+    --light-gray: #ecf0f1;
+  }
+  
+  .food-container {
+    background: linear-gradient(135deg, #f7f9fc 0%, #e6f0ff 100%);
+    min-height: 100vh;
+    color: var(--secondary);
+    padding: 20px;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    margin-bottom: 30px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .logo-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+  }
+  
+  .logo-text {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--secondary);
+  }
+  
+  .logo-text span {
+    color: var(--primary);
+  }
+  
+  .user-actions {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .btn-outline {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+  }
+  
+  .main-food {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 30px;
+  }
+  
+  .card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin-bottom: 25px;
+  }
+  
+  .card-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--light-gray);
+    font-size: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(90deg, #0f172a, #2c3e50);
+    color: white;
+  }
+  
+  .card-body {
+    padding: 25px;
+  }
+  
+  .section-title {
+    font-size: 22px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--secondary);
+  }
+  
+  .section-title i {
+    color: var(--primary);
+  }
+  
+  .foodTypes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+  
+  .filter-item {
+    padding: 8px 20px;
+    background: var(--light-gray);
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .filter-item.active {
+    background: var(--primary);
+    color: white;
+  }
+  
+  .filter-item:hover:not(.active) {
+    background: #d6eaf8;
+  }
+  
+  .recipes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+  }
+  
+  .recipe-card {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    background: white;
+  }
+  
+  .recipe-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  .recipe-image {
+    height: 180px;
+    width: 100%;
+    object-fit: cover;
+  }
+  
+  .recipe-content {
+    padding: 20px;
+  }
+  
+  .recipe-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--secondary);
+  }
+  
+  .recipe-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+  }
+  
+  .recipe-tag {
+    background: #e3f2fd;
+    color: var(--primary);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+  }
+  
+  .nutrition-info {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+    padding-top: 15px;
+    border-top: 1px solid var(--light-gray);
+  }
+  
+  .nutrition-item {
+    text-align: center;
+    flex: 1;
+  }
+  
+  .nutrition-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary);
+  }
+  
+  .nutrition-label {
+    font-size: 12px;
+    color: var(--gray);
+  }
+  
+  .recipe-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    gap: 10px;
+  }
+  
+  .recommended-for-you {
+    background: linear-gradient(135deg, #0f172a, #2c3e50);
+    color: white;
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+  }
+  
+  .recommended-title {
+    font-size: 22px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .user-preferences {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+  
+  .preferences-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .preference-item {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+  }
+  
+  .nutrition-summary {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+  }
+  
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--light-gray);
+  }
+  
+  .summary-value {
+    font-weight: 600;
+    color: var(--primary);
+  }
+  
+  .progress-bar {
+    height: 8px;
+    background: var(--light-gray);
+    border-radius: 4px;
+    margin: 10px 0;
+    overflow: hidden;
+  }
+  
+  .progress {
+    height: 100%;
+    background: var(--success);
+    border-radius: 4px;
+  }
+  
+  .daily-plan {
+    margin-top: 30px;
+  }
+  
+  .plan-item {
+    display: flex;
+    padding: 15px;
+    border-bottom: 1px solid var(--light-gray);
+    align-items: center;
+  }
+  
+  .plan-time {
+    width: 80px;
+    font-weight: 600;
+    color: var(--primary);
+  }
+  
+  .plan-meal {
+    flex: 1;
+  }
+  
+  .plan-actions {
+    width: 100px;
+    text-align: right;
+  }
+  
+  .footer {
+    text-align: center;
+    padding: 30px 0;
+    color: var(--gray);
+    font-size: 14px;
+    margin-top: 40px;
+  }
+  
+  .save-plan-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+  }
+  
+  /* 偏好样式 */
+.preferences-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.preference-dialog {
+  padding: 0 20px;
+}
+
+.preference-options {
+  margin-top: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.el-checkbox {
+  margin-right: 0;
+  min-width: 100px;
+  margin-bottom: 10px;
+}
+
+.el-checkbox__label{
+  color: rgb(99, 99, 99);
+}

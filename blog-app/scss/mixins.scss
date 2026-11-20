@@ -1,0 +1,59 @@
+// 文本溢出省略号
+@mixin text-ellipsis($lines: 1) {
+  @if $lines == 1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  } @else {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+// 玻璃态效果
+@mixin glass-effect($blur: 20rpx, $opacity: 0.9) {
+  background: rgba(255, 255, 255, $opacity);
+  backdrop-filter: blur($blur);
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+}
+
+// 渐变背景
+@mixin gradient-bg($direction: 135deg, $start: $primary-color, $end: $accent-color) {
+  background: linear-gradient($direction, $start, $end);
+}
+
+// 阴影效果
+@mixin shadow($level: 'light') {
+  @if $level == 'light' {
+    box-shadow: $shadow-light;
+  } @else if $level == 'medium' {
+    box-shadow: $shadow-medium;
+  } @else if $level == 'heavy' {
+    box-shadow: $shadow-heavy;
+  }
+}
+
+// 响应式媒体查询
+@mixin respond-to($breakpoint) {
+  @if map-has-key($breakpoints, $breakpoint) {
+    @media (min-width: map-get($breakpoints, $breakpoint)) {
+      @content;
+    }
+  } @else {
+    @warn "Unknown breakpoint: #{$breakpoint}";
+  }
+}
+
+// 按钮样式混入
+@mixin button-variant($color, $background, $border) {
+  color: $color;
+  background-color: $background;
+  border-color: $border;
+  
+  &:active {
+    background-color: darken($background, 10%);
+    border-color: darken($border, 12%);
+  }
+}

@@ -10,18 +10,31 @@
         <result column="f_name" property="fName"/>
         <result column="f_intro" property="fIntro"/>
         <result column="f_type" property="fType"/>
+        <result column="calories" property="calories"/>
+        <result column="carbs" property="carbs"/>
+        <result column="protein" property="protein"/>
+        <result column="fat" property="fat"/>
         <result column="f_batching" property="fBatching"/>
         <result column="f_seasoning" property="fSeasoning"/>
         <result column="f_made" property="fMade"/>
         <result column="f_tips" property="fTips"/>
         <result column="f_create_time" property="fCreateTime"/>
         <result column="f_update_time" property="fUpdateTime"/>
+        <result column="isCol" property="isCol"/>
+        <result column="weight" property="weight"/>
+
     </resultMap>
 
     <select id="findAll" resultMap="map">
         SELECT * FROM nutritional_recipe ORDER BY f_update_time DESC
     </select>
-
+    <select id="findAllByUserCol" resultMap="map">
+        SELECT i.*,IF(c.uID IS NOT NULL, 1, 0) AS isCol  FROM nutritional_recipe i
+        LEFT JOIN nutritional_recipe_collection c ON i.f_id = c.fID AND c.uID =#{uID}
+    </select>
+    <select id="getFoodType" resultMap="map">
+        SELECT f_type FROM nutritional_recipe GROUP BY f_type
+    </select>
     <select id="findByFactor" resultMap="map">
         SELECT * FROM nutritional_recipe
         <where>
@@ -42,16 +55,18 @@
 
     <insert id="addRecipe" useGeneratedKeys="true" keyProperty="id" parameterType="com.yang.blog.entity.NutritionalRecipeEntity">
       INSERT INTO nutritional_recipe (f_id,f_img,f_name,f_intro,f_type,f_batching,f_seasoning,
-      f_made,f_tips,f_create_time,f_update_time)
+      f_made,f_tips,f_create_time,f_update_time,calories,carbs,protein,fat)
       VALUES(#{fID,jdbcType=VARCHAR},#{fImg,jdbcType=VARCHAR},#{fName,jdbcType=VARCHAR},
       #{fIntro,jdbcType=VARCHAR},#{fType,jdbcType=VARCHAR},#{fBatching,jdbcType=VARCHAR},#{fSeasoning,jdbcType=VARCHAR},
-      #{fMade,jdbcType=VARCHAR},#{fTips,jdbcType=VARCHAR},#{fCreateTime,jdbcType=VARCHAR},#{fUpdateTime,jdbcType=VARCHAR})
+      #{fMade,jdbcType=VARCHAR},#{fTips,jdbcType=VARCHAR},#{fCreateTime,jdbcType=VARCHAR},#{fUpdateTime,jdbcType=VARCHAR}
+      ,#{calories,jdbcType=VARCHAR},#{carbs,jdbcType=VARCHAR},#{protein,jdbcType=VARCHAR},#{fat,jdbcType=VARCHAR})
     </insert>
 
     <update id="updRecipe" parameterType="com.yang.blog.entity.NutritionalRecipeEntity">
         UPDATE nutritional_recipe SET f_img = #{fImg},f_name = #{fName},
         f_intro = #{fIntro},f_type = #{fType},f_batching = #{fBatching},f_seasoning = #{fSeasoning},
-        f_made = #{fMade},f_tips = #{fTips},f_update_time = #{fUpdateTime}
+        f_made = #{fMade},f_tips = #{fTips},f_update_time = #{fUpdateTime},calories= #{calories},
+        carbs= #{carbs},protein= #{protein},fat= #{fat}
         WHERE f_id=#{fID}
     </update>
 

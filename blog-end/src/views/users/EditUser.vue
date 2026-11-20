@@ -34,7 +34,7 @@
           <el-input v-model="editForm.id" disabled></el-input>
         </el-form-item>
 
-        <el-form-item label="姓名" prop="username">
+        <el-form-item label="账户" prop="username">
           <el-input v-model="editForm.username"></el-input>
         </el-form-item>
 
@@ -45,7 +45,7 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item label="昵称">
+        <el-form-item label="姓名">
           <el-input v-model="editForm.nickname"></el-input>
         </el-form-item>
 
@@ -211,7 +211,7 @@ export default {
     init() {
       _getRoleAll().then((res) => {
         if (res.data.status === 200) {
-          this.rolesList.push(...res.data.obj);
+          this.rolesList.push(...res.data.data);
         }
       });
     },
@@ -262,7 +262,7 @@ export default {
     handleAvatarSuccess(res, file) {
       if (res.status === 200) {
         this.$message.success("头像上传成功");
-        this.editForm.avatar = res.obj;
+        this.editForm.avatar = res.data;
       }
     },
   },
@@ -275,19 +275,19 @@ export default {
     this.init();
     _getUserByNameLike(this.$route.query.username).then((res) => {
       if (res.data.status === 200) {
-        (this.editForm.id = res.data.obj.id),
-          (this.editForm.username = res.data.obj.username),
-          // this.editForm.password = res.data.obj[0].,
-          (this.editForm.nickname = res.data.obj.nickname),
-          (this.editForm.avatar = res.data.obj.avatar),
-          (this.editForm.email = res.data.obj.email),
-          (this.editForm.description = res.data.obj.description),
-          (this.editForm.createTime = res.data.obj.createTime),
-          (this.editForm.updateTime = res.data.obj.updateTime),
-          (this.editForm.phone = res.data.obj.phone);
-        this.editForm.ext02 = res.data.obj.ext02;
-        this.editForm.address = res.data.obj.address;
-        this.editForm.ext01 = res.data.obj.ext01;
+        (this.editForm.id = res.data.data.id),
+          (this.editForm.username = res.data.data.username),
+          // this.editForm.password = res.data.data[0].,
+          (this.editForm.nickname = res.data.data.nickname),
+          (this.editForm.avatar = res.data.data.avatar),
+          (this.editForm.email = res.data.data.email),
+          (this.editForm.description = res.data.data.description),
+          (this.editForm.createTime = res.data.data.createTime),
+          (this.editForm.updateTime = res.data.data.updateTime),
+          (this.editForm.phone = res.data.data.phone);
+        this.editForm.ext02 = res.data.data.ext02;
+        this.editForm.address = res.data.data.address;
+        this.editForm.ext01 = res.data.data.ext01;
       }
     });
     this.uploadAvatarParams.id = this.$route.query.id;

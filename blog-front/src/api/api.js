@@ -82,6 +82,12 @@ export const _delBlogH = (id,isdel) => {
 export const _saveBlog = (data) => {
     return postRequest("/blog/saveBlog",data);
 }
+export const _addBlogBrowseCount = (id) => {
+    return postRequest("/blog/addBlogBrowseCount?bID=" + id);
+}
+export const _getBlogByUser = (uID) => {
+    return getRequest("/blog/getBlogByUser?uID="+uID)
+}
 export const _getBlogByTile = (data) => {
     return getRequest(data);
 }
@@ -177,4 +183,116 @@ export const _saveSource = (data) => {
 }
 export const _delSource = (data) => {
     return postRequest("/source/delSource",data);
+}
+//营养管理-体成分分析
+export const _getNutritionAll = () => {
+    return getRequest("/nutrition/all")
+}
+export const _getNutritionById = (data) => {
+    return getRequest("/nutrition/findById?id="+data)
+}
+export const _getNutritionByUser = (data) => {
+    return getRequest("/nutrition/findByUser?uID=+"+data)
+}
+export const _operationNBC = (data) => {
+    return postRequest("/nutrition/operationNBC",data);
+}
+export const _delNutritionById = (data) => {
+    return deleteRequest("/nutrition/delNBC?id="+data);
+}
+//营养管理-食物营养
+export const _getFoodNutritionAll = () => {
+    return getRequest("/foodNutrition/all")
+}
+export const _getFoodNutritionByFactor = (data) => {
+    return getRequest("/foodNutrition/findByFactor?param="+data)
+}
+export const _operationFoodNutrition = (data) => {
+    return postRequest("/foodNutrition/operationFood",data);
+}
+export const _delFoodNutritionById = (data) => {
+    return deleteRequest("/foodNutrition/delFood?id="+data);
+}
+//营养管理-食物菜谱
+export const _getNutritionalRecipeAll = () => {
+    return getRequest("/NutritionalRecipe/all")
+}
+export const _getNutritionalRecipeByFactor = (name,type) => {
+    return getRequest("/NutritionalRecipe/findByFactor?name="+name+"&type="+type)
+}
+export const _getNutritionalRecipeById = (data) => {
+    return getRequest("/NutritionalRecipe/findById?id="+data)
+}
+export const _operationNutritionalRecipe = (data) => {
+    return postRequest("/NutritionalRecipe/operationRecipe",data);
+}
+export const _delNutritionalRecipe = (data) => {
+    return deleteRequest("/NutritionalRecipe/delRecipe?id="+data);
+}
+//营养管理-营养食谱
+export const _getNutritionalRecipesAll = () => {
+    return getRequest("/NutritionalRecipes/all")
+}
+export const _getNutritionalRecipesByFactor = (name,type,target) => {
+    return getRequest("/NutritionalRecipes/findByFactor?name="+name+"&type="+type+"&target="+target)
+}
+export const _getNutritionalRecipesById = (data) => {
+    return getRequest("/NutritionalRecipes/findById?id="+data)
+}
+export const _operationNutritionalRecipes = (data) => {
+    return postRequest("/NutritionalRecipes/operationRecipes",data);
+}
+export const _delNutritionalRecipes = (data) => {
+    return deleteRequest("/NutritionalRecipes/delRecipes?id="+data);
+}
+//人生轨迹-每日流水
+export const _getDailyFlowAll = (data) => {
+    return getRequest("/DailyFlowController/all");
+}
+export const _findByFactor = (searchDate1,searchDate2,searchType) => {
+    return getRequest("/DailyFlowController/findByFactor?searchDate1="+searchDate1+"&searchDate2="+searchDate2+"&searchType="+searchType)
+}
+export const _getConsumptionCount = (search,consumptionType,getCount) => {
+    return getRequest("/DailyFlowController/getConsumptionCount?search="+search+"&consumptionType="+consumptionType+"&getCount="+getCount)
+}
+export const _getConsumptionCountDInfo = (consumptionType,time) => {
+    return getRequest("/DailyFlowController/getConsumptionCountDInfo?consumptionType="+consumptionType+"&consumptionTime="+time)
+}
+export const _getConsumptionCountMInfo = (consumptionType,time) => {
+    return getRequest("/DailyFlowController/getConsumptionCountMInfo?consumptionType="+consumptionType+"&consumptionTime="+time)
+}
+export const _getConsumptionCountYInfo = (consumptionType,time) => {
+    return getRequest("/DailyFlowController/getConsumptionCountYInfo?consumptionType="+consumptionType+"&consumptionTime="+time)
+}
+export const _operationDailyFlow = (data) => {
+    return postRequest("/DailyFlowController/operationDailyFlow",data);
+}
+export const _getByFactor = (data) => {
+    return getRequest("/DailyFlowInfoController/findByFactor?fID="+data);
+}
+export const _insertBatch = (data) => {
+    return postRequest("/DailyFlowInfoController/insertBatch",data);
+}
+export const _delFlow = (data) => {
+    return deleteRequest("/DailyFlowController/delFlow?id="+data);
+}
+//流水类型
+export const _getConsumptionTypeAll = () => {
+    return getRequest("/consumption/getConsumptionTypeAll");
+}
+export const _getConsumptionTypeByName = (data) => {
+    return request("/consumption/getConsumptionTypeByName?name=" + data);
+}
+export const _addConsumptionType = (data) => {
+    return postRequest("/consumption/addConsumptionType", data);
+}
+export const _updConsumptionTypeById = (data) => {
+    return postRequest("/consumption/updConsumptionTypeById", data);
+}
+export const _delConsumptionType = (data) => {
+    return deleteRequest("/consumption/delConsumptionType?id=" + data);
+}
+//存款金额
+export const _getUserDepositById = (data) => {
+    return getRequest("/UserDeposit/getUserDepositById?id=" + data);
 }

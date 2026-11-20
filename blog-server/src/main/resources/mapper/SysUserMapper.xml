@@ -55,7 +55,7 @@
         FROM sys_user u
         LEFT JOIN sys_user_role ur on u.id = ur.userid
         LEFT JOIN sys_role r on ur.roleid = r.id
-        WHERE u.username like CONCAT('%',#{username},'%')
+        WHERE u.username like CONCAT('%',#{username},'%') OR u.ext02 like CONCAT('',#{username},'%')
     </select>
     
     <insert id="register" useGeneratedKeys="true" keyProperty="id" parameterType="com.yang.blog.entity.SysUserEntity">

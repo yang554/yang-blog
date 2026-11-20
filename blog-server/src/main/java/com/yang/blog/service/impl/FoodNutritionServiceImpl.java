@@ -27,6 +27,17 @@ public class FoodNutritionServiceImpl implements FoodNutritionService {
     }
 
     @Override
+    public RespBean insertBatch(List<FoodNutritionEntity> entity) {
+        int s = mapper.insertBatch(entity);
+        if(s > 0){
+            return RespBean.ok("导入添加成功！");
+        }else{
+            return RespBean.error("导入添加失败！");
+        }
+
+    }
+
+    @Override
     public RespBean operationFood(HashMap<String, Object> hashMap) {
         FoodNutritionEntity entity = new FoodNutritionEntity();
         entity.setfType((String) hashMap.get("fType"));

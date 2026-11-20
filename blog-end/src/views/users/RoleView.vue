@@ -1,55 +1,60 @@
 <template>
     <div class="user-list-view">
         <!--搜索-->
-        <el-row style="margin-top: 10px;margin-bottom: 10px;">
-            <el-col :span="8">
-                <el-input placeholder="权限" v-model="inputKeyWord"></el-input>
-            </el-col>
-            <el-col :span="1">
-                <el-button type="success" @click="handleSearchByName">
-                    <i class="el-icon-search"></i>
-                    搜索
-                </el-button>
-            </el-col>
-            <el-col :span="1" :offset="1">
-                <el-button type="warning" @click="addRoleBtn">
-                    <i class="el-icon-plus"></i>新增
-                </el-button>
-            </el-col>
-        </el-row>
+        <div class="search-container">
+            <el-row :gutter="20">
+                <el-col :span="8">
+                    <el-input size="small" placeholder="权限" v-model="inputKeyWord" class="search-input"></el-input>
+                </el-col>
+                <el-col :span="1">
+                    <el-button size="small" type="success" @click="handleSearchByName">
+                        <i class="el-icon-search"></i>
+                        搜索
+                    </el-button>
+                </el-col>
+                <el-col :span="1" :offset="1">
+                    <el-button  size="small" type="warning" @click="addRoleBtn">
+                        <i class="el-icon-plus"></i>新增
+                    </el-button>
+                </el-col>
+            </el-row>
+        </div>
 
-        <el-table v-loading="pagination.loading" border :data="pagination.currentTableData"
-            :header-cell-style="{ 'text-align': 'center' }" max-height="650px" style="width: 50%">
-            <el-table-column label="权限" width="250px" align='center'>
-                <template slot-scope="scope">
-                    <span style="margin-left: 10px">{{ scope.row.name }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column width="250px" label="说明" align='center'>
-                <template slot-scope="scope">
-                    <span style="margin-left: 10px">{{ scope.row.nameZh }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column label="操作" align='center'>
-                <template slot-scope="scope">
-                    <el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row)">编辑
-                    </el-button>
-                    <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除
-                    </el-button>
-                </template>
-            </el-table-column>
-        </el-table>
+        <div class="table-container">
+            <el-table v-loading="pagination.loading" border :data="pagination.currentTableData"
+                :header-cell-style="{ 'text-align': 'center' }" max-height="650px" >
+                <el-table-column label="权限代码" width="250px" align='center'>
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.name }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column  label="说明" align='center'>
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.nameZh }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column width="250px" label="操作" align='center'>
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row)">编辑
+                        </el-button>
+                        <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+
         <!-- 分页 -->
-        <div style="margin-top: 20px;" class="my-border-padding">
+        <div class="pagination-container">
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
                 :current-page="pagination.currentPage" :page-sizes="pagination.pageSizes" :page-size="pagination.pageSize"
                 layout="total, sizes, prev, pager, next, jumper" :total="pagination.total">
             </el-pagination>
         </div>
         <!--dialog  -->
-        <el-dialog title="编辑权限" :visible.sync="dialogFormVisible"  width="30%">
+        <el-dialog title="编辑权限" :visible.sync="dialogFormVisible" width="30%">
             <el-form v-model="currentRole">
-                <el-form-item label="权限" label-width="120px">
+                <el-form-item label="权限代码" label-width="120px">
                     <el-input v-model="currentRole.name" autocomplete="off" style="width: 80%;">{{
                         currentRole.name }}</el-input>
                 </el-form-item>
@@ -58,14 +63,14 @@
                         currentRole.nameZH }}</el-input>
                 </el-form-item>
                 <el-form-item label-width="120px">
-                    
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="handleEditAunt">保 存</el-button>
-           
+
+                    <el-button @click="dialogFormVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="handleEditAunt">保 存</el-button>
+
                 </el-form-item>
-                
+
             </el-form>
-            
+
         </el-dialog>
     </div>
 </template>
@@ -95,7 +100,7 @@ export default {
             currentRole: {
                 id: "",
                 name: "",
-                nameZH:""
+                nameZH: ""
             },
         }
     },
@@ -113,8 +118,8 @@ export default {
         init() {
             _getRoleAll().then(res => {
                 if (res.status === 200) {
-                    this.pagination.listData = res.data.obj;
-                    this.pagination.total = res.data.obj.length;
+                    this.pagination.listData = res.data.data;
+                    this.pagination.total = res.data.data.length;
 
 
                     this.pagination.totalPage = Math.ceil(this.pagination.listData.length / this.pagination.pageSize);
@@ -204,7 +209,7 @@ export default {
         handleSearchByName() {
             this.$getRequest("/user/selectUserByName?name=" + this.inputKeyWord.trim()).then(res => {
                 if (res.data.status === 200) {
-                    this.pagination.listData = res.data.obj;
+                    this.pagination.listData = res.data.data;
                     this.pagination.total = res.data.length;
 
 
@@ -234,5 +239,7 @@ export default {
 }
 </script>
   
-<style scoped></style>
+<style scoped>
+@import '@/assets/table-container.css';
+</style>
   

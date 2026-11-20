@@ -1,25 +1,36 @@
 <template>
-  <div class="dashboard-view">
+  <div class="dashboard-container">
+    <!-- 用户选择区域 -->
+    <el-card class="user-select-card" shadow="hover">
+      <div class="user-select-group">
+        <div class="user-select-input">
+          <el-select v-model="uID" filterable placeholder="请选择用户" size="medium" class="user-select"
+            popper-class="tech-select-dropdown">
+            <el-option v-for="(item, index) in uNameAll" :key="index" :label="item.uName" :value="item.uID">
+              <div class="user-option">
+                <i class="el-icon-user"></i>
+                <span>{{ item.uName }}</span>
+              </div>
+            </el-option>
+          </el-select>
+        </div>
+        <el-button type="primary" size="medium" @click="selectByNameAllFun" class="search-btn">
+          <i class="el-icon-search"></i> 加载数据
+        </el-button>
+      </div>
+    </el-card>
 
-    <div class="panel-group">
-      <el-row :gutter="40" class="panel-group">
-        <el-col :xs="24" :sm="24" :lg="24" class="card-panel-col">
-          <el-row style="margin-top: 10px;margin-bottom: 10px;">
-            <el-col :span="8">
-              <el-select size="small" v-model="uID" filterable placeholder="请选择用户">
-                <el-option v-for="(item,index) in uNameAll" :key="index" :label="item.uName" :value="item.uID">
-                </el-option>
-              </el-select>
-              <el-button type="primary" size="small" @click="selectByNameAllFun">
-                <i class="el-icon-search"></i>
-                搜索
-              </el-button>
-            </el-col>
-          </el-row>
-        </el-col>
-        <el-col :xs="24" :lg="8" class="card-panel-col">
-          <div class="card-panel" v-show="isShowContent">
-            <el-descriptions class="margin-top" title="上次记录" :column="2" border>
+    <!-- 数据面板区域 -->
+    <div class="data-panels">
+      <el-row :gutter="20">
+        <!-- 上次记录面板 -->
+        <el-col :xs="24" :lg="8">
+          <el-card class="data-panel tech-panel" shadow="hover">
+            <div class="panel-header">
+              <i class="el-icon-time"></i>
+              <h3>上次记录</h3>
+            </div>
+            <el-descriptions class="tech-descriptions" :column="1" border>
               <el-descriptions-item label="姓名">{{ auntForm.name }}</el-descriptions-item>
               <el-descriptions-item label="周期长度">{{ auntForm.cycle }}</el-descriptions-item>
               <el-descriptions-item label="开始日期">{{ auntForm.startDate }}</el-descriptions-item>
@@ -27,125 +38,238 @@
               <el-descriptions-item label="持续时间">{{ auntForm.duration }}</el-descriptions-item>
               <el-descriptions-item label="血量">{{ auntForm.bloodVolume }}ml</el-descriptions-item>
             </el-descriptions>
-          </div>
+          </el-card>
         </el-col>
-        <el-col :xs="24" :lg="8" class="card-panel-col">
-          <div class="card-panel" v-show="isShowContent">
-            <el-descriptions class="margin-top" title="系统推测下次经期情况" :column="2" border>
+
+        <!-- 预测信息面板 -->
+        <el-col :xs="24" :lg="8">
+          <el-card class="data-panel tech-panel" shadow="hover">
+            <div class="panel-header">
+              <i class="el-icon-odometer"></i>
+              <h3>{{ this.nextAuntForm.msg }}</h3>
+            </div>
+            <el-descriptions class="tech-descriptions" :column="1" border>
               <el-descriptions-item label="姓名">{{ auntForm.name }}</el-descriptions-item>
               <el-descriptions-item label="周期长度">{{ nextAuntForm.cycleLength }}天</el-descriptions-item>
               <el-descriptions-item label="开始日期">{{ nextAuntForm.nextPeriodStartDate }}</el-descriptions-item>
               <el-descriptions-item label="结束日期">{{ nextAuntForm.nextPeriodEndDate }}</el-descriptions-item>
               <el-descriptions-item label="持续时间">{{ nextAuntForm.periodLength }}天</el-descriptions-item>
-              <el-descriptions-item label="距离开始还有">{{ nextAuntForm.daysUntilNextPeriod }}天</el-descriptions-item>
+              <el-descriptions-item label="距离开始还有">
+                <span class="highlight">{{ nextAuntForm.daysUntilNextPeriod }}天</span>
+              </el-descriptions-item>
             </el-descriptions>
-          </div>
+          </el-card>
         </el-col>
-        <el-col :xs="24" :lg="8" class="card-panel-col">
-          <div class="card-panel" v-show="isShowContent">
-            <el-descriptions class="margin-top" title="本次实际记录" :column="2" border>
-              <template slot="extra">
-                <el-button type="primary" @click="dialogFunction" size="small">编辑</el-button>
-              </template>
-              <el-descriptions-item label="姓名">{{ realAuntForm.name }}</el-descriptions-item>
+
+        <!-- 本次记录面板 -->
+        <el-col :xs="24" :lg="8">
+          <el-card class="data-panel tech-panel" shadow="hover">
+            <div class="panel-header">
+              <i class="el-icon-edit"></i>
+              <h3>本次实际记录</h3>
+              <el-button type="primary" @click="dialogFunction" size="small" class="edit-btn">
+                <i class="el-icon-edit"></i> 编辑
+              </el-button>
+            </div>
+            <el-descriptions class="tech-descriptions" :column="1" border>
+              <el-descriptions-item label="姓名">{{ auntForm.name}}</el-descriptions-item>
               <el-descriptions-item label="周期长度">{{ realAuntForm.cycle }}</el-descriptions-item>
               <el-descriptions-item label="开始日期">{{ realAuntForm.startDate }}</el-descriptions-item>
               <el-descriptions-item label="结束日期">{{ realAuntForm.endDate }}</el-descriptions-item>
               <el-descriptions-item label="持续时间">{{ realAuntForm.duration }}</el-descriptions-item>
               <el-descriptions-item label="血量">{{ realAuntForm.bloodVolume }}ml</el-descriptions-item>
             </el-descriptions>
-            <el-dialog title="本次实际记录" :visible.sync="dialogFormVisible">
-              <el-form v-model="realAuntForm">
-                <el-form-item label="姓名" label-width="120px">
-                  <el-input v-model="realAuntForm.name" autocomplete="off" disabled style="width: 50%;">{{
-                    auntForm.name }}</el-input>
-                </el-form-item>
-                <el-form-item label="周期长度" label-width="120px">
-                  <el-input class="el-form-item__label" v-model="realAuntForm.cycle" autocomplete="off" disabled
-                    style="width: 10%;"></el-input>
-                  <label class="el-form-item__label">持续时间</label>
-                  <el-input class="el-form-item__label" v-model="realAuntForm.duration" autocomplete="off" disabled
-                    style="width: 10%;"></el-input>
-                  <label class="el-form-item__label">血量</label>
-                  <el-input class="el-form-item__label" v-model="realAuntForm.bloodVolume" autocomplete="off"
-                    style="width: 10%;"></el-input>
-                </el-form-item>
-                <el-form-item label="开始日期" label-width="120px">
-                  <el-date-picker class="el-form-item__label" @change="auntDatetChange(realAuntForm.startDate, 'st')"
-                    v-model="realAuntForm.startDate" type="date" :picker-options="pickerOptions" placeholder="选择开始时间">
-                  </el-date-picker>
-                  <label class="el-form-item__label">结束日期</label>
-                  <el-date-picker class="el-form-item__label" @change="auntDatetChange(realAuntForm.endDate, 'ed')"
-                    v-model="realAuntForm.endDate" type="date" :picker-options="pickerOptions" placeholder="选择结束时间">
-                  </el-date-picker>
-                </el-form-item>
-                <el-form-item label="症状" label-width="120px">
-                  <el-input class="el-form-item__label" type="textarea" :rows="5"
-                    placeholder="记录每个月姨妈期间出现的症状，如腹痛、乳房胀痛、情绪波动等" v-model="realAuntForm.symptom"
-                    style="width: 40%;"></el-input>
-                  <label class="el-form-item__label">备注</label>
-                  <el-input class="el-form-item__label" type="textarea" placeholder="可以记录一些额外的信息，如服用的药物、健康状况等。" :rows="5"
-                    v-model="realAuntForm.note" style="width: 40%;"></el-input>
-                </el-form-item>
-              </el-form>
-              <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="handleEditAunt">保 存</el-button>
-              </div>
-            </el-dialog>
-          </div>
+          </el-card>
         </el-col>
       </el-row>
     </div>
 
-    <div class="echarts-group" >
-      <div class="chart-item">
-        <div class="echart" v-show="isShowContent" id="mychart" style="float: left; width: 70%;height: 550px;"></div>
-        <div class="echart" v-show="this.isEmpty" style="float: left; width: 70%;height: 550px;"><el-empty description="暂无该用户数据"></el-empty></div>
-        <div class="select">
-          <el-form inline>
-            <el-form-item>
-              <el-select v-model="curYear" placeholder="请选择" style="width: 100px;" size="small">
-                <el-option v-for="item in yearOptions" :key="item.key" :value="item.value" :label="item.label" />
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-select v-model="curMonth" placeholder="请选择" style="width: 80px;" size="small">
-                <el-option v-for="item in monthOptions" :key="item.key" :value="item.value" :label="item.label" />
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="handleQuickChange('prev')" size="small">上一月</el-button>
-              <el-button type="primary" @click="handleQuickChange('next')" size="small">下一月</el-button>
-              <el-button type="primary" @click="handleCreateEvent()" size="small">创建</el-button>
-            </el-form-item>
-          </el-form>
+    <!-- 图表和日历区域 -->
+    <div class="visualization-section">
+      <el-card class="chart-card tech-panel" shadow="hover">
+        <div class="chart-header">
+          <h3><i class="el-icon-data-line"></i> 月例-流血量分析</h3>
+          <div class="chart-controls">
+            <el-form inline>
+              <el-form-item>
+                <el-select v-model="curYear" placeholder="年份" style="width: 100px;" size="small" class="tech-select">
+                  <el-option v-for="item in yearOptions" :key="item.key" :value="item.value" :label="item.label" />
+                </el-select>
+              </el-form-item>
+              <el-form-item>
+                <el-select v-model="curMonth" placeholder="月份" style="width: 100px;" size="small" class="tech-select">
+                  <el-option v-for="item in monthOptions" :key="item.key" :value="item.value" :label="item.label" />
+                </el-select>
+              </el-form-item>
+              <el-form-item>
+                <el-button-group>
+                  <el-button type="primary" @click="handleQuickChange('prev')" size="small" class="tech-btn">
+                    <i class="el-icon-arrow-left"></i> 上一月
+                  </el-button>
+                  <el-button type="primary" @click="handleQuickChange('next')" size="small" class="tech-btn">
+                    下一月 <i class="el-icon-arrow-right"></i>
+                  </el-button>
+                  <el-button type="success" @click="handleCreateEvent()" size="small" class="tech-btn">
+                    <i class="el-icon-plus"></i> 创建事件
+                  </el-button>
+                </el-button-group>
+              </el-form-item>
+            </el-form>
+          </div>
         </div>
 
-        <table class="calendar-table" :style="{ width }">
-          <thead>
-            <tr>
-              <th v-for="(item, i) in weeks" :key="i">{{ item }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(dates, i) in res" :key="i" :style="{ height: tbodyHeight }">
-              <td v-for="(item, index) in dates" :key="index"
-                :class="{ notCurMonth: !item.isCurMonth, currentDay: item.isCurrentDay, selectDay: item.isSelected, curDay: item.isCurDay, rangeSelectd: item.isRangeSelected, weekend: item.isWeekend }"
-                @click="handleItemClick(item, i, index)" @mouseover="handleItemMove(item, i, index)">
-                <!-- <span>{{ item.date.split('-').slice(1).join('-') }}</span> -->
-                <span class="span-day">{{ item.day }}</span>
-                <span class="span-day span-txt">{{ item.nl }}</span>
-                <!-- <slot :data="item" /> -->
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+        <div class="visualization-content">
+          <!-- 图表区域 -->
+          <div class="chart-container">
+            <div class="echart" v-show="isShowContent" id="mychart"></div>
+            <div class="echart" v-show="this.isEmpty">
+              <el-empty description="暂无该用户数据"></el-empty>
+            </div>
+          </div>
+          <!-- 日历区域 -->
+          <div class="calendar-container">
+            <div class="calendar-wrapper">
+              <div class="calendar-header">
+                <div class="calendar-title">{{ calendarTitle }}</div>
+                <div class="calendar-actions">
+                  <el-button circle size="mini" @click="handleQuickChange('prev')">
+                    <i class="el-icon-arrow-left"></i>
+                  </el-button>
+                  <el-button circle size="mini" @click="handleQuickChange('today')">
+                    今
+                  </el-button>
+                  <el-button circle size="mini" @click="handleQuickChange('next')">
+                    <i class="el-icon-arrow-right"></i>
+                  </el-button>
+                </div>
+              </div>
+
+              <div class="weekdays">
+                <div v-for="(item, i) in weeks" :key="i" class="weekday" :class="{ weekend: i === 0 || i === 6 }">
+                  {{ item }}
+                </div>
+              </div>
+
+              <div class="days-grid">
+                <div v-for="(item, index) in showDays" :key="index" class="day-cell" :class="{
+                    'prev-month': item.flag === 'prev',
+                    'next-month': item.flag === 'rear',
+                    'current-day': item.isCurrentDay,
+                    'selected-day': item.isSelected,
+                    'today': item.isToday,
+                    'weekend': item.isWeekend,
+                    'has-event': item.hasEvent
+                  }" @click="handleItemClick(item, Math.floor(index / 7), index % 7)">
+                  <div class="date-info">
+                    <span class="day-number">
+                      {{ item.day }}
+                    </span>
+                    <span v-if="item.isToday" class="today-badge">今</span>
+                  </div>
+                  <div class="lunar-day">{{ item.nl }}</div>
+                  <!-- <div v-if="item.hasEvent" class="event-indicator">
+                    <i class="el-icon-collection"></i>
+                  </div> -->
+                </div>
+              </div>
+
+              <div class="calendar-footer">
+                <div class="legend">
+                  <div class="legend-item">
+                    <div class="legend-icon today"></div>
+                    <span>今日</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-icon weekend"></div>
+                    <span>周末</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-icon event"></div>
+                    <span>有记录</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </el-card>
     </div>
+
+    <!-- 编辑对话框 -->
+    <el-dialog :title="'记录编辑 - ' + realAuntForm.name" @click.native.stop :visible.sync="dialogFormVisible" width="800px"
+      class="tech-dialog">
+      <el-form v-model="realAuntForm" label-position="top">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="姓名">
+              <el-input v-model="realAuntForm.name" autocomplete="off" disabled></el-input>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="周期长度">
+              <el-input v-model="realAuntForm.cycle" autocomplete="off" disabled></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="开始日期">
+              <el-date-picker v-model="realAuntForm.startDate" type="date" :picker-options="pickerOptions"
+                placeholder="选择开始时间" @change="auntDatetChange(realAuntForm.startDate, 'st')" class="tech-date-picker">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="8">
+            <el-form-item label="结束日期">
+              <el-date-picker v-model="realAuntForm.endDate" type="date" :picker-options="pickerOptions"
+                placeholder="选择结束时间" @change="auntDatetChange(realAuntForm.endDate, 'ed')" class="tech-date-picker">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="4">
+            <el-form-item label="持续时间">
+              <el-input v-model="realAuntForm.duration" autocomplete="off" disabled></el-input>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="4">
+            <el-form-item label="血量(ml)">
+              <el-input v-model="realAuntForm.bloodVolume" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="症状">
+              <el-input type="textarea" :rows="4" placeholder="记录每个月姨妈期间出现的症状，如腹痛、乳房胀痛、情绪波动等"
+                v-model="realAuntForm.symptom" class="tech-textarea">
+              </el-input>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="备注">
+              <el-input type="textarea" :rows="4" placeholder="可以记录一些额外的信息，如服用的药物、健康状况等。" v-model="realAuntForm.note"
+                class="tech-textarea">
+              </el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false" class="tech-btn-cancel">取 消</el-button>
+        <el-button type="primary" @click="handleEditAunt" class="tech-btn-save">保 存</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
-    
+
 <script>
 import { _getUserAll, _getAuntNameAll, _getAuntByNameAll, _addAunt, _updAunt } from "@/api/api.js";
 import { getDaysInMonth, handleCrateDate, handleCreateDatePicker, parseTime } from '../../utils/calendar'
@@ -205,7 +329,7 @@ export default {
       moveIndex: [], // 两个，第一个是起始，第二个是结束
       canMove: false, // 当moveIndex数组有一个值时，可以触发滑动
       auntForm: {
-        id:'',
+        id: '',
         name: '',
         startDate: '',   //开始日期
         endDate: '',     //结束日期
@@ -217,7 +341,7 @@ export default {
       realAuntForm: {
         id: '',
         name: '',
-        uID:'',
+        uID: '',
         startDate: '',   //开始日期
         endDate: '',     //结束日期
         duration: '',    //持续时间
@@ -232,11 +356,12 @@ export default {
         cycleLength: '',     //周期
         periodLength: '',    //持续时间
         nextPeriodEndDate: '',   //下次结束时间
-        nextPeriodStartDate: ''  //下次开始时间
+        nextPeriodStartDate: '',  //下次开始时间
+        msg: '',   //系统建议
       },
       uNameAll: [],    //所有用户
       uName: '',   //查询的用户名称
-      uID:'', //查询的用户ID
+      uID: '', //查询的用户ID
       value: new Date(),
 
       xData: [], //横坐标
@@ -263,21 +388,32 @@ export default {
       }
     }
   },
+  computed: {
+    calendarTitle() {
+      const months = ['一月', '二月', '三月', '四月', '五月', '六月',
+        '七月', '八月', '九月', '十月', '十一月', '十二月'];
+      return `${this.curYear}年 ${months[this.curMonth]}`;
+    }
+  },
   methods: {
     init() {
       //获取所有登记用户名字
       _getAuntNameAll().then(res => {
-        this.uNameAll = res.data.obj
+        this.uNameAll = res.data.data
+        if (this.$store.state.login_user.roles[0].name === 'admin' && this.uNameAll != null) {
+          this.uName = this.uNameAll[0].uName
+          this.uID = this.uNameAll[0].uID
+        }
         for (let i = 0; i < this.uNameAll.length; i++) {
-        const element = this.uNameAll[i];
-        this.uNameAll.forEach(key => {
-          if(key.uID == this.$store.state.login_user.id){
-            this.uName = key.uName
-            this.uID = key.uID
-            this.selectByNameAllFun()
-          }
-        })
-      }
+          const element = this.uNameAll[i];
+          this.uNameAll.forEach(key => {
+            if (key.uID == this.$store.state.login_user.id) {
+              this.uName = key.uName
+              this.uID = key.uID
+            }
+          })
+        }
+        this.selectByNameAllFun()
       })
     },
     //根据名字查询所有记录
@@ -307,6 +443,7 @@ export default {
           this.nextAuntForm.nextPeriodStartDate = res.data.nextPeriodStartDate
           this.nextAuntForm.cycleLength = res.data.cycleLength
           this.nextAuntForm.periodLength = res.data.periodLength
+          this.nextAuntForm.msg = '根据' + res.data.msg + '预测下次经期情况'
 
 
           this.auntForm.name = res.data.auntList[0].uName
@@ -378,9 +515,23 @@ export default {
         this.rearDays = handleCrateDate(year, month, 1, 42 - this.days - (index), 'rear')
       }
       this.curDays = handleCrateDate(year, month, 1, this.days)
+      // 标记今天
+      const today = parseTime(new Date().getTime());
+      this.curDays.forEach(day => {
+        day.isToday = day.date === today;
+        // 模拟事件标记 - 实际应用中应根据数据设置
+        // day.hasEvent = Math.random() > 0.7;
+      });
+
       this.showDays.unshift(...this.prevDays)
       this.showDays.push(...this.curDays)
       this.showDays.push(...this.rearDays)
+
+      // 标记周末
+      this.showDays.forEach((day, idx) => {
+        const dayOfWeek = idx % 7;
+        day.isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+      });
       this.res = this.handleFormatDates(this.showDays)
     },
     // 传入长度42的原数组，最终转换成二维数组，格式化
@@ -393,10 +544,25 @@ export default {
             this.curIndex_i = i
             this.curIndex_j = j
           }
+          // 保持选中状态
+          if (temp[j].date === this.selectedDates) {
+            temp[j].isSelected = true;
+            this.chkIndex_i = i;
+            this.chkIndex_j = j;
+          }
         }
         arr2.push(temp)
       }
-      arr2[this.curIndex_i][this.curIndex_j].isCurrentDay = true
+      // 确保今天高亮
+      if (arr2[this.curIndex_i] && arr2[this.curIndex_i][this.curIndex_j]) {
+        arr2[this.curIndex_i][this.curIndex_j].isCurrentDay = true;
+      }
+      if (this.chkIndex_i == -1) {
+        this.chkIndex_i = this.curIndex_i
+        this.chkIndex_j = this.curIndex_j
+      }
+      arr2[this.chkIndex_i][this.chkIndex_j].isSelected = true;
+
       return arr2
     },
     handleTableHead(start) {
@@ -429,7 +595,6 @@ export default {
         }
         this.res[this.chkIndex_i][this.chkIndex_j].isSelected = false
         this.res[this.curIndex_i][this.curIndex_j].isCurrentDay = false
-        let ddd = 1
         this.$nextTick(() => {
           for (let a = 0; a < 7; a++) {
             const temp = this.res[a]
@@ -483,47 +648,21 @@ export default {
           this.curMonth = 11
           this.curYear -= 1
         }
-        this.$nextTick(() => {
-          for (let i = 0; i < 7; i++) {
-            const temp = this.res[i]
-            for (let j = 0; j < temp.length; j++) {//获取当前日期的坐标
-              if (temp[j].date === this.selectedDates) {
-                this.chkIndex_i = i
-                this.chkIndex_j = j
-                this.res[i][j].isSelected = true
-              } else {
-                this.res[i][j].isSelected = false
-              }
-            }
-            this.res[this.curIndex_i][this.curIndex_j].isCurrentDay = false
-            this.res[this.curIndex_i][this.curIndex_j].isCurDay = false
-          }
-        })
       } else if (type === 'next') {
         this.curMonth++
         if (this.curMonth === 12) {
           this.curMonth = 0
           this.curYear += 1
         }
-        this.$nextTick(() => {
-          for (let i = 0; i < 7; i++) {
-            const temp = this.res[i]
-            for (let j = 0; j < temp.length; j++) {//获取当前日期的坐标
-              if (temp[j].date === this.selectedDates) {
-                this.chkIndex_i = i
-                this.chkIndex_j = j
-                this.res[i][j].isSelected = true
-              } else {
-                this.res[i][j].isSelected = false
-              }
-            }
-            this.res[this.curIndex_i][this.curIndex_j].isCurrentDay = false
-            this.res[this.curIndex_i][this.curIndex_j].isCurDay = false
-          }
-        })
       } else {
-
+        const today = new Date();
+        this.curYear = today.getFullYear();
+        this.curMonth = today.getMonth();
+        this.chkIndex_i = this.curIndex_i
+        this.chkIndex_j = this.curIndex_j
       }
+      // 重新生成日历数据，会保持选中的日期
+      this.handleGetDays(this.curYear, this.curMonth, this.startOfWeek);
     },
     initEcharts() {
       if (this.isEmpty) return
@@ -629,156 +768,743 @@ export default {
 }
 
 </script>
-    
-<style lang="less" scoped>
-.dashboard-view {
-  position: relative;
-  width: 95%;
-  margin: auto;
 
-  .github-corner {
-    position: absolute;
-    top: 0;
-    border: 0;
-    right: 0;
-  }
+<style lang="scss">
+.dashboard-container {
+  // max-width: 1600px;
+  margin: 0 auto;
+  padding: 5px;
+  font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: linear-gradient(135deg, #0f1a30 0%, #1a2a4f 100%);
+  color: #e0f0ff;
+  min-height: 100vh;
+}
 
-  .panel-group {
-    margin-top: 32px;
-  }
+.user-select-card {
+  background: rgba(16, 32, 64, 0.6);
+  border: 1px solid rgba(64, 158, 255, 0.2);
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 
-  .echarts-group {
-    width: 100%;
-    overflow: hidden;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    display: grid;
-    grid-template-columns: 100% 50%;
-    grid-row-gap: 30px;
-
-    .chart-item {
-      width: auto;
-      background-color: #fff;
-      min-height: 300px;
-      padding: 10px;
-    }
-
-    .chart-item:nth-child(even) {
-      margin-left: 30px;
-    }
+  .el-card__body {
+    padding: 20px;
   }
 }
 
-.el-descriptions__body th {
-  width: 80px;
-}
-
-.panel-group {
-  margin-top: 18px;
-
-  .card-panel-col {
-    margin-bottom: 12px;
-  }
-
-  .card-panel {
-    float: left;
-    height: 195px;
-    width: 100%;
-
-    cursor: pointer;
-    font-size: 12px;
-    position: relative;
-    overflow: hidden;
-    color: #666;
-    background: #fff;
-    box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
-    border-color: rgba(0, 0, 0, .05);
-  }
-
-}
-
-.echarts {
-  // display: flex;
-  // align-items: center;
-  // justify-content: center;
-  // flex-direction: column;
-  float: left;
-}
-
-.span-day {
+.user-select-group {
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-direction: column;
+  gap: 15px;
 }
 
-.span-txt {
-  font-size: 12px;
+.user-select {
+  flex: 1;
+
+  .el-input__inner {
+    background: rgba(10, 25, 50, 0.7);
+    border: 1px solid rgba(64, 158, 255, 0.3);
+    color: #0084ff;
+    border-radius: 8px;
+    height: 42px;
+    transition: all 0.3s;
+
+    &:focus {
+      border-color: #409eff;
+      box-shadow: 0 0 10px rgba(64, 158, 255, 0.5);
+    }
+  }
 }
 
-.calendar {
-  // display: flex;
-  // align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  float: right;
+.search-btn {
+  background: linear-gradient(135deg, #409eff, #337ecc);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 25px;
+  font-weight: 500;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(64, 158, 255, 0.3);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(64, 158, 255, 0.4);
+  }
 }
 
-.calendar-table {
-  // table-layout: fixed;
-  border-collapse: collapse;
-  transition: .3s;
+.data-panels {
+  margin-bottom: 30px;
+}
 
-  thead tr {
-    height: 50px;
+.tech-panel {
+  background: rgba(16, 32, 64, 0.6);
+  border: 1px solid rgba(64, 158, 255, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s ease;
+  height: 100%;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(64, 158, 255, 0.25);
   }
 
-  tbody tr {
-    &:first-child td {
-      border-top: 1px solid #08a8a0;
+  .el-card__body {
+    padding: 20px;
+  }
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(64, 158, 255, 0.2);
+
+  i {
+    font-size: 24px;
+    color: #409eff;
+    margin-right: 12px;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: rgb(153, 153, 153);
+    flex: 1;
+  }
+}
+
+.tech-descriptions {
+  .el-descriptions__header {
+    margin-bottom: 15px;
+  }
+
+  .el-descriptions__title {
+    color: #a0c4ff;
+    font-weight: 400;
+  }
+
+  .el-descriptions__body {
+    background: transparent;
+
+    th {
+      background: rgba(10, 25, 50, 0.7);
+      color: #a0c4ff;
+      border: 1px solid rgba(64, 158, 255, 0.2);
     }
 
     td {
-      cursor: pointer;
-      border-right: 1px solid #08a8a0;
-      border-bottom: 1px solid #08a8a0;
+      background: rgba(20, 40, 80, 0.4);
+      color: #e0f0ff;
+      border: 1px solid rgba(64, 158, 255, 0.2);
+    }
+  }
+}
 
-      &:first-child {
-        border-left: 1px solid #08a8a0;
+.highlight {
+  color: #67e0e6;
+  font-weight: bold;
+  text-shadow: 0 0 8px rgba(103, 224, 230, 0.6);
+}
+
+.visualization-section {
+  margin-top: 30px;
+}
+
+.chart-card {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(92, 128, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+
+  .el-card__body {
+    padding: 0;
+  }
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid rgba(64, 158, 255, 0.2);
+
+  h3 {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    i {
+      color: #ff7b89;
+      font-size: 1.4rem;
+    }
+  }
+}
+
+.chart-controls {
+  .el-form-item {
+    margin-bottom: 0;
+    margin-right: 10px;
+  }
+}
+
+.tech-select {
+  .el-input__inner {
+    background: rgba(10, 25, 50, 0.7);
+    border: 1px solid rgba(64, 158, 255, 0.3);
+    color: #e0f0ff;
+    border-radius: 6px;
+    transition: all 0.3s;
+
+    &:focus {
+      border-color: #409eff;
+      box-shadow: 0 0 8px rgba(64, 158, 255, 0.5);
+    }
+  }
+}
+
+.tech-btn {
+  background: rgba(10, 25, 50, 0.7);
+  border: 1px solid rgba(64, 158, 255, 0.3);
+  color: #e0f0ff;
+  border-radius: 6px;
+  transition: all 0.3s;
+
+  &:hover {
+    background: rgba(20, 40, 80, 0.9);
+    border-color: #409eff;
+    transform: translateY(-2px);
+  }
+}
+
+.visualization-content {
+  display: flex;
+  height: 550px;
+}
+
+.chart-container {
+  flex: 1;
+  padding: 20px;
+
+  .echart {
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 25, 50, 0.3);
+    border-radius: 8px;
+    border: 1px solid rgba(64, 158, 255, 0.2);
+  }
+}
+
+.calendar-container {
+  width: 30%;
+  padding: 20px;
+}
+
+.calendar-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: rgba(20, 28, 50, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(92, 128, 255, 0.1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  padding: 15px;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(92, 128, 255, 0.15);
+}
+
+.calendar-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #e6f0ff;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.calendar-actions {
+  display: flex;
+  gap: 8px;
+
+  .el-button {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(92, 128, 255, 0.2);
+    color: #a0b9ff;
+    border-radius: 50%;
+    transition: all 0.3s;
+
+    &:hover {
+      background: rgba(30, 45, 80, 0.8);
+      border-color: #5c80ff;
+      color: #d6e4ff;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 10px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.weekday {
+  font-size: 13px;
+  color: #8a9cc9;
+  padding: 8px 0;
+
+  &.weekend {
+    color: #ff7b89;
+  }
+}
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 6px;
+  flex: 1;
+}
+
+.day-cell {
+  position: relative;
+  border-radius: 10px;
+  padding: 10px 5px;
+  min-height: 75px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba(25, 33, 55, 0.5);
+  border: 1px solid rgba(92, 128, 255, 0.1);
+
+  &:hover {
+    background: rgba(40, 55, 90, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-color: rgba(92, 128, 255, 0.3);
+  }
+
+  .date-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+  }
+
+  .day-number {
+    font-size: 15px;
+    font-weight: 500;
+    color: #d6e4ff;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    z-index: 2;
+  }
+
+  .today-badge {
+    font-size: 10px;
+    background: #ff7b89;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: 500;
+    position: absolute;
+    top: -6px;
+    right: -5px;
+    z-index: 3;
+  }
+
+  .lunar-day {
+    font-size: 11px;
+    color: #8a9cc9;
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  .event-indicator {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    width: 20px;
+    height: 20px;
+    background: #ff7b89;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+
+    i {
+      color: white;
+      font-size: 10px;
+    }
+  }
+}
+
+/* 日期状态样式 */
+.prev-month {
+
+  .day-number,
+  .lunar-day {
+    color: #4a5a7a !important;
+    opacity: 0.5;
+  }
+
+  &:hover {
+
+    .day-number,
+    .lunar-day {
+      color: #6a7ca0 !important;
+    }
+  }
+}
+
+.next-month {
+
+  .day-number,
+  .lunar-day {
+    color: #4a5a7a !important;
+    opacity: 0.5;
+  }
+
+  &:hover {
+
+    .day-number,
+    .lunar-day {
+      color: #6a7ca0 !important;
+    }
+  }
+}
+
+.weekend {
+  .day-number {
+    color: #ff7b89;
+  }
+}
+
+.today {
+  background: linear-gradient(135deg, rgba(255, 123, 137, 0.25), rgba(220, 70, 90, 0.25));
+  border-color: rgba(255, 123, 137, 0.3);
+
+  .day-number {
+    background: #ff7b89;
+    color: white !important;
+    font-weight: 600;
+  }
+
+  .lunar-day {
+    color: #ffb0b9 !important;
+  }
+}
+
+.selected-day {
+  border: 2px solid #5c80ff;
+  box-shadow: 0 0 0 2px rgba(92, 128, 255, 0.2);
+}
+
+.has-event {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 6px;
+    height: 6px;
+    background: #ff7b89;
+    border-radius: 50%;
+    z-index: 1;
+  }
+}
+
+.calendar-footer {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(92, 128, 255, 0.1);
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #8a9cc9;
+
+  .legend-icon {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+
+    &.today {
+      background: #ff7b89;
+      border-radius: 50%;
+    }
+
+    &.weekend {
+      background: #ff7b89;
+      opacity: 0.7;
+    }
+
+    &.event {
+      background: #ff7b89;
+    }
+  }
+}
+
+
+.tech-calendar {
+  height: 100%;
+  background: rgba(10, 25, 50, 0.3);
+  border-radius: 8px;
+  border: 1px solid rgba(64, 158, 255, 0.2);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.calendar-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 14px;
+
+  thead tr {
+    height: 40px;
+    background: rgba(20, 40, 80, 0.7);
+
+    th {
+      color: #a0c4ff;
+      font-weight: 400;
+      border: 1px solid rgba(64, 158, 255, 0.2);
+    }
+  }
+
+  tbody tr {
+    td {
+      height: 70px;
+      position: relative;
+      border: 1px solid rgba(64, 158, 255, 0.1);
+      transition: all 0.3s;
+      cursor: pointer;
+
+      &:hover {
+        background: rgba(64, 158, 255, 0.15);
+      }
+
+      .day-number {
+        display: block;
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 3px;
+      }
+
+      .lunar-day {
+        display: block;
+        font-size: 12px;
+        color: #a0c4ff;
       }
     }
   }
 }
 
+/* 日历样式 */
 .notCurMonth {
-  color: #C0C4CC;
+  color: #4a6580;
 }
 
 .currentDay {
-  //当前日期颜色
-  color: #fff;
-  background-color: #409EFF;
+  background: linear-gradient(135deg, rgba(64, 158, 255, 0.7), rgba(58, 119, 255, 0.7));
+  color: #fff !important;
+
+  .lunar-day {
+    color: #e0f0ff !important;
+  }
 }
 
 .selectDay {
-  //选中日期颜色
-  color: rgb(0, 0, 0);
-  background-color: #b2b5b9;
+  background: rgba(103, 224, 230, 0.2);
+  color: #67e0e6 !important;
+
+  .lunar-day {
+    color: #67e0e6 !important;
+  }
 }
 
 .rangeSelectd {
-  //默认日期颜色
-  color: #606266;
-  background-color: #dee2e9;
+  background: rgba(103, 224, 230, 0.1);
 }
 
 .weekend {
-  color: #F73131;
+  color: #ff7b89;
+
+  .lunar-day {
+    color: #ff7b89;
+  }
 }
 
 .curDay {
-  color: #409EFF;
-  background-color: #ffffff;
+  color: #67e0e6;
+}
+
+.tech-dialog {
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(16, 32, 64, 0.9);
+  border: 1px solid rgba(64, 158, 255, 0.3);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+
+  .el-dialog__header {
+    background: linear-gradient(90deg, rgba(20, 40, 80, 0.9), rgba(10, 25, 50, 0.9));
+    padding: 20px;
+    border-bottom: 1px solid rgba(64, 158, 255, 0.2);
+
+    .el-dialog__title {
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 500;
+    }
+  }
+
+  .el-dialog__body {
+    padding: 30px;
+    background: rgba(10, 25, 50, 0.7);
+  }
+
+  .el-form-item__label {
+    color: #a0c4ff;
+  }
+
+  .el-input__inner,
+  .el-textarea__inner {
+    background: rgba(20, 40, 80, 0.4);
+    border: 1px solid rgba(64, 158, 255, 0.2);
+    color: #e0f0ff;
+    border-radius: 6px;
+
+    &:focus {
+      border-color: #409eff;
+      box-shadow: 0 0 8px rgba(64, 158, 255, 0.5);
+    }
+  }
+}
+
+.tech-btn-cancel {
+  background: rgba(20, 40, 80, 0.4);
+  border: 1px solid rgba(64, 158, 255, 0.2);
+  color: #e0f0ff;
+  border-radius: 6px;
+
+  &:hover {
+    background: rgba(30, 60, 120, 0.6);
+    border-color: #409eff;
+  }
+}
+
+.tech-btn-save {
+  background: linear-gradient(135deg, #409eff, #337ecc);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+
+  &:hover {
+    background: linear-gradient(135deg, #337ecc, #2b6cb0);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(64, 158, 255, 0.4);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 响应式调整 */
+@media (max-width: 1200px) {
+  .visualization-content {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .calendar-container {
+    width: 100%;
+    margin-top: 20px;
+    border-left: none;
+    border-top: 1px solid rgba(92, 128, 255, 0.1);
+  }
+}
+
+@media (max-width: 768px) {
+  .chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .chart-controls {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .days-grid {
+    grid-gap: 4px;
+  }
+
+  .day-cell {
+    min-height: 65px;
+    padding: 8px 3px;
+
+    .day-number {
+      font-size: 13px;
+      width: 20px;
+      height: 20px;
+    }
+
+    .lunar-day {
+      font-size: 10px;
+    }
+
+    .today-badge {
+      font-size: 9px;
+      padding: 1px 4px;
+    }
+  }
+
+  .legend {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 12px;
+  }
 }
 </style>
-    

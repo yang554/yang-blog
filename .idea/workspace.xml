@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a82f11b9-7627-418a-8ed2-13fdc6ccbc4a" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/blog-app/.hbuilderx/launch.json" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/.hbuilderx/launch.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/api/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/api/config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/api/modules/priceTracker.js" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/api/modules/priceTracker.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/common/updateManager.js" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/common/updateManager.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/pages.json" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/pages.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/pages/life/add-daily-flow/add-daily-flow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/pages/life/add-daily-flow/add-daily-flow.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/pages/other/priceTracker/priceTracker.vue" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/pages/other/priceTracker/priceTracker.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/static/icon/jishouru.png" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/static/icon/jishouru.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/static/icon/jizhichu.png" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/static/icon/jizhichu.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-icons/changelog.md" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-icons/changelog.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-icons/components/uni-icons/uni-icons.uvue" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-icons/components/uni-icons/uni-icons.uvue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-icons/components/uni-icons/uniicons.css" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-icons/components/uni-icons/uniicons.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-icons/components/uni-icons/uniicons_file.ts" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-icons/components/uni-icons/uniicons_file.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-icons/components/uni-icons/uniicons_file_vue.js" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-icons/components/uni-icons/uniicons_file_vue.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-icons/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-icons/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-icons/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-icons/readme.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/changelog.md" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/changelog.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/index.scss" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/index.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/readme.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/styles/index.scss" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/styles/index.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/styles/setting/_border.scss" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/styles/setting/_border.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/styles/setting/_color.scss" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/styles/setting/_color.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/styles/setting/_radius.scss" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/styles/setting/_radius.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/styles/setting/_space.scss" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/styles/setting/_space.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/styles/setting/_styles.scss" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/styles/setting/_styles.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/styles/setting/_text.scss" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/styles/setting/_text.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/styles/setting/_variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/styles/setting/_variables.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/styles/tools/functions.scss" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/styles/tools/functions.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/theme.scss" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/theme.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/uni_modules/uni-scss/variables.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/dist/build/app-plus/__uniappquill.js" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/dist/build/app-plus/__uniappquill.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/dist/build/app-plus/app-config-service.js" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/dist/build/app-plus/app-config-service.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/dist/build/app-plus/app-service.js" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/dist/build/app-plus/app-service.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/dist/build/app-plus/app-view.js" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/dist/build/app-plus/app-view.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/dist/build/app-plus/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/dist/build/app-plus/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/dist/build/app-plus/static/icon/jishouru.png" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/dist/build/app-plus/static/icon/jishouru.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/dist/build/app-plus/static/icon/jizhichu.png" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/dist/build/app-plus/static/icon/jizhichu.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/dist/build/app-plus/view.css" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/dist/build/app-plus/view.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/dist/build/app-plus/view.umd.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/dist/build/app-plus/view.umd.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/__uniappquill.js" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/__uniappquill.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/app-config-service.js" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/app-config-service.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/app-config.js" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/app-config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/app-service.js" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/app-service.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/app-view.js" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/app-view.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/static/icon/jishouru.png" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/static/icon/jishouru.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/static/icon/jizhichu.png" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/static/icon/jizhichu.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/view.css" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/view.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/view.umd.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/dist/dev/app-plus/view.umd.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-app/unpackage/release/__UNI__70D2920.wgt" beforeDir="false" afterPath="$PROJECT_DIR$/blog-app/unpackage/release/__UNI__70D2920.wgt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-end/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/blog-end/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-end/vue.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/blog-end/vue.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-server/src/main/java/com/yang/blog/entity/PriceRecordEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/blog-server/src/main/java/com/yang/blog/entity/PriceRecordEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-server/src/main/java/com/yang/blog/service/FIleService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-server/src/main/java/com/yang/blog/service/impl/PriceRecordServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/blog-server/src/main/java/com/yang/blog/service/impl/PriceRecordServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog-server/src/main/resources/mapper/PriceRecordMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/blog-server/src/main/resources/mapper/PriceRecordMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yang-blog-20260124.sql" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="userSettingsFile" value="E:\Software\apache-maven-3.6.3\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="3DR6zwRIh01pVruftJ0e5uKKeGn" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Maven.blog [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.blog [package].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.YangBlogServerApplication.executor&quot;: &quot;Debug&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main-blog&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;全局库&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
+  <component name="RunManager">
+    <configuration name="YangBlogServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="blog" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.yang.blog.YangBlogServerApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28539.33" />
+        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-IU-252.28539.33" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="a82f11b9-7627-418a-8ed2-13fdc6ccbc4a" name="更改" comment="" />
+      <created>1778232800913</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1778232800913</updated>
+      <workItem from="1778232802859" duration="4077000" />
+      <workItem from="1778673288188" duration="42000" />
+      <workItem from="1782543974094" duration="3425000" />
+      <workItem from="1782616496013" duration="6279000" />
+      <workItem from="1783047940361" duration="7539000" />
+      <workItem from="1785760663875" duration="1606000" />
+      <workItem from="1785804899686" duration="4312000" />
+      <workItem from="1789107442641" duration="1224000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

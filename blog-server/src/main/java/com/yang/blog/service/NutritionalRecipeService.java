@@ -9,6 +9,10 @@ import java.util.List;
 public interface NutritionalRecipeService {
     //查询所有记录
     List<NutritionalRecipeEntity> findAll();
+    //根据用户收藏查询所有记录
+    List<NutritionalRecipeEntity> findAllByUserCol(String uID);
+    //获取菜谱类型
+    List<String> getFoodType();
     //条件查询
     List<NutritionalRecipeEntity> findByFactor(String name,String type);
     //根据ID查询

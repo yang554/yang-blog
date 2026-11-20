@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface SysUserService {
     //查询用户是否存在，根据身份证号查找用户
-    boolean findUser(String ext02);
+    boolean findUser(String ext02,String userName);
     //查询所有用户
     List<SysUserEntity> findAll();
     //根据用户名查询

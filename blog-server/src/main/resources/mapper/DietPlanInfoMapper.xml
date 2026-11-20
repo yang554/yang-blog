@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.DietPlanInfoMapper">
+    <resultMap id="map" type="com.yang.blog.entity.DietPlanInfoEntity">
+        <id column="id" property="id"/>
+        <result column="time" property="time"/>
+        <result column="foodName" property="foodName"/>
+        <result column="energy" property="energy"/>
+        <result column="fat" property="fat"/>
+        <result column="carbonWater" property="carbonWater"/>
+        <result column="protein" property="protein"/>
+        <result column="planID" property="planID"/>
+        <result column="createTime" property="createTime"/>
+        <result column="note" property="note"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="map">
+        SELECT * FROM t_diet_plan_info ORDER BY id DESC
+    </select>
+
+    <select id="findByFactor" resultMap="map">
+        SELECT * FROM t_diet_plan_info WHERE planID = #{planID}
+        ORDER BY `time` DESC
+    </select>
+
+    <insert id="insertBatch">
+        INSERT INTO t_diet_plan_info (id,`time`,foodName,energy,fat,carbonWater,protein,planID,createTime,note)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},#{item.time},#{item.foodName},#{item.energy},#{item.fat},#{item.carbonWater},#{item.protein},#{item.planID},#{item.createTime},#{item.note})
+        </foreach>
+    </insert>
+
+    <update id="updateBatch">
+        UPDATE t_diet_plan_info
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="time =case" suffix="end,">
+                <foreach collection="list" item="item">
+                    when id = #{item.id} then #{item.time}
+                </foreach>
+            </trim>
+            <trim prefix="foodName =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.foodName!=null">
+                        when id = #{item.id} then #{item.foodName}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="energy =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.energy!=null">
+                        when id = #{item.id} then #{item.energy}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="fat =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.fat!=null">
+                        when id = #{item.id} then #{item.fat}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="carbonWater =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.carbonWater!=null">
+                        when id = #{item.id} then #{item.carbonWater}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="protein =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.protein!=null">
+                        when id = #{item.id} then #{item.protein}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="note =case" suffix="end,">
+                <foreach collection="list" item="item">
+                    <if test="item.note!=null">
+                        when id = #{item.id} then #{item.note}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            ${item.id}
+        </foreach>
+    </update>
+
+    <delete id="deleteBatch">
+        DELETE FROM t_diet_plan_info WHERE id IN
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            ${item.id}
+        </foreach>
+    </delete>
+</mapper>

@@ -26,6 +26,8 @@ public class TypeEntity{
     private String note;
     @TableField(exist = false) //查询时过滤非数据库字段
     private Integer counType;
+    @ApiModelProperty(value = "分类数据量")
+    private String count;
 
     public Long getId() {
         return id;
@@ -49,5 +51,13 @@ public class TypeEntity{
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getCount() {
+        return count;
+    }
+
+    public void setCount(String count) {
+        this.count = count;
     }
 }

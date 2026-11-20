@@ -1,7 +1,6 @@
 package com.yang.blog.mapper;
 
 import com.yang.blog.entity.TTagEntity;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +14,8 @@ public interface TTagMapper {
     //根据标签名称查询标签（模糊）
     List<TTagEntity> getTagByName(String name);
     //根据标签ID查询
-    List<TTagEntity> getTagById( String[] tID);
+//    List<TTagEntity> getTagById(List<String> tID);
+    List<TTagEntity> getTagById(String[] tID);
     //添加标签
     int addTag(TTagEntity entity);
     //根据编码修改标签

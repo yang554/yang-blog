@@ -1,20 +1,24 @@
 <template>
   <div class="dashboard-view">
-    <div style="margin-top: 5px;">
+    <div style="margin-top: 5px">
       <el-col :xs="24" :sm="24" :lg="24" class="card-panel-col">
         <el-row>
           <el-col :span="3">
-            <el-input placeholder="按用户名搜索" v-model="data.uName">
-              <template #prefix>
-                <el-icon class="el-input__icon">
-                  <search />
-                </el-icon>
-              </template>
-            </el-input>
+            <el-select
+              v-model="data.uID"
+              placeholder="选择需查询的人员"
+              style="width: 190px"
+            >
+              <el-option
+                v-for="item in data.uNameAll"
+                :key="item.uID"
+                :label="item.uName"
+                :value="item.uID"
+              />
+            </el-select>
           </el-col>
           <el-col :span="1">
             <el-button type="success" @click="selectByNameAllFun">
-              <i class="el-icon-search"></i>
               搜索
             </el-button>
           </el-col>
@@ -26,37 +30,90 @@
         <el-row :gutter="40" class="panel-group">
           <el-col :xs="24" :lg="8" class="card-panel-col">
             <div class="card-panel">
-              <el-descriptions class="margin-top" title="上次记录" :column="2" border>
-                <el-descriptions-item label="姓名">{{ data.auntForm.name }}</el-descriptions-item>
-                <el-descriptions-item label="周期长度">{{ data.auntForm.cycle }}</el-descriptions-item>
-                <el-descriptions-item label="开始日期">{{ data.auntForm.startDate }}</el-descriptions-item>
-                <el-descriptions-item label="结束日期">{{ data.auntForm.endDate }}</el-descriptions-item>
-                <el-descriptions-item label="持续时间">{{ data.auntForm.duration }}</el-descriptions-item>
-                <el-descriptions-item label="血量">{{ data.auntForm.bloodVolume }}ml</el-descriptions-item>
+              <el-descriptions
+                class="margin-top"
+                title="上次记录"
+                :column="2"
+                border
+              >
+                <el-descriptions-item label="姓名">{{
+                  data.auntForm.name
+                }}</el-descriptions-item>
+                <el-descriptions-item label="周期长度">{{
+                  data.auntForm.cycle
+                }}</el-descriptions-item>
+                <el-descriptions-item label="开始日期">{{
+                  data.auntForm.startDate
+                }}</el-descriptions-item>
+                <el-descriptions-item label="结束日期">{{
+                  data.auntForm.endDate
+                }}</el-descriptions-item>
+                <el-descriptions-item label="持续时间">{{
+                  data.auntForm.duration
+                }}</el-descriptions-item>
+                <el-descriptions-item label="血量"
+                  >{{ data.auntForm.bloodVolume }}ml</el-descriptions-item
+                >
               </el-descriptions>
             </div>
           </el-col>
           <el-col :xs="24" :lg="8" class="card-panel-col">
             <div class="card-panel">
-              <el-descriptions class="margin-top" title="系统推测下次经期情况" :column="2" border>
-                <el-descriptions-item label="姓名">{{ data.auntForm.name }}</el-descriptions-item>
-                <el-descriptions-item label="周期长度">{{ data.nextAuntForm.cycleLength }}天</el-descriptions-item>
-                <el-descriptions-item label="开始日期">{{ data.nextAuntForm.nextPeriodStartDate }}</el-descriptions-item>
-                <el-descriptions-item label="结束日期">{{ data.nextAuntForm.nextPeriodEndDate }}</el-descriptions-item>
-                <el-descriptions-item label="持续时间">{{ data.nextAuntForm.periodLength }}天</el-descriptions-item>
-                <el-descriptions-item label="距离开始还有">{{ data.nextAuntForm.daysUntilNextPeriod }}天</el-descriptions-item>
+              <el-descriptions
+                class="margin-top"
+                title="系统推测下次经期情况"
+                :column="2"
+                border
+              >
+                <el-descriptions-item label="姓名">{{
+                  data.auntForm.name
+                }}</el-descriptions-item>
+                <el-descriptions-item label="周期长度"
+                  >{{ data.nextAuntForm.cycleLength }}天</el-descriptions-item
+                >
+                <el-descriptions-item label="开始日期">{{
+                  data.nextAuntForm.nextPeriodStartDate
+                }}</el-descriptions-item>
+                <el-descriptions-item label="结束日期">{{
+                  data.nextAuntForm.nextPeriodEndDate
+                }}</el-descriptions-item>
+                <el-descriptions-item label="持续时间"
+                  >{{ data.nextAuntForm.periodLength }}天</el-descriptions-item
+                >
+                <el-descriptions-item label="距离开始还有"
+                  >{{
+                    data.nextAuntForm.daysUntilNextPeriod
+                  }}天</el-descriptions-item
+                >
               </el-descriptions>
             </div>
           </el-col>
           <el-col :xs="24" :lg="8" class="card-panel-col">
             <div class="card-panel">
-              <el-descriptions class="margin-top" title="本次实际记录" :column="2" border>
-                <el-descriptions-item label="姓名">{{ data.auntForm.name }}</el-descriptions-item>
-                <el-descriptions-item label="周期长度">{{ data.realAuntForm.cycle }}</el-descriptions-item>
-                <el-descriptions-item label="开始日期">{{ data.realAuntForm.startDate }}</el-descriptions-item>
-                <el-descriptions-item label="结束日期">{{ data.realAuntForm.endDate }}</el-descriptions-item>
-                <el-descriptions-item label="持续时间">{{ data.realAuntForm.duration }}</el-descriptions-item>
-                <el-descriptions-item label="血量">{{ data.realAuntForm.bloodVolume }}ml</el-descriptions-item>
+              <el-descriptions
+                class="margin-top"
+                title="本次实际记录"
+                :column="2"
+                border
+              >
+                <el-descriptions-item label="姓名">{{
+                  data.auntForm.name
+                }}</el-descriptions-item>
+                <el-descriptions-item label="周期长度">{{
+                  data.realAuntForm.cycle
+                }}</el-descriptions-item>
+                <el-descriptions-item label="开始日期">{{
+                  data.realAuntForm.startDate
+                }}</el-descriptions-item>
+                <el-descriptions-item label="结束日期">{{
+                  data.realAuntForm.endDate
+                }}</el-descriptions-item>
+                <el-descriptions-item label="持续时间">{{
+                  data.realAuntForm.duration
+                }}</el-descriptions-item>
+                <el-descriptions-item label="血量"
+                  >{{ data.realAuntForm.bloodVolume }}ml</el-descriptions-item
+                >
               </el-descriptions>
             </div>
           </el-col>
@@ -64,14 +121,18 @@
       </div>
       <div class="echarts-group">
         <div class="chart-item">
-          <div class="echart" id="mychart" style="float: left; width: 70%;height: 550px;"></div>
+          <div
+            class="echart"
+            id="mychart"
+            style="float: left; width: 70%; height: 550px"
+          ></div>
           <div class="select">
             <el-form inline>
               <el-form-item>
                 <el-select
                   v-model="data.curYear"
                   placeholder="请选择"
-                  style="width: 100px;"
+                  style="width: 100px"
                   size="small"
                 >
                   <el-option
@@ -86,7 +147,7 @@
                 <el-select
                   v-model="data.curMonth"
                   placeholder="请选择"
-                  style="width: 80px;"
+                  style="width: 80px"
                   size="small"
                 >
                   <el-option
@@ -98,38 +159,107 @@
                 </el-select>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" @click="handleQuickChange('prev')" size="small">上一月</el-button>
-                <el-button type="primary" @click="handleQuickChange('next')" size="small">下一月</el-button>
-                <el-button type="primary" @click="handleQuickChange('cur')" size="small">今</el-button>
+                <el-button
+                  type="primary"
+                  @click="handleQuickChange('prev')"
+                  size="small"
+                  >上一月</el-button
+                >
+                <el-button
+                  type="primary"
+                  @click="handleQuickChange('next')"
+                  size="small"
+                  >下一月</el-button
+                >
+                <el-button
+                  type="primary"
+                  @click="handleQuickChange('cur')"
+                  size="small"
+                  >今</el-button
+                >
               </el-form-item>
               <el-form-item>
                 <div
-                  style="width:80px;height:30px;background-color: #1ecc0e;margin-left: 15px;align-items: center;justify-content: center;display: flex;"
-                >经后期</div>
+                  style="
+                    width: 80px;
+                    height: 30px;
+                    background-color: #1ecc0e;
+                    margin-left: 15px;
+                    align-items: center;
+                    justify-content: center;
+                    display: flex;
+                  "
+                >
+                  经后期
+                </div>
                 <div
-                  style="width:80px;height:30px;background-color: #f73131;margin-left: 15px;align-items: center;justify-content: center;display: flex;"
-                >月经期</div>
+                  style="
+                    width: 80px;
+                    height: 30px;
+                    background-color: #f73131;
+                    margin-left: 15px;
+                    align-items: center;
+                    justify-content: center;
+                    display: flex;
+                  "
+                >
+                  月经期
+                </div>
                 <div
-                  style="width:80px;height:30px;background-color: #277c20;margin-left: 15px;align-items: center;justify-content: center;display: flex;"
-                >经前期</div>
+                  style="
+                    width: 80px;
+                    height: 30px;
+                    background-color: #277c20;
+                    margin-left: 15px;
+                    align-items: center;
+                    justify-content: center;
+                    display: flex;
+                  "
+                >
+                  经前期
+                </div>
                 <div
-                  style="width:80px;height:30px;background-color: #c548ff;margin-left: 15px;align-items: center;justify-content: center;display: flex;"
-                >排卵期</div>
+                  style="
+                    width: 80px;
+                    height: 30px;
+                    background-color: #c548ff;
+                    margin-left: 15px;
+                    align-items: center;
+                    justify-content: center;
+                    display: flex;
+                  "
+                >
+                  排卵期
+                </div>
               </el-form-item>
             </el-form>
           </div>
-          <table class="calendar-table" :style="{ width:props.width }">
+          <table class="calendar-table" :style="{ width: props.width }">
             <thead>
               <tr>
                 <th v-for="(item, i) in data.weeks" :key="i">{{ item }}</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(dates, i) in data.res" :key="i" :style="{ height: props.tbodyHeight }">
+              <tr
+                v-for="(dates, i) in data.res"
+                :key="i"
+                :style="{ height: props.tbodyHeight }"
+              >
                 <td
                   v-for="(item, index) in dates"
                   :key="index"
-                  :class="{ notCurMonth: !item.isCurMonth,yellow:item.isYellow,greens:item.isGreens, currentDay: item.isCurrentDay, selectDay: item.isSelected, curDay: item.isCurDay, rangeSelectd: item.isRangeSelected, weekend: item.isWeekend , green:item.isGreen }"
+                  :class="{
+                    notCurMonth: !item.isCurMonth,
+                    yellow: item.isYellow,
+                    greens: item.isGreens,
+                    currentDay: item.isCurrentDay,
+                    selectDay: item.isSelected,
+                    curDay: item.isCurDay,
+                    rangeSelectd: item.isRangeSelected,
+                    weekend: item.isWeekend,
+                    green: item.isGreen,
+                  }"
                   @click="handleItemClick(item, i, index)"
                 >
                   <span class="span-day">{{ item.day }}</span>
@@ -153,13 +283,13 @@ import {
   _getAuntNameAll,
   _getAuntByNameAll,
   _addAunt,
-  _updAunt
+  _updAunt,
 } from "@/api/api.js";
 import {
   getDaysInMonth,
   handleCrateDate,
   handleCreateDatePicker,
-  parseTime
+  parseTime,
 } from "@/utils/calendar.js";
 import {
   ref,
@@ -168,7 +298,7 @@ import {
   defineProps,
   reactive,
   nextTick,
-  computed
+  computed,
 } from "vue";
 import "echarts-wordcloud";
 import * as echarts from "echarts";
@@ -177,24 +307,24 @@ import { ElMessage, ElLoading } from "element-plus";
 const props = defineProps({
   selectMode: {
     type: String,
-    default: "click"
+    default: "click",
   },
   startOfWeek: {
     type: Number,
-    default: 1
+    default: 1,
   },
   canSelect: {
     type: Boolean,
-    default: false
+    default: false,
   },
   width: {
     type: String,
-    default: "28.5%"
+    default: "28.5%",
   },
   tbodyHeight: {
     type: String,
-    default: "60px"
-  }
+    default: "60px",
+  },
 });
 const data = reactive({
   isEmpty: true, //空状态
@@ -229,7 +359,7 @@ const data = reactive({
     duration: "", //持续时间
     cycle: "", //周期长度
     bloodVolume: "", //姨妈血量
-    uStatus: "0"
+    uStatus: "0",
   },
   realAuntForm: {
     id: "",
@@ -241,22 +371,23 @@ const data = reactive({
     bloodVolume: "", //姨妈血量
     symptom: "", //症状
     note: "", //备注
-    uStatus: ""
+    uStatus: "",
   },
   nextAuntForm: {
     daysUntilNextPeriod: "", //距离下次还剩的时间
     cycleLength: "", //周期
     periodLength: "", //持续时间
     nextPeriodEndDate: "", //下次结束时间
-    nextPeriodStartDate: "" //下次开始时间
+    nextPeriodStartDate: "", //下次开始时间
   },
   uNameAll: [], //所有用户
-  uName: "柳莉莉", //查询的用户
+  uName: "", //查询的用户
+  uID: "",
   value: new Date(),
 
   xData: [], //横坐标
   yData: [], //数据
-  myChartStyle: { float: "left", width: "70%", height: "550px" } //图表样式
+  myChartStyle: { float: "left", width: "70%", height: "550px" }, //图表样式
 });
 
 watch(
@@ -273,35 +404,38 @@ watch(
   }
 );
 
-// function init() {
-//   //获取所有登记用户名字
-//   // _getAuntNameAll().then(res => {
-//   //   data.uNameAll = res.data.obj;
-//   // });
+function init() {
+  //获取所有登记用户名字
+  _getAuntNameAll().then((res) => {
+    data.uNameAll = res.data.obj;
+    for (let i = 0; i < data.uNameAll.length; i++) {
+      const element = data.uNameAll[i];
+    }
+  });
 
-//   selectByNameAllFun();
-// }
+  // selectByNameAllFun();
+}
 /*根据名字查询所有记录*/
 function selectByNameAllFun() {
-  if (data.uName === "") {
+  if (data.uID === "") {
     ElMessage.error("请输入需要搜索的人员姓名");
     return;
   }
   data.xData = [];
   data.yData = [];
-  _getAuntByNameAll(data.uName, 0).then(res => {
+  _getAuntByNameAll(data.uID, 0).then((res) => {
     //历史记录
     if (res.data == "") {
       data.isEmpty = true;
       data.isShowContent = false;
       ElMessage({
         message: "未查到该人员",
-        type: "warning"
+        type: "warning",
       });
     } else {
       data.isEmpty = false;
       data.isShowContent = true;
-      res.data.auntList.forEach(element => {
+      res.data.auntList.forEach((element) => {
         data.xData.push(element.startDate + "~" + element.endDate);
         data.yData.push(element.bloodVolume);
       });
@@ -320,7 +454,7 @@ function selectByNameAllFun() {
     }
   });
 
-  _getAuntByNameAll(data.uName, 1).then(res => {
+  _getAuntByNameAll(data.uName, 1).then((res) => {
     //实际记录
     if (res.data === "") {
       data.realAuntForm.name = data.uName;
@@ -338,7 +472,8 @@ function selectByNameAllFun() {
   });
   setTimeout(() => {
     initEcharts();
-  }, 100);
+    handleQuickChange('cur');
+  }, 500);
 }
 /*获取天数*/
 function handleGetDays(year, month, startOfWeek) {
@@ -353,7 +488,7 @@ function handleGetDays(year, month, startOfWeek) {
     3: "三",
     4: "四",
     5: "五",
-    6: "六"
+    6: "六",
   };
   const firstDayInCN = obj[firstDayOfWeek];
   const index = data.weeks.indexOf(firstDayInCN);
@@ -508,7 +643,7 @@ function handleQuickChange(type) {
   let flag1 = false; //月经期
   let flag2 = false; //经后期
   let flag3 = false; //排卵期
-  let flag4 = false;  //经前期
+  let flag4 = false; //经前期
   if (type === "prev") {
     data.curMonth--;
     if (data.curMonth === -1) {
@@ -854,13 +989,13 @@ function initEcharts() {
   const option = {
     title: {
       text: "月例-流血量",
-      left: "center"
+      left: "center",
     },
     tooltip: {
-      trigger: "item"
+      trigger: "item",
     },
     xAxis: {
-      data: data.xData
+      data: data.xData,
     },
     yAxis: {},
     series: [
@@ -869,12 +1004,12 @@ function initEcharts() {
         type: "bar", //形状为柱状图
         data: data.yData,
         tooltip: {
-          valueFormatter: function(value) {
+          valueFormatter: function (value) {
             return value + " ml";
-          }
-        }
-      }
-    ]
+          },
+        },
+      },
+    ],
   };
 
   setTimeout(() => {
@@ -884,17 +1019,17 @@ function initEcharts() {
 }
 
 onMounted(() => {
-  selectByNameAllFun();
   data.monthOptions = handleCreateDatePicker().months;
   data.yearOptions = handleCreateDatePicker().years;
 
   if (localStorage.selectedDates)
     data.selectedDates = JSON.parse(localStorage.selectedDates);
 
-  // init();
+  init();
   data.weeks.unshift(...data.weeks.splice(props.startOfWeek - 1));
   handleGetDays(data.curYear, data.curMonth, props.startOfWeek);
   data.selectedMode = props.selectMode === "click";
+  
 });
 </script>
     

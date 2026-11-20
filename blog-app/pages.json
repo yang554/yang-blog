@@ -1,0 +1,408 @@
+{
+	"pages": [{
+			"path": "pages/start/start",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "枫萱悦宁",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true,
+				"backgroundColor": "#667eea",
+				"backgroundTextStyle": "dark",
+				"app-plus": {
+					"bounce": "vertical"
+				}
+			}
+		},
+		{
+			"path": "pages/user/my-page/my-page",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true,
+				"backgroundColor": "#667eea",
+				"backgroundTextStyle": "dark",
+				"app-plus": {
+					"bounce": "vertical"
+				}
+			}
+		}
+
+	],
+	"subPackages": [{
+			"root": "pages/life/",
+			"pages": [{
+					"path": "wealth-report/wealth-report",
+					"style": {
+						"navigationBarTitleText": "财富报表"
+					}
+				},
+				{
+					"path": "user-deposit/user-deposit",
+					"style": {
+						"navigationBarTitleText": "用户资产"
+					}
+				},
+				{
+					"path": "consumption-type/consumption-type",
+					"style": {
+						"navigationBarTitleText": "流水类型"
+					}
+				},
+				{
+					"path": "daily-flow/daily-flow",
+					"style": {
+						"navigationBarTitleText": "账簿",
+						"enablePullDownRefresh": true
+					}
+				},
+				{
+					"path": "daily-flow-info/daily-flow-info",
+					"style": {
+						"navigationBarTitleText": "流水明细"
+					}
+				},
+				{
+					"path": "add-daily-flow/add-daily-flow",
+					"style": {
+						"navigationBarTitleText": "新增流水",
+						"navigationBarBackgroundColor": "#8B4513"
+					}
+				},
+				{
+					"path": "flow-analysis/flow-analysis",
+					"style": {
+						"navigationBarTitleText": "流水分析"
+					}
+				},
+				{
+					"path": "daily-detail/daily-detail",
+					"style": {
+						"navigationBarTitleText": "账簿详情"
+					}
+				}
+			]
+		},
+		{
+			"root": "pages/blog/",
+			"pages": [{
+					"path": "blog-dashboard/blog-dashboard",
+					"style": {
+						"navigationBarTitleText": "博客看板"
+					}
+				},
+				{
+					"path": "write/write",
+					"style": {
+						"navigationBarTitleText": "记笔记"
+					}
+				},
+				{
+					"path": "knowledge-tag/knowledge-tag",
+					"style": {
+						"navigationBarTitleText": "知识标签"
+					}
+				},
+				{
+					"path": "knowledge-type/knowledge-type",
+					"style": {
+						"navigationBarTitleText": "知识类型"
+					}
+				},
+				{
+					"path": "knowledge-base/knowledge-base",
+					"style": {
+						"navigationBarTitleText": "知识库"
+					}
+				}
+			]
+		},
+		{
+			"root": "pages/aunt/",
+			"pages": [{
+					"path": "aunt-dashboard/aunt-dashboard",
+					"style": {
+						"navigationBarTitleText": "经期预测"
+					}
+				},
+				{
+					"path": "aunt-list/aunt-list",
+					"style": {
+						"navigationBarTitleText": "经期列表"
+					}
+				},
+				{
+					"path": "aunt-add/aunt-add",
+					"style": {
+						"navigationBarTitleText": "经期记录"
+					}
+				}
+			]
+		},
+		{
+			"root": "pages/user/",
+			"pages": [{
+					"path": "user-list/user-list",
+					"style": {
+						"navigationBarTitleText": "用户管理"
+					}
+				},
+				{
+					"path": "user-add/user-add",
+					"style": {
+						"navigationBarTitleText": "新增用户"
+					}
+				},
+				{
+					"path": "role/role",
+					"style": {
+						"navigationBarTitleText": "权限管理"
+					}
+				},
+				{
+					"path": "edit-profile/edit-profile",
+					"style": {
+						"navigationBarTitleText": "个人资料"
+					}
+				},
+				{
+					"path": "/personal-profile/personal-profile",
+					"style": {
+						"navigationBarTitleText": ""
+					}
+				},
+				{
+					"path": "/account-security/account-security",
+					"style": {
+						"navigationBarTitleText": "账号安全"
+					}
+				}
+			]
+		},
+		{
+			"root": "pages/family/",
+			"pages": [{
+					"path": "family-intro/family-intro",
+					"style": {
+						"navigationBarTitleText": "家族简介"
+					}
+				},
+				{
+					"path": "family-edit/family-edit",
+					"style": {
+						"navigationBarTitleText": "编辑族谱"
+					}
+				},
+				{
+					"path": "family-source/family-source",
+					"style": {
+						"navigationBarTitleText": "溯源一览图"
+					}
+				},
+				{
+					"path": "member-detail/member-detail",
+					"style": {
+						"navigationBarTitleText": "成员详细信息"
+					}
+				},
+				{
+					"path": "add-member/add-member",
+					"style": {
+						"navigationBarTitleText": "添加成员"
+					}
+				},
+				{
+					"path": "edit-member/edit-member",
+					"style": {
+						"navigationBarTitleText": "编辑成员信息"
+					}
+				},
+				{
+					"path": "family-tree/family-tree",
+					"style": {
+						"navigationBarTitleText": "族谱"
+					}
+				}
+			]
+		},
+		{
+			"root": "pages/nutrition/",
+			"pages": [{
+					"path": "body-composition/body-composition",
+					"style": {
+						"navigationBarTitleText": "体成分分析",
+						"enablePullDownRefresh": true
+					}
+				},
+				{
+					"path": "food-nutrition/food-nutrition",
+					"style": {
+						"navigationBarTitleText": "食物营养"
+					}
+				},
+				{
+					"path": "nutritional-recipe/nutritional-recipe",
+					"style": {
+						"navigationBarTitleText": "营养食谱"
+					}
+				},
+				{
+					"path": "recipe-edit/recipe-edit",
+					"style": {
+						"navigationBarTitleText": "营养食谱"
+					}
+				},
+				{
+					"path": "recipe-detail/recipe-detail",
+					"style": {
+						"navigationBarTitleText": "食谱详情"
+					}
+				},
+				{
+					"path": "nutritional-recipes/nutritional-recipes",
+					"style": {
+						"navigationBarTitleText": "营养方案"
+					}
+				},
+				{
+					"path": "recommended-recipes/recommended-recipes",
+					"style": {
+						"navigationBarTitleText": "营养推荐"
+					}
+				},
+				{
+					"path": "order-food/order-food",
+					"style": {
+						"navigationBarTitleText": "点餐"
+					}
+				},
+				{
+					"path": "cart/cart",
+					"style": {
+						"navigationBarTitleText": "购物车"
+					}
+				},
+				{
+					"path": "checkout/checkout",
+					"style": {
+						"navigationBarTitleText": "结算"
+					}
+				},
+				{
+					"path": "order-detail/order-detail",
+					"style": {
+						"navigationBarTitleText": "订单详情"
+					}
+				},
+				{
+					"path": "order-history/order-history",
+					"style": {
+						"navigationBarTitleText": "历史订单"
+					}
+				}
+			]
+		},
+		{
+			"root": "pages/prize/",
+			"pages": [{
+					"path": "prizes/prizes",
+					"style": {
+						"navigationBarTitleText": "幸运转盘"
+					}
+				},
+				{
+					"path": "prize-setting/prize-setting",
+					"style": {
+						"navigationBarTitleText": "奖品设置"
+					}
+				}
+			]
+		},
+		{
+			"root": "pages/class/",
+			"pages": [{
+					"path": "basic-fee/basic-fee",
+					"style": {
+						"navigationBarTitleText": "课时费计算"
+					}
+				},
+				{
+					"path": "class-fee-rule/class-fee-rule",
+					"style": {
+						"navigationBarTitleText": "计算规则"
+					}
+				}
+			]
+		},
+		{
+			"root": "pages/about/",
+			"pages": [{
+					"path": "about",
+					"style": {
+						"navigationBarTitleText": "关于"
+					}
+				},
+				{
+					"path": "version/version",
+					"style": {
+						"navigationBarTitleText": "功能介绍"
+					}
+				}
+			]
+		},
+		{
+			"root": "pages/other/",
+			"pages": [{
+					"path": "priceTracker/priceTracker",
+					"style": {
+						"navigationBarTitleText": "商品历史价格"
+					}
+				},
+				{
+					"path": "priceTrackerInfo/priceTrackerInfo",
+					"style": {
+						"navigationBarTitleText": "商品价格详情"
+					}
+				}
+			]
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "个人管理系统",
+		"navigationBarBackgroundColor": "#8B4513",
+		"backgroundColor": "#f8f8f8",
+		"backgroundColorTop": "#8B4513",
+		"backgroundColorBottom": "#ffffff",
+		"app-plus": {
+			"background": "#efeff4"
+		}
+	},
+	"tabBar": {
+		"custom": true,
+		"list": [{
+			"pagePath": "pages/index/index",
+			"text": "首页"
+		}, {
+			"pagePath": "pages/user/my-page/my-page",
+			"text": "我的"
+		}]
+	},
+	"easycom": {
+		"autoscan": true,
+		"custom": {
+			"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
+			"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+		}
+	}
+}

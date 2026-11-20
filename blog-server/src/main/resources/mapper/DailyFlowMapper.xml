@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.blog.mapper.DailyFlowMapper">
+    <resultMap id="map" type="com.yang.blog.entity.DailyFlowEntity">
+        <id column="id" property="id"/>
+        <result column="type" property="type"/>
+        <result column="cost" property="cost"/>
+        <result column="record_time" property="recordTime"/>
+        <result column="note" property="note"/>
+        <result column="made" property="made"/>
+        <result column="uName" property="uName"/>
+        <result column="create_time" property="fCreateTime"/>
+        <result column="update_time" property="fUpdateTime"/>
+    </resultMap>
+
+    <resultMap id="consumptionMap" type="com.yang.blog.entity.UConsumptionCountEntity">
+        <result column="consumption_time" property="consumptionTime"/>
+        <result column="consumption_type" property="consumptionType"/>
+        <result column="consumption_cost" property="consumptionCost"/>
+    </resultMap>
+
+    <select id="findAll" parameterType="string" resultMap="map">
+        SELECT d.*,u.username as uName FROM u_daily_flow d
+        LEFT JOIN sys_user u ON d.made = u.id
+        ORDER BY record_time DESC
+    </select>
+
+    <select id="findAllById" parameterType="string" resultMap="map">
+        SELECT d.*,u.username as uName FROM (
+        SELECT * FROM u_daily_flow
+        <where>
+            <if test="id != '' ">
+                AND made = #{id}
+            </if>
+        </where>
+        ) d
+        LEFT JOIN sys_user u ON d.made = u.id
+        ORDER BY record_time DESC
+    </select>
+
+    <select id="findByFactor" parameterType="string" resultMap="map">
+        SELECT d.*,u.username as uName FROM (SELECT * FROM u_daily_flow
+        <where>
+            <if test="searchDate1 != ''">
+                AND  DATE_FORMAT(record_time, '%Y-%m-%d') BETWEEN #{searchDate1} AND #{searchDate2}
+            </if>
+            <if test="searchType != '' ">
+                AND `type` = #{searchType}
+            </if>
+            <if test="searchName != '' ">
+                AND `made` = #{searchName}
+            </if>
+            <if test="minCost != null and minCost != ''">
+                AND `cost` >= #{minCost}
+            </if>
+            <if test="maxCost != null and maxCost != ''">
+                AND `cost` &lt;= #{maxCost}  <!-- 注意小于号转义 -->
+            </if>
+        </where>
+         ) d
+        LEFT JOIN sys_user u ON d.made = u.id
+        ORDER BY record_time DESC
+    </select>
+
+    <select id="getRawData" parameterType="string" resultMap="map">
+        SELECT * FROM u_daily_flow
+        WHERE
+        made = #{userId}
+        <choose>
+            <!-- 整体查询 -->
+            <when test="timeRange == 'total'">
+                AND 1=1
+            </when>
+            <!-- 年度查询 -->
+            <when test="timeRange == 'year' and year != null">
+                AND YEAR(record_time) = #{year}
+            </when>
+            <!-- 月度查询 -->
+            <when test="timeRange == 'month' and year != null and month != null">
+                AND YEAR(record_time) = #{year}
+                AND MONTH(record_time) = #{month}
+            </when>
+            <!-- 每日查询（日期范围） -->
+            <when test="timeRange == 'day' and startDate != null and endDate != null">
+                AND record_time BETWEEN #{startDate} AND #{endDate}
+            </when>
+            <!-- 默认查询最近30天 -->
+            <otherwise>
+                AND record_time >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+            </otherwise>
+        </choose>
+        ORDER BY record_time ASC, create_time ASC
+    </select>
+
+    <select id="selectAvailableYears" resultType="java.lang.Integer">
+        SELECT DISTINCT YEAR(record_time) as `years`
+        FROM u_daily_flow
+        WHERE made = #{userId}
+        ORDER BY `years` DESC
+    </select>
+
+    <select id="getConsumptionCount"  resultMap="consumptionMap">
+        SELECT DATE_FORMAT(t.record_time, CONCAT('',#{search},'')) as consumption_time,ABS(SUM(cost)) as consumption_cost
+        FROM (SELECT * FROM u_daily_flow WHERE `type` = #{consumptionType} AND made = #{queryId}) t GROUP BY consumption_time ORDER BY consumption_time DESC LIMIT #{getCount};
+    </select>
+
+    <select id="getConsumptionCountDInfo" resultMap="consumptionMap">
+        SELECT type_tag_id as consumption_type,SUM(cost) as consumption_cost FROM u_daily_flow_info WHERE daily_flow_id in (
+        SELECT id FROM (
+                SELECT *
+                FROM u_daily_flow
+                WHERE `type` = #{consumptionType} AND record_time = DATE_FORMAT(#{consumptionTime} , '%Y-%m-%D') AND made = #{queryId}
+            ) AS temp
+        ) GROUP BY type_tag_id ORDER BY consumption_cost DESC
+    </select>
+
+    <select id="getConsumptionCountMInfo" resultMap="consumptionMap">
+        SELECT type_tag_id as consumption_type,SUM(cost) as consumption_cost FROM u_daily_flow_info WHERE daily_flow_id in (
+        SELECT id FROM u_daily_flow
+        WHERE `type` = #{consumptionType} AND DATE_FORMAT(record_time, '%Y-%m') = DATE_FORMAT(#{consumptionTime}, '%Y-%m') AND made = #{queryId}
+        ) GROUP BY type_tag_id ORDER BY consumption_cost DESC
+    </select>
+
+    <select id="getConsumptionCountYInfo" resultMap="consumptionMap">
+        SELECT type_tag_id as consumption_type,SUM(cost) as consumption_cost FROM u_daily_flow_info WHERE daily_flow_id in (
+        SELECT id FROM u_daily_flow
+        WHERE `type` = #{consumptionType} AND DATE_FORMAT(record_time , '%Y') = DATE_FORMAT(#{consumptionTime} , '%Y') AND made = #{queryId}
+        ) GROUP BY type_tag_id ORDER BY consumption_cost DESC
+    </select>
+
+    <insert id="addFlow" parameterType="com.yang.blog.entity.DailyFlowEntity">
+        INSERT INTO u_daily_flow (id,`type`,cost,record_time,note,made,create_time,update_time)
+        VALUES(#{id},#{type},#{cost},#{recordTime},#{note},#{made},#{fCreateTime},#{fUpdateTime})
+    </insert>
+
+    <update id="updFlow" parameterType="com.yang.blog.entity.DailyFlowEntity">
+        UPDATE u_daily_flow SET `type` = #{type},cost = #{cost},record_time = #{recordTime},
+        note = #{note},made = #{made},create_time = #{fCreateTime},update_time = #{fUpdateTime}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delFlow">
+        DELETE FROM u_daily_flow WHERE id = #{id}
+    </delete>
+
+</mapper>

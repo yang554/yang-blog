@@ -34,8 +34,8 @@ import 'mavon-editor/dist/css/index.css'
 app.use(mavonEditor)
 
 //echarts
-// import * as echarts from 'echarts';
-// app.use(echarts)
+import { initSvgChart } from './utils/echarts'
+app.provide('$echarts_l', initSvgChart)
 
 /*农历转换*/
 import * as nlCalendar from 'chinese-lunar-calendar'

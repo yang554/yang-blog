@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface USourceService {
     //查询所有用户
-    List<USourceEntity> selectSourceAll();
+    List<USourceEntity> selectSourceAll(Long pTree);
     //根据name查询用户
-    List<USourceEntity> selectUserByName(String s_name);
+    List<USourceEntity> selectUserByName(Long pTree,String s_name);
     //根据key查询用户姓名
     RespBean selectUserByKey(String key);
     //根据性别查询男女比例
@@ -18,9 +18,9 @@ public interface USourceService {
     //根据性别查询男女比例（嫡系）
     RespBean getUserCountBySexDX();
     //根据代系获取人口数量
-    RespBean getUserCountByLove();
+    RespBean getUserCountByLove(Long pTree);
     //根据代系获取男女比例
-    RespBean getUserCountByLoveAndSex();
+    RespBean getUserCountByLoveAndSex(Long pTree);
     //根据key查询用户
     RespBean selectSourceByKeys(List<String> list);
     //分页查询用户
